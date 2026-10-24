@@ -1,12 +1,24 @@
 {
-  // Cloudflare Worker that serves the static site in public/.
+  // Cloudflare Worker that serves the static site in public/ plus a small script (src/worker.js)
+  // for pretty project URLs (/work/<slug>) and the contact form (/api/contact).
   // Workers Builds runs `npx wrangler deploy` on every push to main.
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "anassaleh",
+  "main": "src/worker.js",
   "compatibility_date": "2026-10-19",
   "assets": {
     "directory": "./public",
+    "binding": "ASSETS",
     "html_handling": "auto-trailing-slash",
-    "not_found_handling": "404-page"
-  }
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/api/*", "/work/*"]
+  },
+  // Every contact form submission is stored here (Cloudflare dashboard > Storage > KV > SUBMISSIONS).
+  "kv_namespaces": [
+    { "binding": "SUBMISSIONS", "id": "2d2802ed6f994213bf6e98a367c9bb48" }
+  ]
+  // Email alerts for the form: turned on once Email Routing is enabled for anassaleh.me
+  // and the destination address is verified. Then add:
+  // "send_email": [{ "name": "MAILER", "destination_address": "<verified address>" }],
+  // "vars": { "MAIL_FROM": "form@anassaleh.me", "MAIL_TO": "<verified address>" }
 }

@@ -18,27 +18,54 @@ content:
     path: public/content/site.json
     format: json
     fields:
-      - { name: name, label: Short name, type: string, required: true }
+      - { name: name, label: Short name (shown on the site), type: string, required: true }
       - { name: fullName, label: Full name, type: string, required: true }
       - { name: location, label: Location, type: string }
+      - name: theme
+        label: Look
+        type: object
+        fields:
+          - name: palette
+            label: Colour palette
+            type: select
+            options:
+              values:
+                - { name: paper, label: "Paper: warm off-white and charcoal" }
+                - { name: stone, label: "Stone: cool grey and graphite" }
+                - { name: sand, label: "Sand: beige and dark brown-grey" }
       - name: home
         label: Homepage
         type: object
         fields:
           - { name: headline, label: Headline, type: string }
           - { name: intro, label: Intro line, type: text }
+          - { name: statement, label: Big statement under the hero, type: text }
           - name: heroType
             label: Hero type
             type: select
             options:
               values:
+                - { name: portrait, label: Portrait with 3D depth }
                 - { name: video, label: Full-screen video }
                 - { name: image, label: Image }
-                - { name: model, label: 3D model }
+          - { name: heroImage, label: Hero image (portrait with transparent background), type: image, options: { media: images } }
+          - { name: heroDepth, label: Hero depth map (grayscale, white is near), type: image, options: { media: images } }
           - { name: heroVideo, label: Hero video (muted loop file), type: file, options: { media: files } }
-          - { name: heroImage, label: Hero image, type: image, options: { media: images } }
-          - { name: heroModel, label: Hero 3D model (.glb, under 10 MB), type: file, options: { media: files } }
+          - { name: heroModel, label: 3D model (.glb, under 10 MB, for later), type: file, options: { media: files } }
           - { name: showreelUrl, label: Showreel link (YouTube or Vimeo), type: string }
+          - name: disciplines
+            label: What I do (three chapters)
+            type: object
+            list: true
+            fields:
+              - { name: title, label: Title, type: string }
+              - name: filter
+                label: Links to Work filtered by
+                type: select
+                options:
+                  values: [design, 3d, motion, video]
+              - { name: text, label: Text, type: text }
+              - { name: image, label: Image, type: image, options: { media: images } }
       - name: about
         label: About
         type: object
@@ -56,6 +83,44 @@ content:
               - { name: note, label: Note, type: string }
           - { name: tools, label: Tools, type: string, list: true }
           - { name: cv, label: CV (PDF), type: file, options: { media: files } }
+      - { name: services, label: Services (shown in the contact form), type: string, list: true }
+      - name: contactPage
+        label: Contact page
+        type: object
+        fields:
+          - { name: headline, label: Headline, type: string }
+          - { name: intro, label: Intro, type: text }
+          - { name: replyNote, label: Reply time note, type: string }
+          - { name: budgets, label: Budget options, type: string, list: true }
+          - { name: sources, label: "How did you find me? options", type: string, list: true }
+      - name: inProduction
+        label: In Production (short film page)
+        type: object
+        fields:
+          - { name: show, label: Show this page on the site, type: boolean }
+          - { name: title, label: Film title, type: string }
+          - { name: logline, label: Logline (one sentence), type: text }
+          - { name: poster, label: Poster or key still, type: image, options: { media: images } }
+          - name: stage
+            label: Current stage
+            type: select
+            options:
+              values:
+                - { name: development, label: Development }
+                - { name: pre-production, label: Pre-production }
+                - { name: production, label: Production }
+                - { name: post-production, label: Post-production }
+                - { name: release, label: Release }
+          - { name: about, label: About the film, type: text }
+          - name: diary
+            label: Production diary
+            type: object
+            list: true
+            fields:
+              - { name: date, label: Date, type: date }
+              - { name: title, label: Title, type: string }
+              - { name: text, label: Text, type: text }
+              - { name: image, label: Image, type: image, options: { media: images } }
       - name: contact
         label: Contact
         type: object
@@ -87,18 +152,19 @@ content:
           multiple: true
           values:
             - { name: design, label: Design }
+            - { name: 3d, label: 3D }
             - { name: motion, label: Motion }
             - { name: video, label: Video }
-            - { name: 3d, label: 3D }
       - { name: client, label: Client, type: string }
       - { name: year, label: Year, type: string }
       - { name: role, label: My role, type: string }
       - { name: format, label: Format, type: string }
+      - { name: tools, label: Tools and gear, type: string }
       - { name: featured, label: Show on homepage, type: boolean }
       - { name: draft, label: Hide from site (draft), type: boolean }
       - { name: cover, label: Cover image, type: image, options: { media: images } }
       - { name: images, label: Gallery images, type: image, options: { media: images, multiple: true } }
-      - { name: video, label: Video link (YouTube or Vimeo), type: string }
+      - { name: video, label: Video link (YouTube, Vimeo or Behance video), type: string }
       - { name: description, label: Description, type: text }
 
   - name: blog

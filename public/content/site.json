@@ -2,21 +2,46 @@
   "name": "Anas Saleh",
   "fullName": "Anas Al Shikh Saleh",
   "location": "Dubai, UAE",
+  "theme": {
+    "palette": "paper"
+  },
   "home": {
     "headline": "Multimedia designer in Dubai.",
-    "intro": "Design, 3D, motion and video, from the first frame to the final export.",
-    "heroType": "video",
+    "intro": "Design, 3D, motion and video, from the first idea to the final frame.",
+    "statement": "I design, film, animate and edit. One person, from the first sketch to the light on the last frame.",
+    "heroType": "portrait",
     "heroVideo": "",
-    "heroImage": "",
+    "heroImage": "/images/portrait.webp",
+    "heroDepth": "/images/portrait-depth.png",
     "heroModel": "",
-    "showreelUrl": ""
+    "showreelUrl": "",
+    "disciplines": [
+      {
+        "title": "Design",
+        "filter": "design",
+        "text": "Brand identities, design systems, packaging and campaign visuals that stay consistent from a logo to an exhibition stand.",
+        "image": "/images/projects/mangobot-social/cover.webp"
+      },
+      {
+        "title": "3D",
+        "filter": "3d",
+        "text": "Products, robots and characters modeled, lit and rendered in Blender, for stills, films and the web.",
+        "image": "/images/projects/mechanical-spider/cover.webp"
+      },
+      {
+        "title": "Motion and video",
+        "filter": "video",
+        "text": "Directing, filming, editing and motion graphics. Product films, brand films and short cinematic scenes.",
+        "image": "/images/projects/exoskeleton-film/06.webp"
+      }
+    ]
   },
   "about": {
-    "portrait": "/images/anas.jpg",
+    "portrait": "/images/portrait.webp",
     "bio": [
       "I'm Anas, a multimedia designer based in Dubai. I work across graphic design, 3D, motion and video, and I like owning a piece of work from the idea to the final file.",
       "Today I lead creative and video production at MangoBot, a company building AI and humanoid robots. When I joined, the company had a logo and nothing else. I built the brand identity, the first website and the in-house video production, and I now direct, film and edit the company's videos.",
-      "Before that I spent two years at Promate Technologies, where I taught myself Blender and turned it into a core part of how I work. Outside of client work, I'm writing and building my own short film."
+      "Before that I spent two years at Promate Technologies, where I taught myself Blender and turned it into a core part of how I work. Outside of client work, I'm writing and producing my own short film."
     ],
     "experience": [
       {
@@ -29,7 +54,7 @@
         "period": "2024 to 2026",
         "role": "Senior Graphic Designer",
         "company": "Promate Technologies",
-        "note": "E-commerce, 3D product visuals, GITEX Global"
+        "note": "E-commerce visuals, 3D product renders, GITEX Global"
       },
       {
         "period": "2019 to 2024",
@@ -46,9 +71,35 @@
       "After Effects",
       "Blender",
       "Figma",
-      "Notion"
+      "Framer",
+      "Camera and lighting"
     ],
     "cv": "/Anas_Al_Shikh_Saleh_CV.pdf"
+  },
+  "services": [
+    "Design",
+    "Video editing",
+    "Filming",
+    "Website design",
+    "3D",
+    "Animation",
+    "Other"
+  ],
+  "contactPage": {
+    "headline": "Let's make something.",
+    "intro": "Tell me about your project. I read every message and reply with next steps and a quote.",
+    "replyNote": "I usually reply within two working days.",
+    "budgets": ["Not sure yet", "Under 2,000 AED", "2,000 to 5,000 AED", "5,000 to 15,000 AED", "15,000 AED and up"],
+    "sources": ["Instagram", "Behance", "LinkedIn", "Referral", "Google", "Other"]
+  },
+  "inProduction": {
+    "show": false,
+    "title": "Untitled short film",
+    "logline": "A short animated film, written, designed and animated in 3D.",
+    "poster": "",
+    "stage": "development",
+    "about": "I'm writing and producing my own short film: the script, the character design and the 3D animation. This page follows it from the first draft to release.",
+    "diary": []
   },
   "contact": {
     "email": "anassors.200@gmail.com",

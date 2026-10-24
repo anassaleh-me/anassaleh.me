@@ -1,0 +1,128 @@
+# Pages CMS config (https://pagescms.org). Edits the JSON files in public/content/.
+media:
+  - name: images
+    label: Images
+    input: public/images
+    output: /images
+    categories: [image]
+  - name: files
+    label: Files
+    input: public/files
+    output: /files
+    extensions: [pdf, glb, gltf, mp4, webm]
+
+content:
+  - name: site
+    label: Site, About and Contact
+    type: file
+    path: public/content/site.json
+    format: json
+    fields:
+      - { name: name, label: Short name, type: string, required: true }
+      - { name: fullName, label: Full name, type: string, required: true }
+      - { name: location, label: Location, type: string }
+      - name: home
+        label: Homepage
+        type: object
+        fields:
+          - { name: headline, label: Headline, type: string }
+          - { name: intro, label: Intro line, type: text }
+          - name: heroType
+            label: Hero type
+            type: select
+            options:
+              values:
+                - { name: video, label: Full-screen video }
+                - { name: image, label: Image }
+                - { name: model, label: 3D model }
+          - { name: heroVideo, label: Hero video (muted loop file), type: file, options: { media: files } }
+          - { name: heroImage, label: Hero image, type: image, options: { media: images } }
+          - { name: heroModel, label: Hero 3D model (.glb, under 10 MB), type: file, options: { media: files } }
+          - { name: showreelUrl, label: Showreel link (YouTube or Vimeo), type: string }
+      - name: about
+        label: About
+        type: object
+        fields:
+          - { name: portrait, label: Portrait, type: image, options: { media: images } }
+          - { name: bio, label: Bio paragraphs, type: text, list: true }
+          - name: experience
+            label: Experience
+            type: object
+            list: true
+            fields:
+              - { name: period, label: Period (e.g. 2024 to 2026), type: string }
+              - { name: role, label: Role, type: string }
+              - { name: company, label: Company, type: string }
+              - { name: note, label: Note, type: string }
+          - { name: tools, label: Tools, type: string, list: true }
+          - { name: cv, label: CV (PDF), type: file, options: { media: files } }
+      - name: contact
+        label: Contact
+        type: object
+        fields:
+          - { name: email, label: Email, type: string }
+          - { name: linkedin, label: LinkedIn URL, type: string }
+          - { name: behance, label: Behance URL, type: string }
+          - { name: instagram, label: Instagram URL, type: string }
+          - { name: whatsapp, label: WhatsApp link (https://wa.me/...), type: string }
+
+  - name: projects
+    label: Projects
+    type: file
+    path: public/content/projects.json
+    format: json
+    list: true
+    fields:
+      - { name: title, label: Title, type: string, required: true }
+      - { name: subtitle, label: Subtitle, type: string }
+      - name: slug
+        label: Page address (lowercase-with-dashes)
+        type: string
+        required: true
+        pattern: { regex: "^[a-z0-9]+(-[a-z0-9]+)*$", message: "Use lowercase letters, numbers and dashes only" }
+      - name: categories
+        label: Categories
+        type: select
+        options:
+          multiple: true
+          values:
+            - { name: design, label: Design }
+            - { name: motion, label: Motion }
+            - { name: video, label: Video }
+            - { name: 3d, label: 3D }
+      - { name: client, label: Client, type: string }
+      - { name: year, label: Year, type: string }
+      - { name: role, label: My role, type: string }
+      - { name: format, label: Format, type: string }
+      - { name: featured, label: Show on homepage, type: boolean }
+      - { name: draft, label: Hide from site (draft), type: boolean }
+      - { name: cover, label: Cover image, type: image, options: { media: images } }
+      - { name: images, label: Gallery images, type: image, options: { media: images, multiple: true } }
+      - { name: video, label: Video link (YouTube or Vimeo), type: string }
+      - { name: description, label: Description, type: text }
+
+  - name: blog
+    label: Blog (hidden on the site until the first post)
+    type: file
+    path: public/content/blog.json
+    format: json
+    list: true
+    fields:
+      - { name: title, label: Title, type: string, required: true }
+      - { name: slug, label: Page address (lowercase-with-dashes), type: string, required: true }
+      - { name: date, label: Date, type: date }
+      - { name: cover, label: Cover image, type: image, options: { media: images } }
+      - { name: body, label: Body, type: rich-text }
+
+  - name: offers
+    label: Offers (hidden on the site until used)
+    type: file
+    path: public/content/offers.json
+    format: json
+    list: true
+    fields:
+      - { name: name, label: Name, type: string, required: true }
+      - { name: image, label: Image, type: image, options: { media: images } }
+      - { name: price, label: Price, type: string }
+      - { name: description, label: Description, type: text }
+      - { name: buyLink, label: Buy link, type: string }

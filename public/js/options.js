@@ -1,14 +1,20 @@
-// Stage 1b options board: hero sample, floating glass nav, and project layouts VI to X plus IV and V.
+// Stage 1d options board: hero, cream textures, and six project layouts (five kept and upgraded, plus the dock reel).
 import { mountHero } from "/js/hero2.js";
 import { mountPillNav } from "/js/nav.js";
-import { setCursor } from "/js/cursors.js";
+import { mountRingCursor } from "/js/cursors.js";
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const lerp = (a, b, t) => a + (b - a) * t;
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
-const ACCENT = [0x6f / 255, 0x8f / 255, 0xaf / 255];
+const pad = (n) => String(n).padStart(2, "0");
+// Blur only changes in 0.5px steps, so the browser doesn't repaint filters every frame for nothing.
+const setBlur = (el, px, extra = "") => {
+  const v = Math.round(px * 2) / 2;
+  const f = (v > 0 ? `blur(${v}px) ` : "") + extra;
+  if (el._f !== f) { el.style.filter = f || "none"; el._f = f; }
+};
 
 const LOGO = `<svg viewBox="0 0 226.08 342.55" aria-hidden="true"><defs><mask id="nlm"><rect width="226.08" height="342.55" fill="#fff"/><path transform="matrix(1,0,0,-1,113.045,265.925)" d="M0 0V65.23H43.11ZM-31.28 94.65H-62.55L-31.28 142.04ZM62.55 142.04H31.27V189.43L0 236.81-31.28 189.42-62.55 142.04-93.83 94.65-62.56 47.27V65.19H-31.28V-.12L0-47.51 93.82 94.65Z" fill="#000"/></mask></defs><g mask="url(#nlm)"><path transform="matrix(1,0,0,-1,113.04,.000091552738)" d="M0 0-17.83-27.01-26.26-39.79-49.1-74.4-57.53-87.169-80.37-121.78-88.81-134.57-111.65-169.17-113.04-171.28-88.81-207.99-83.16-216.55-57.53-255.38-51.88-263.94-26.26-302.76-20.61-311.33 0-342.55 5.02-334.94 20.61-311.33 36.29-287.57 51.88-263.94 67.57-240.169 83.16-216.55 98.84-192.79 113.04-171.28 111.65-169.17 98.84-149.76 80.37-121.78 67.57-102.38 49.1-74.4 36.29-54.99 17.83-27.01Z" fill="currentColor"/></g></svg>`;
 mountPillNav({
@@ -16,343 +22,233 @@ mountPillNav({
   links: [{ href: "#layouts", label: "Work", key: "work" }, { href: "#hero", label: "About" }, { href: "#layouts", label: "In production" }],
   cta: { href: "#hero", label: "Let's talk" },
 });
+mountRingCursor({ accent: "#6f8faf" });
 
 /* reveal: blurred, then into focus */
 const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && (e.target.classList.add("in"), io.unobserve(e.target))), { threshold: 0.12 });
-$$(".head, .demo-title, .demo-note, .tag, .controls").forEach((el) => { el.classList.add("reveal"); io.observe(el); });
-
-/* option rows: build buttons, keep one pressed */
-function optionRow(container, items, onPick, start = 0) {
-  items.forEach((it, i) => {
-    const b = document.createElement("button");
-    b.type = "button";
-    b.textContent = it.label;
-    b.setAttribute("aria-pressed", String(i === start));
-    b.addEventListener("click", () => {
-      [...container.querySelectorAll("button")].forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
-      onPick(it);
-    });
-    container.append(b);
-  });
-  onPick(items[start]);
-}
-
-/* cursors */
-optionRow($("[data-cursors]"), [
-  { label: "1 · Liquid", v: "liquid" },
-  { label: "2 · Ring", v: "ring" },
-  { label: "3 · Ink smoke", v: "ink" },
-  { label: "4 · Pencil", v: "pencil" },
-  { label: "5 · Spotlight", v: "spotlight" },
-  { label: "عادي", v: "default" },
-], (it) => setCursor(it.v));
-
-/* dark textures, drawn on a canvas */
-const canvasURL = (w, h, draw) => { const c = document.createElement("canvas"); c.width = w; c.height = h; draw(c.getContext("2d"), w, h); return c.toDataURL("image/png"); };
-// value noise that repeats every `P` cells, so textures tile without seams
-const noiseField = (seed, P = 64) => { let s = seed; const r = () => ((s = (s * 16807) % 2147483647) / 2147483647); const g = Array.from({ length: P * P }, r); const m = (v) => ((v % P) + P) % P; return (x, y) => { const xi = m(Math.floor(x)), yi = m(Math.floor(y)), xf = x - Math.floor(x), yf = y - Math.floor(y); const a = g[yi * P + xi], b = g[yi * P + m(xi + 1)], c = g[m(yi + 1) * P + xi], d = g[m(yi + 1) * P + m(xi + 1)]; const u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf); return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v; }; };
-const DTEX = {
-  film: { url: canvasURL(256, 256, (g, w, h) => { const d = g.createImageData(w, h); for (let i = 0; i < d.data.length; i += 4) { const v = Math.random() * 255; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 40; } g.putImageData(d, 0, 0); }), size: "256px", op: 0.6, cls: "anim" },
-  charcoal: { url: canvasURL(600, 600, (g, w, h) => { for (let i = 0; i < 1400; i++) { const x = Math.random() * w, y = Math.random() * h, l = 4 + Math.random() * 30, a = -0.7 + Math.random() * 0.3; g.strokeStyle = `rgba(255,255,255,${Math.random() * 0.07})`; g.lineWidth = Math.random() * 2.2; g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a) * l, y + Math.sin(a) * l); g.stroke(); } const d = g.getImageData(0, 0, w, h); for (let i = 0; i < d.data.length; i += 4) { if (Math.random() < 0.5) { d.data[i] = d.data[i + 1] = d.data[i + 2] = 255; d.data[i + 3] = Math.max(d.data[i + 3], Math.random() * 18); } } g.putImageData(d, 0, 0); }), size: "600px", op: 0.9, cls: "" },
-  topo: { url: canvasURL(900, 900, (g, w, h) => { const n = noiseField(5, 10), n2 = noiseField(6, 20), st = 6, cols = w / st + 1, rows = h / st + 1, f = []; for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) f.push(n(x * st / 90, y * st / 90) * 0.7 + n2(x * st / 45, y * st / 45) * 0.3); g.strokeStyle = "rgba(255,255,255,.16)"; g.lineWidth = 1; for (let lv = 0.05; lv < 1; lv += 0.07) { g.beginPath(); for (let y = 0; y < rows - 1; y++) for (let x = 0; x < cols - 1; x++) { const a = f[y * cols + x], b = f[y * cols + x + 1], c = f[(y + 1) * cols + x + 1], d = f[(y + 1) * cols + x]; const p = []; const e = (v1, v2, x1, y1, x2, y2) => { if ((v1 < lv) !== (v2 < lv)) { const t = (lv - v1) / (v2 - v1); p.push([(x1 + t * (x2 - x1)) * st, (y1 + t * (y2 - y1)) * st]); } }; e(a, b, x, y, x + 1, y); e(b, c, x + 1, y, x + 1, y + 1); e(c, d, x + 1, y + 1, x, y + 1); e(d, a, x, y + 1, x, y); if (p.length >= 2) { g.moveTo(...p[0]); g.lineTo(...p[1]); } } g.stroke(); } }), size: "900px", op: 0.8, cls: "drift" },
-  halftone: { url: canvasURL(12, 12, (g) => { g.fillStyle = "rgba(255,255,255,.11)"; g.beginPath(); g.arc(6, 6, 1.4, 0, 7); g.fill(); }), size: "12px", op: 1, cls: "" },
-  smoke: { url: canvasURL(512, 512, (g, w, h) => { const n1 = noiseField(9, 4), n2 = noiseField(4, 16), n3 = noiseField(2, 32); const d = g.createImageData(w, h); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const v = n1(x / 128, y / 128) * 0.6 + n2(x / 32, y / 32) * 0.3 + n3(x / 16, y / 16) * 0.1; const i = (y * w + x) * 4; d.data[i] = d.data[i + 1] = d.data[i + 2] = 255; d.data[i + 3] = Math.max(0, v - 0.45) * 120; } g.putImageData(d, 0, 0); }), size: "1024px", op: 0.7, cls: "drift" },
-};
-const dtexEl = $("[data-dtex]");
-optionRow($("[data-dtexs]"), [
-  { label: "1 · Film grain", v: "film" },
-  { label: "2 · Charcoal paper", v: "charcoal" },
-  { label: "3 · Topographic", v: "topo" },
-  { label: "4 · Halftone", v: "halftone" },
-  { label: "5 · Smoke", v: "smoke" },
-], (it) => {
-  const t = DTEX[it.v];
-  dtexEl.style.setProperty("--dtex", `url(${t.url})`);
-  dtexEl.style.setProperty("--dtex-size", t.size);
-  dtexEl.style.setProperty("--dtex-op", t.op);
-  dtexEl.className = `dtex ${t.cls}`;
-});
-optionRow($("[data-grains]"), [
-  { label: "خفيف", v: 0.45 }, { label: "وسط", v: 0.75 }, { label: "قوي", v: 1 },
-], (it) => document.documentElement.style.setProperty("--grain", String(it.v)), 1);
+$$(".head, .demo-title, .demo-note, .tag").forEach((el) => { el.classList.add("reveal"); io.observe(el); });
 
 /* hero */
-(async () => {
-  await mountHero($("[data-stage]"), {
-    image: "/images/portrait-v2.webp", depth: "/images/portrait-v2-depth.png",
-    alt: "Portrait of Anas Saleh", mode: 0, accent: ACCENT, reduceMotion: reduce,
-  });
-  $$("[data-bg]").forEach((b) => b.addEventListener("click", () => {
-    const light = b.dataset.bg === "light";
-    $("[data-hero]").classList.toggle("light", light);
-    light ? $("[data-hero]").removeAttribute("data-dark") : $("[data-hero]").setAttribute("data-dark", "");
-    $$("[data-bg]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
-  }));
-})();
+mountHero($("[data-stage]"), { image: "/images/portrait-v2.webp", depth: "/images/portrait-v2-depth.png", alt: "Portrait of Anas Saleh", mode: 0, reduceMotion: reduce });
+
+/* cream textures */
+const canvasURL = (w, h, draw) => { const c = document.createElement("canvas"); c.width = w; c.height = h; draw(c.getContext("2d"), w, h); return c.toDataURL("image/png"); };
+const valueNoise = (seed, P) => {
+  let s = seed;
+  const r = () => ((s = (s * 16807) % 2147483647) / 2147483647);
+  const g = Array.from({ length: P * P }, r);
+  const m = (v) => ((v % P) + P) % P;
+  return (x, y) => {
+    const xi = m(Math.floor(x)), yi = m(Math.floor(y)), xf = x - Math.floor(x), yf = y - Math.floor(y);
+    const a = g[yi * P + xi], b = g[yi * P + m(xi + 1)], c = g[m(yi + 1) * P + xi], d = g[m(yi + 1) * P + m(xi + 1)];
+    const u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
+    return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
+  };
+};
+const pixels = (w, h, fn) => (g) => { const d = g.createImageData(w, h); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const [v, a] = fn(x, y); const i = (y * w + x) * 4; d.data[i] = v; d.data[i + 1] = v * 0.96; d.data[i + 2] = v * 0.9; d.data[i + 3] = a; } g.putImageData(d, 0, 0); };
+const TEXTURES = [
+  { name: "Paper grain", ar: "حبيبات ورق واضحة وناعمة. أقرب شي لورق طباعة فاخر.", size: "260px", op: 1,
+    url: canvasURL(260, 260, pixels(260, 260, () => [90 + Math.random() * 60, Math.random() * 70])) },
+  { name: "Linen", ar: "نسيج كتان متل قماش اللوحات. خطوط أفقية وعمودية ناعمة.", size: "180px", op: 1,
+    url: canvasURL(180, 180, (g, w, h) => {
+      pixels(w, h, () => [110, Math.random() * 30])(g);
+      for (let y = 0; y < h; y += 2) { g.fillStyle = `rgba(90,82,70,${0.04 + Math.random() * 0.08})`; g.fillRect(0, y, w, 1); }
+      for (let x = 0; x < w; x += 2) { g.fillStyle = `rgba(90,82,70,${0.03 + Math.random() * 0.07})`; g.fillRect(x, 0, 1, h); }
+    }) },
+  { name: "Watercolour paper", ar: "ورق ألوان مائية (cold press): بقع ناعمة وملمس محبّب. بيحكي عن الرسم.", size: "512px", op: 1,
+    url: canvasURL(512, 512, (() => { const n1 = valueNoise(3, 8), n2 = valueNoise(7, 32), n3 = valueNoise(5, 64); return pixels(512, 512, (x, y) => { const v = n1(x / 64, y / 64) * 0.5 + n2(x / 16, y / 16) * 0.35 + n3(x / 8, y / 8) * 0.15; return [90, Math.max(0, (v - 0.4)) * 60 + Math.random() * 14]; }); })()) },
+  { name: "Recycled fibres", ar: "ورق معاد تدويره: ألياف ونقط صغيرة ظاهرة. طبيعي ودافي.", size: "420px", op: 1,
+    url: canvasURL(420, 420, (g, w, h) => {
+      pixels(w, h, () => [100, Math.random() * 40])(g);
+      for (let i = 0; i < 520; i++) { g.strokeStyle = `rgba(${90 + Math.random() * 50},${80 + Math.random() * 40},${60 + Math.random() * 30},${0.1 + Math.random() * 0.22})`; g.lineWidth = 0.4 + Math.random() * 1; const x = Math.random() * w, y = Math.random() * h, a = Math.random() * 6.3, l = 5 + Math.random() * 20; g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + Math.cos(a + 1) * l / 2, y + Math.sin(a + 1) * l / 2, x + Math.cos(a) * l, y + Math.sin(a) * l); g.stroke(); }
+      for (let i = 0; i < 160; i++) { g.fillStyle = `rgba(60,50,40,${Math.random() * 0.35})`; g.beginPath(); g.arc(Math.random() * w, Math.random() * h, Math.random() * 1.3, 0, 7); g.fill(); }
+    }) },
+  { name: "Plaster", ar: "جبصين ناعم متل حيط مدهون يدوي. ملمس هادي وفخم.", size: "600px", op: 1,
+    url: canvasURL(600, 600, (() => { const n1 = valueNoise(11, 12), n2 = valueNoise(13, 40), n3 = valueNoise(17, 100); return pixels(600, 600, (x, y) => { const v = n1(x / 50, y / 50) * 0.45 + n2(x / 15, y / 15) * 0.35 + n3(x / 6, y / 6) * 0.2; return [95, Math.abs(v - 0.5) * 110]; }); })()) },
+];
+const setTex = (t, i) => {
+  document.documentElement.style.setProperty("--tex", `url(${t.url})`);
+  document.documentElement.style.setProperty("--tex-size", t.size);
+  document.documentElement.style.setProperty("--tex-op", t.op);
+  $$("[data-tex]").forEach((b, j) => b.setAttribute("aria-pressed", String(i === j)));
+};
+$("[data-textures]").innerHTML = TEXTURES.map((t, i) => `<button class="tex" type="button" data-tex="${i}" aria-pressed="false"><div class="layer" style="background-image:url(${t.url});background-size:${t.size}"></div><div class="lbl"><span class="up">${i + 1} · ${t.name}</span><p>${t.ar}</p></div></button>`).join("");
+$$("[data-tex]").forEach((b, i) => b.addEventListener("click", () => setTex(TEXTURES[i], i)));
+setTex(TEXTURES[0], 0);
 
 /* data */
 const projects = (await fetch("/content/projects.json").then((r) => r.json())).filter((p) => !p.draft);
 const cover = (p) => `/images/covers/${p.slug}.webp`;
 const CAT = { design: "Design", "3d": "3D", motion: "Motion", video: "Video" };
 const cats = (p) => (p.categories || []).map((c) => CAT[c]).join(" · ");
-const pad = (n) => String(n).padStart(2, "0");
 const list = projects.slice(0, 9);
+const swapText = (el, text) => {
+  if (el.dataset.t === text) return;
+  el.dataset.t = text;
+  el.style.opacity = "0";
+  el.style.transform = "translateY(16px)";
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { el.textContent = text; el.style.opacity = "1"; el.style.transform = "none"; }, 200);
+};
 
-/* VI curved reel */
+/* D dock reel */
+const dk = $("[data-dk]");
+dk.style.height = "300vh";
+$("[data-dk-track]").innerHTML = projects.map((p) => `<a class="dk-card" href="/work/${p.slug}"><div class="img"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></div><span class="up">${p.title}</span></a>`).join("");
+const dkCards = $$(".dk-card");
+const dkTrack = $("[data-dk-track]");
+const dkPointer = { x: -9999, tx: -9999, inside: false };
+const dkRow = $(".dk-row");
+dkRow.addEventListener("pointermove", (e) => { dkPointer.tx = e.clientX; dkPointer.inside = true; });
+dkRow.addEventListener("pointerleave", () => (dkPointer.inside = false));
+const dkScale = dkCards.map(() => 1);
+let dkP = 0;
+
+/* A curved reel */
 const cv = $("[data-cv]");
 cv.style.height = `${list.length * 70}vh`;
-$("[data-cv-track]").innerHTML = list.map((p) => `<a class="cv-card" href="/work/${p.slug}"><div class="img"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></div><span class="up">${p.title}</span><span>${cats(p)} · ${p.year}</span></a>`).join("");
+$("[data-cv-track]").innerHTML = list.map((p, i) => `<a class="cv-card" href="/work/${p.slug}"><div class="img"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></div><div class="row"><span class="up">${p.title}</span><span class="n">${pad(i + 1)}</span></div></a>`).join("");
 const cvCards = $$(".cv-card");
 
-/* VII into the frame */
-const zt = $("[data-zt]");
-const GAP = 1100;
-const zPos = [[-0.22, -0.1], [0.24, 0.08], [-0.18, 0.12], [0.2, -0.12], [-0.26, 0.02], [0.22, 0.1], [-0.12, -0.14], [0.26, -0.02], [0, 0.12]];
-$("[data-zt-items]").innerHTML = list.map((p, i) => `<div class="zt-item" data-i="${i}"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></div>`).join("");
-const ztItems = $$(".zt-item");
-let ztCur = -1;
-
-/* VIII drag canvas */
-const dc = $("[data-dc]");
-const COLS = 4, ROWS = 3;
-const dcItems = [];
-const sizes = [[300, 230], [240, 300], [340, 250], [260, 200], [280, 340], [320, 240], [250, 250], [300, 220], [240, 320], [340, 260], [270, 210], [300, 300]];
-for (let i = 0; i < COLS * ROWS; i++) {
-  const p = projects[i % projects.length];
-  const [w, h] = sizes[i];
-  const el = document.createElement("a");
-  el.className = "dc-item";
-  el.href = `/work/${p.slug}`;
-  el.draggable = false;
-  el.innerHTML = `<div class="img" style="width:${w}px;height:${h}px"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></div><span>${p.title}</span>`;
-  dc.append(el);
-  const col = i % COLS, row = Math.floor(i / COLS);
-  dcItems.push({ el, bx: col * 420 + (row % 2) * 140 + (i * 37) % 60, by: row * 420 + (i * 53) % 90 });
-}
-const TW = COLS * 420, TH = ROWS * 420;
-const drag = { x: 0, y: 0, tx: -200, ty: -120, down: false, sx: 0, sy: 0, vx: 0, vy: 0, lx: 0, ly: 0, moved: false };
-dc.addEventListener("pointerdown", (e) => { drag.down = true; drag.moved = false; drag.sx = e.clientX - drag.tx; drag.sy = e.clientY - drag.ty; drag.lx = e.clientX; drag.ly = e.clientY; dc.classList.add("drag", "used"); dc.setPointerCapture(e.pointerId); });
-dc.addEventListener("pointermove", (e) => {
-  if (!drag.down) return;
-  drag.vx = e.clientX - drag.lx; drag.vy = e.clientY - drag.ly; drag.lx = e.clientX; drag.ly = e.clientY;
-  if (Math.abs(drag.vx) + Math.abs(drag.vy) > 2) drag.moved = true;
-  drag.tx = e.clientX - drag.sx; drag.ty = e.clientY - drag.sy;
-});
-const endDrag = () => { if (!drag.down) return; drag.down = false; drag.tx += drag.vx * 12; drag.ty += drag.vy * 12; dc.classList.remove("drag"); };
-dc.addEventListener("pointerup", endDrag);
-dc.addEventListener("pointercancel", endDrag);
-dc.addEventListener("click", (e) => { if (drag.moved) e.preventDefault(); }, true);
-
-/* IX deck */
-const dk = $("[data-dk]");
-const deck = list.slice(0, 6);
-dk.style.height = `${deck.length * 80}vh`;
-$("[data-dk-stack]").innerHTML = deck.map((p, i) => `<div class="dk-card" style="z-index:${deck.length - i}"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></div>`).join("");
-const dkCards = $$(".dk-card");
-let dkCur = -1;
-const tilt = { x: 0, y: 0, tx: 0, ty: 0 };
-addEventListener("pointermove", (e) => { tilt.tx = (e.clientX / innerWidth - 0.5) * 2; tilt.ty = (e.clientY / innerHeight - 0.5) * 2; }, { passive: true });
-
-/* X film strips */
-$("[data-fs]").innerHTML = list.slice(0, 7).map((p, i) => `<a href="/work/${p.slug}"${i === 0 ? ' class="on"' : ""}><img src="${cover(p)}" alt="${p.title}" loading="lazy"><span class="vert up">${p.title}</span><div class="lbl full"><span style="font-weight:700;letter-spacing:.12em;font-size:13px;color:#cfd9e3">${pad(i + 1)} · ${cats(p)}</span><h4 class="up" style="margin:8px 0 0">${p.title}</h4></div></a>`).join("");
-$("[data-fs]").addEventListener("pointerover", (e) => { const a = e.target.closest("a"); if (!a) return; $$("[data-fs] a").forEach((x) => x.classList.toggle("on", x === a)); });
-
-/* IV reel and V stack */
-const rl = $("[data-rl]");
-$("[data-rl-track]").innerHTML = list.map((p) => `<a class="rl-card" href="/work/${p.slug}"><div class="img"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></div><div class="row"><span class="up">${p.title}</span><span>${p.year}</span></div></a>`).join("");
-$("[data-sk]").innerHTML = list.slice(0, 5).map((p, i) => `<article class="sk-card" data-sk-card style="top:${12 + i * 1.5}vh"><img src="${cover(p)}" alt="${p.title}" loading="lazy"><div class="txt"><div><span class="n">${pad(i + 1)}</span><h4 class="up" style="margin:14px 0 0">${p.title}</h4><p>${p.subtitle}. ${p.role}.</p></div><span style="font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:14px">${cats(p)} · ${p.year}</span></div></article>`).join("");
-const sizeRl = () => (rl.style.height = `${Math.max(200, ($("[data-rl-track]").scrollWidth / innerWidth) * 100)}vh`);
-sizeRl();
-addEventListener("resize", sizeRl);
-
-/* ---------- XI to XV ---------- */
-// XI endless reel
-const mq = $("[data-mq]");
-mq.innerHTML = [...list, ...list].map((p) => `<a class="mq-card" href="/work/${p.slug}"><div class="img"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></div><span class="up">${p.title}</span></a>`).join("");
-const mqS = { x: 0, speed: 0.6, hover: false };
-mq.addEventListener("pointerenter", () => (mqS.hover = true));
-mq.addEventListener("pointerleave", () => (mqS.hover = false));
-
-// XII orbit
+/* B orbit */
 const ob = $("[data-ob]");
-const orbit = list.slice(0, 9);
 const R = Math.min(innerWidth * 0.5, 720);
-$("[data-ob-ring]").innerHTML = orbit.map((p, i) => `<a class="ob-card" href="/work/${p.slug}" style="transform:rotateY(${(i * 360) / orbit.length}deg) translateZ(${R}px)"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></a>`).join("");
+$("[data-ob-ring]").innerHTML = list.map((p, i) => `<a class="ob-card" href="/work/${p.slug}" style="transform:rotateY(${(i * 360) / list.length}deg) translateZ(${R}px)"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></a>`).join("");
 const obCards = $$(".ob-card");
-const obS = { rot: 0, drag: 0, tdrag: 0, down: false, sx: 0, base: 0, cur: -1 };
-const obPin = $(".ob-pin");
-obPin.addEventListener("pointerdown", (e) => { obS.down = true; obS.sx = e.clientX; obS.base = obS.tdrag; });
+const obS = { rot: 0, drag: 0, tdrag: 0, down: false, sx: 0, base: 0 };
+$(".ob-pin").addEventListener("pointerdown", (e) => { obS.down = true; obS.sx = e.clientX; obS.base = obS.tdrag; });
 addEventListener("pointermove", (e) => { if (obS.down) obS.tdrag = obS.base + (e.clientX - obS.sx) * 0.25; });
 addEventListener("pointerup", () => (obS.down = false));
 
-// XIII wave reel
+/* C wave reel */
 const wv = $("[data-wv]");
 wv.style.height = "320vh";
 $("[data-wv-track]").innerHTML = list.map((p) => `<a class="wv-card" href="/work/${p.slug}"><div class="img"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></div><span class="up">${p.title}</span></a>`).join("");
 const wvCards = $$(".wv-card");
 let wvP = 0;
 
-// XIV spotlight index
-const spList = list.slice(0, 8);
-$("[data-sp-bg]").innerHTML = spList.map((p, i) => `<img src="${cover(p)}" alt=""${i === 0 ? ' class="on"' : ""}>`).join("");
-$("[data-sp-card]").innerHTML = spList.map((p, i) => `<img src="${cover(p)}" alt="${p.title}"${i === 0 ? ' class="on"' : ""}>`).join("");
-$("[data-sp-list]").innerHTML = spList.map((p, i) => `<li data-i="${i}"${i === 0 ? ' class="on"' : ""}>${p.title}</li>`).join("");
-const spSet = (i) => ["[data-sp-bg] img", "[data-sp-card] img", "[data-sp-list] li"].forEach((s) => $$(s).forEach((el, j) => el.classList.toggle("on", i === j)));
-$("[data-sp-list]").addEventListener("pointerover", (e) => { const li = e.target.closest("li"); if (li) spSet(Number(li.dataset.i)); });
-const spCard = $("[data-sp-card]");
-const spTilt = { x: 0, y: 0 };
-
-// XV split columns
+/* E split columns */
 const sc = $("[data-sc]");
 const half = Math.ceil(list.length / 2);
-const colHTML = (arr) => [...arr, ...arr].map((p) => `<a href="/work/${p.slug}"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></a>`).join("");
-$("[data-sc-a]").innerHTML = colHTML(list.slice(0, half));
-$("[data-sc-b]").innerHTML = colHTML(list.slice(half));
+const colA = list.slice(0, half), colB = list.slice(half);
+const colHTML = (arr) => [...arr, ...arr].map((p) => `<a href="/work/${p.slug}" data-title="${p.title}" data-sub="${cats(p)} · ${p.year}"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></a>`).join("");
+$("[data-sc-a]").innerHTML = colHTML(colA);
+$("[data-sc-b]").innerHTML = colHTML(colB);
 let scP = 0;
 
-let lastY2 = scrollY, vel2 = 0;
-function loop2() {
-  const v = scrollY - lastY2; lastY2 = scrollY;
-  vel2 = lerp(vel2, v, 0.1);
-  // XI
-  const target = mqS.hover ? 0.15 : 0.6 + Math.abs(vel2) * 0.5;
-  mqS.speed = lerp(mqS.speed, target * (vel2 < -0.5 ? -1 : 1), 0.06);
-  mqS.x -= mqS.speed;
-  const halfW = mq.scrollWidth / 2;
-  if (mqS.x < -halfW) mqS.x += halfW;
-  if (mqS.x > 0) mqS.x -= halfW;
-  mq.style.transform = `translateX(${mqS.x}px)`;
-  // XII
-  obS.drag = lerp(obS.drag, obS.tdrag, 0.08);
-  obS.rot = lerp(obS.rot, -prog(ob) * 360 * 1.5 + obS.drag, 0.08);
-  $("[data-ob-ring]").style.transform = `translateZ(${-R}px) rotateX(-6deg) rotateY(${obS.rot}deg)`;
-  const step = 360 / orbit.length;
-  const front = ((Math.round(-obS.rot / step) % orbit.length) + orbit.length) % orbit.length;
-  obCards.forEach((c, i) => {
-    const a = (((i * step + obS.rot) % 360) + 540) % 360 - 180;
-    c.style.opacity = String(clamp(1 - Math.abs(a) / 160, 0.15, 1));
-  });
-  if (front !== obS.cur) { obS.cur = front; $("[data-ob-title]").textContent = orbit[front].title; }
-  // XIII
-  wvP = lerp(wvP, prog(wv), 0.08);
-  const W = innerWidth, t = performance.now() / 1000;
-  const spread = W * 0.3;
-  const total = (wvCards.length - 1) * spread + W;
-  wvCards.forEach((c, i) => {
-    const x = W * 0.9 + i * spread - wvP * total;
-    const ph = x / W * Math.PI * 2 + t * 0.6;
-    const y = Math.sin(ph) * innerHeight * 0.12;
-    const rot = Math.cos(ph) * 8;
-    c.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${rot}deg)`;
-  });
-  $("[data-wv-bar]").style.width = `${wvP * 100}%`;
-  // XIV
-  const r = spCard.getBoundingClientRect();
-  const mx = ((tilt.tx + 1) / 2) * innerWidth, my = ((tilt.ty + 1) / 2) * innerHeight;
-  spTilt.x = lerp(spTilt.x, clamp((mx - (r.left + r.width / 2)) / r.width, -1, 1), 0.07);
-  spTilt.y = lerp(spTilt.y, clamp((my - (r.top + r.height / 2)) / r.height, -1, 1), 0.07);
-  spCard.style.transform = `perspective(1200px) rotateY(${spTilt.x * 10}deg) rotateX(${spTilt.y * -8}deg)`;
-  // XV
-  scP = lerp(scP, prog(sc), 0.08);
-  const colA = $("[data-sc-a]"), colB = $("[data-sc-b]");
-  const travel = colA.scrollHeight / 2;
-  colA.style.transform = `translateY(${-scP * travel}px)`;
-  colB.style.transform = `translateY(${-travel + scP * travel}px)`;
-  requestAnimationFrame(loop2);
-}
-requestAnimationFrame(loop2);
+/* F stacking cards */
+$("[data-sk]").innerHTML = list.slice(0, 5).map((p, i) => `<article class="sk-card" data-sk-card style="top:${12 + i * 1.6}vh"><div class="img"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></div><div class="txt"><div><span class="n">${pad(i + 1)} / 05</span><h4 class="up" style="margin:14px 0 0">${p.title}</h4><p>${p.subtitle}. ${p.role}.</p></div><a class="go" href="/work/${p.slug}">View project</a></div></article>`).join("");
+const skCards = $$("[data-sk-card]");
+const tilt = { x: 0, y: 0, tx: 0, ty: 0 };
+addEventListener("pointermove", (e) => { tilt.tx = e.clientX / innerWidth - 0.5; tilt.ty = e.clientY / innerHeight - 0.5; }, { passive: true });
 
 /* ---------- one smooth loop ---------- */
 const lenis = window.Lenis ? new Lenis({ lerp: 0.08, wheelMultiplier: 0.9 }) : null;
 const prog = (el) => { const r = el.getBoundingClientRect(); return clamp(-r.top / (r.height - innerHeight), 0, 1); };
-const sm = { cv: 0, zt: 0, dk: 0, rl: 0, vel: 0 };
-let lastScroll = scrollY;
+const sm = { cv: 0, vel: 0 };
+let lastY = scrollY;
 function loop(t) {
   lenis?.raf(t);
-  const v = scrollY - lastScroll; lastScroll = scrollY;
+  const v = scrollY - lastY; lastY = scrollY;
   sm.vel = lerp(sm.vel, v, 0.1);
+  const W = innerWidth, H = innerHeight;
+  tilt.x = lerp(tilt.x, tilt.tx, 0.06); tilt.y = lerp(tilt.y, tilt.ty, 0.06);
 
-  // VI
+  // D dock reel: magnify around the pointer with a smooth falloff, lift, and ripple
+  dkP = lerp(dkP, prog(dk), 0.08);
+  const maxShift = Math.max(0, dkTrack.scrollWidth - W);
+  dkTrack.style.transform = `translate(${-dkP * maxShift}px, -50%)`;
+  dkPointer.x = lerp(dkPointer.x, dkPointer.inside ? dkPointer.tx : -9999, 0.12);
+  let best = -1, bestS = 1;
+  dkCards.forEach((c, i) => {
+    const r = c.getBoundingClientRect();
+    const cx = r.left + r.width / 2;
+    const d = (dkPointer.x - cx) / 210;
+    const target = 1 + 0.9 * Math.exp(-d * d * 2.2);
+    dkScale[i] = lerp(dkScale[i], target, 0.14);
+    const s = dkScale[i];
+    const ripple = Math.sin(t / 260 - i * 0.9) * 8 * (s - 1);
+    c.style.transform = `translateY(${-(s - 1) * 70 + ripple}px) scale(${s})`;
+    c.style.marginInline = `${(s - 1) * 46}px`;
+    c.classList.toggle("on", s > 1.5);
+    if (s > bestS) { bestS = s; best = i; }
+  });
+  swapText($("[data-dk-title]"), best >= 0 && bestS > 1.4 ? projects[best].title : "Hover the row");
+  $("[data-dk-bar]").style.width = `${dkP * 100}%`;
+
+  // A curved reel
   sm.cv = lerp(sm.cv, prog(cv), 0.09);
   const off = sm.cv * (cvCards.length - 1);
   const cw = cvCards[0].offsetWidth * 1.08;
   cvCards.forEach((c, i) => {
-    const rel = i - off;
+    const rel = i - off, ar = Math.abs(rel);
     const a = clamp(rel * -24 + sm.vel * -0.4, -70, 70);
-    c.style.transform = `translateX(${rel * cw}px) translateZ(${-Math.abs(rel) * 160}px) rotateY(${a}deg)`;
-    c.style.opacity = String(clamp(1.4 - Math.abs(rel) * 0.35, 0, 1));
+    c.style.transform = `translateX(${rel * cw}px) translateZ(${-ar * 160}px) rotateY(${a}deg)`;
+    c.style.opacity = String(clamp(1.4 - ar * 0.35, 0, 1));
+    setBlur(c, clamp((ar - 0.35) * 7, 0, 12), ar > 0.5 ? `grayscale(${Math.min(1, ar - 0.4)})` : "");
   });
   const cvi = clamp(Math.round(off), 0, cvCards.length - 1);
-  const big = $("[data-cv-big]");
-  if (big.dataset.i !== String(cvi)) { big.dataset.i = cvi; big.textContent = list[cvi].title; }
+  $("[data-cv-big]").textContent = list[cvi].title;
+  $("[data-cv-count]").textContent = `${pad(cvi + 1)} / ${pad(list.length)}`;
   $("[data-cv-bar]").style.width = `${sm.cv * 100}%`;
 
-  // VII
-  sm.zt = lerp(sm.zt, prog(zt), 0.07);
-  const cam = sm.zt * (ztItems.length - 1) * GAP;
-  const vw = innerWidth, vh = innerHeight;
-  ztItems.forEach((el, i) => {
-    const z = -i * GAP + cam;
-    const [px, py] = zPos[i % zPos.length];
-    const near = clamp(1 - Math.abs(z) / GAP, 0, 1);
-    el.style.transform = `translate3d(${px * vw * (1 - near * 0.9)}px, ${py * vh * (1 - near * 0.9)}px, ${z}px)`;
-    el.style.opacity = String(z > 350 ? clamp(1 - (z - 350) / 300, 0, 1) : clamp(1 + (z + 4200) / 1200, 0, 1));
+  // B orbit
+  obS.drag = lerp(obS.drag, obS.tdrag, 0.08);
+  obS.rot = lerp(obS.rot, -prog(ob) * 360 * 1.5 + obS.drag, 0.08);
+  $("[data-ob-ring]").style.transform = `translateZ(${-R}px) rotateX(-6deg) rotateY(${obS.rot}deg)`;
+  const step = 360 / list.length;
+  const front = ((Math.round(-obS.rot / step) % list.length) + list.length) % list.length;
+  obCards.forEach((c, i) => {
+    const ang = Math.abs((((i * step + obS.rot) % 360) + 540) % 360 - 180);
+    c.style.opacity = String(clamp(1 - ang / 170, 0.12, 1));
+    setBlur(c, clamp((ang - 18) / 9, 0, 10));
   });
-  const zi = clamp(Math.round(sm.zt * (ztItems.length - 1)), 0, ztItems.length - 1);
-  if (zi !== ztCur) {
-    ztCur = zi;
-    const n = $("[data-zt-name]");
-    n.style.opacity = "0"; n.style.transform = "translateY(20px)";
-    setTimeout(() => { n.textContent = list[zi].title; n.style.opacity = "1"; n.style.transform = "none"; }, 220);
-    $("[data-zt-count]").textContent = `${pad(zi + 1)} / ${pad(ztItems.length)}`;
-  }
+  swapText($("[data-ob-title]"), list[front].title);
+  $("[data-ob-sub]").textContent = `${pad(front + 1)} · ${cats(list[front])}`;
 
-  // VIII
-  if (!drag.down) { drag.vx *= 0.9; drag.vy *= 0.9; }
-  drag.x = lerp(drag.x, drag.tx, 0.08);
-  drag.y = lerp(drag.y, drag.ty, 0.08);
-  dcItems.forEach((it) => {
-    const x = ((((it.bx + drag.x) % TW) + TW) % TW) - 360;
-    const y = ((((it.by + drag.y) % TH) + TH) % TH) - 360;
-    it.el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+  // C wave reel
+  wvP = lerp(wvP, prog(wv), 0.08);
+  const spread = W * 0.3, total = (wvCards.length - 1) * spread + W, now = t / 1000;
+  let wvBest = 0, wvD = 1e9;
+  wvCards.forEach((c, i) => {
+    const x = W * 0.9 + i * spread - wvP * total;
+    const ph = (x / W) * Math.PI * 2 + now * 0.6;
+    const center = x + c.offsetWidth / 2;
+    const dc = Math.abs(center - W / 2) / (W / 2);
+    const s = 1 + 0.35 * Math.max(0, 1 - dc * 1.6);
+    c.style.transform = `translate3d(${x}px, ${Math.sin(ph) * H * 0.11}px, 0) rotate(${Math.cos(ph) * 7}deg) scale(${s})`;
+    setBlur(c, clamp((dc - 0.25) * 9, 0, 8));
+    c.style.opacity = String(clamp(1.25 - dc * 0.7, 0.25, 1));
+    if (Math.abs(center - W / 2) < wvD) { wvD = Math.abs(center - W / 2); wvBest = i; }
   });
+  wvCards.forEach((c, i) => c.classList.toggle("center", i === wvBest));
+  $("[data-wv-bar]").style.width = `${wvP * 100}%`;
 
-  // IX
-  sm.dk = lerp(sm.dk, prog(dk), 0.08);
-  tilt.x = lerp(tilt.x, tilt.tx, 0.06); tilt.y = lerp(tilt.y, tilt.ty, 0.06);
-  const k = sm.dk * (dkCards.length - 1);
-  dkCards.forEach((c, i) => {
-    const d = i - k;
-    if (d < 0) {
-      const f = clamp(-d, 0, 1.2);
-      c.style.transform = `translate3d(${-f * 70}vw, ${-f * 18}vh, ${f * 200}px) rotate(${-f * 28}deg)`;
-      c.style.opacity = String(clamp(1 - f, 0, 1));
-    } else {
-      c.style.transform = `translate3d(${d * 26}px, ${-d * 22}px, ${-d * 90}px) rotateX(${tilt.y * -6}deg) rotateY(${tilt.x * 8}deg) rotate(${d * 2.5}deg)`;
-      c.style.opacity = String(clamp(1 - d * 0.18, 0, 1));
-    }
+  // E split columns: sharp in the middle band, blurred toward the edges
+  scP = lerp(scP, prog(sc), 0.08);
+  const ca = $("[data-sc-a]"), cb = $("[data-sc-b]");
+  const travel = ca.scrollHeight / 2;
+  ca.style.transform = `translateY(${-scP * travel}px)`;
+  cb.style.transform = `translateY(${-travel + scP * travel}px)`;
+  let scBest = null, scD = 1e9;
+  [...$$("a", ca), ...$$("a", cb)].forEach((a) => {
+    const r = a.getBoundingClientRect();
+    if (r.bottom < -50 || r.top > H + 50) return;
+    const d = Math.abs(r.top + r.height / 2 - H / 2) / (H / 2);
+    setBlur(a, clamp((d - 0.3) * 10, 0, 9));
+    a.style.transform = `scale(${1 - clamp(d - 0.3, 0, 0.6) * 0.12})`;
+    if (d < scD) { scD = d; scBest = a; }
   });
-  const di = clamp(Math.round(k), 0, dkCards.length - 1);
-  if (di !== dkCur) {
-    dkCur = di;
-    const name = $("[data-dk-name]");
-    name.style.opacity = "0"; name.style.transform = "translateY(24px)";
-    setTimeout(() => { name.textContent = deck[di].title; $("[data-dk-sub]").textContent = `${deck[di].subtitle}. ${deck[di].role}.`; $("[data-dk-n]").textContent = `${pad(di + 1)} / ${pad(deck.length)} · ${cats(deck[di])}`; name.style.opacity = "1"; name.style.transform = "none"; }, 220);
-  }
+  if (scBest) { swapText($("[data-sc-name]"), scBest.dataset.title); $("[data-sc-sub]").textContent = scBest.dataset.sub; }
 
-  // IV
-  sm.rl = lerp(sm.rl, prog(rl), 0.08);
-  const track = $("[data-rl-track]");
-  track.style.transform = `translateX(${-sm.rl * (track.scrollWidth - innerWidth)}px) skewX(${clamp(sm.vel * -0.08, -6, 6)}deg)`;
-  $("[data-rl-bar]").style.width = `${sm.rl * 100}%`;
-
-  // V
-  $$("[data-sk-card]").forEach((c, i, all) => {
-    const next = all[i + 1];
-    if (!next) return;
-    const kk = clamp(1 - (next.getBoundingClientRect().top - c.getBoundingClientRect().top) / innerHeight, 0, 1);
-    c.style.transform = `scale(${1 - kk * 0.07})`;
-    c.style.filter = `brightness(${1 - kk * 0.4})`;
+  // F stacking cards
+  skCards.forEach((c, i) => {
+    const next = skCards[i + 1];
+    const k = next ? clamp(1 - (next.getBoundingClientRect().top - c.getBoundingClientRect().top) / H, 0, 1) : 0;
+    const r = c.getBoundingClientRect();
+    const active = k < 0.05 && r.top < H * 0.5 && r.bottom > H * 0.3;
+    c.style.transform = `perspective(1400px) scale(${1 - k * 0.08}) rotateX(${active ? tilt.y * -3 : 0}deg) rotateY(${active ? tilt.x * 4 : 0}deg)`;
+    setBlur(c, k * 6, `brightness(${1 - k * 0.45})`);
   });
   requestAnimationFrame(loop);
 }

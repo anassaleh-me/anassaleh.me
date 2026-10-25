@@ -43,15 +43,13 @@ void main() {
   uv = vUv - p * (d - 0.5);
   vec4 col = texture2D(uImage, uv);
 
-  // Soft, grainy edge: average the alpha around the pixel, then dither it with noise.
-  vec2 e = uTexel * 5.0;
+  // Soft edge: a wide average of the alpha around the pixel, eased, so the cut-out melts into the background.
+  vec2 e = uTexel * 9.0;
   float a = 0.0;
-  for (int i = -2; i <= 2; i++) for (int j = -2; j <= 2; j++) a += texture2D(uImage, uv + vec2(float(i), float(j)) * e).a;
-  a /= 25.0;
-  float grain = hash(vUv * 900.0 + fract(uTime * 7.0) * 50.0);
-  a = clamp(smoothstep(0.08, 0.95, a) + (grain - 0.5) * 0.5 * a * (1.0 - a) * 4.0, 0.0, 1.0);
-  col.a = min(col.a, a) * smoothstep(0.0, 0.12, a);
-  col.rgb += (grain - 0.5) * 0.07;
+  for (int i = -3; i <= 3; i++) for (int j = -3; j <= 3; j++) a += texture2D(uImage, uv + vec2(float(i), float(j)) * e).a;
+  a /= 49.0;
+  a = smoothstep(0.35, 1.0, a);
+  col.a = min(col.a, a);
 
   // relight from the pointer side using the depth gradient
   float dx = texture2D(uDepth, uv + vec2(uTexel.x * 5.0, 0.0)).r - texture2D(uDepth, uv - vec2(uTexel.x * 5.0, 0.0)).r;

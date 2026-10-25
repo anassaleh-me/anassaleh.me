@@ -255,3 +255,12 @@ footer[data-footer]:empty { display: block; min-height: 520px; background-color:
 .foot__big { margin-top: 60px; font-size: min(12.4vw, 230px); line-height: 0.82; white-space: nowrap; color: var(--cream); }
 .foot__bottom { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 26px; color: var(--cream-soft); font-size: 14px; }
 @media (max-width: 760px) { .foot__top { grid-template-columns: 1fr 1fr; } .foot__top > :first-child { grid-column: 1 / -1; } }
+
+/* Send email menu: Gmail, Outlook, the mail app, or copy the address */
+.mail-menu { position: relative; display: inline-flex; }
+.mail-menu__list { position: absolute; left: 0; bottom: calc(100% + 10px); z-index: 50; display: grid; min-width: 190px; padding: 6px; border-radius: 14px;
+  background: var(--cream); color: var(--char); box-shadow: 0 24px 50px -16px rgba(20, 20, 18, 0.45); border: 1px solid rgba(29, 29, 27, 0.1);
+  opacity: 0; transform: translateY(8px) scale(0.97); transform-origin: 20% 100%; pointer-events: none; transition: opacity 0.25s, transform 0.4s var(--ease); }
+.mail-menu.open .mail-menu__list { opacity: 1; transform: none; pointer-events: auto; }
+.mail-menu__list a, .mail-menu__list button { display: block; width: 100%; text-align: left; padding: 10px 14px; border-radius: 9px; font-weight: 700; font-size: 14px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--char); }
+.mail-menu__list a:hover, .mail-menu__list button:hover, .mail-menu__list :focus-visible { background: var(--accent); color: var(--char); outline: none; }

@@ -5,6 +5,7 @@ import { mountPillNav } from "/js/nav.js";
 import { mountRingCursor } from "/js/cursors.js";
 import { mountWorksWheel } from "/js/works-wheel.js";
 import { getJSON, prefetchOnHover } from "/js/data.js";
+import { mountMailMenu } from "/js/mailto.js";
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -173,7 +174,7 @@ disc.addEventListener("pointerleave", () => { float.classList.remove("on"); clea
 
 /* ---------- works wheel ---------- */
 mountWorksWheel($("[data-works]"), {
-  items: projects,
+  items: projects.some((p) => p.featured) ? projects.filter((p) => p.featured) : projects,
   label: esc(h.worksLabel || "Works '26").replace(/&#39;(\d+)/, '<span class="acc">&#39;$1</span>'),
   cover,
   meta: (p) => `${cats(p)} · ${p.year}`,
@@ -239,7 +240,7 @@ row.dataset.cursor = "Drag";
 /* ---------- contact and footer ---------- */
 $("[data-mail]").href = `mailto:${c.email}`;
 $("[data-mail]").textContent = c.email;
-$("[data-mailto]").href = `mailto:${c.email}?subject=${encodeURIComponent("Project enquiry")}`;
+mountMailMenu($("[data-mailto]"), c.email);
 const wa = $("[data-wa]");
 if (c.whatsapp) wa.href = c.whatsapp; else wa.remove();
 $("[data-copy]").addEventListener("click", async (e) => {

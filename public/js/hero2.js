@@ -145,7 +145,9 @@ export async function mountHero(stage, opts) {
     canvas.width = Math.max(1, Math.round(r.width * dpr));
     canvas.height = Math.max(1, Math.round(r.height * dpr));
     gl.viewport(0, 0, canvas.width, canvas.height);
+    drawn = null;
   };
+  let drawn = null;
   resize();
   new ResizeObserver(resize).observe(stage);
 
@@ -180,6 +182,10 @@ export async function mountHero(stage, opts) {
     lens.x += (lens.tx - lens.x) * 0.1;
     lens.y += (lens.ty - lens.y) * 0.1;
     lens.r += ((state.mode ? lens.tr : 0) - lens.r) * 0.07;
+    // only redraw when something moved: a still frame costs nothing
+    const key = `${cur.x.toFixed(4)},${cur.y.toFixed(4)},${lens.x.toFixed(3)},${lens.y.toFixed(3)},${lens.r.toFixed(4)},${state.mode}`;
+    if (key === drawn && !state.mode) return;
+    drawn = key;
     gl.uniform2f(uP, cur.x, cur.y);
     gl.uniform2f(uL, lens.x, lens.y);
     gl.uniform1f(uR, lens.r);
@@ -196,5 +202,7 @@ export async function mountHero(stage, opts) {
     el: canvas,
     pointer: cur,
     set(next) { Object.assign(state, next); },
+    // draws the current frame and copies it straight away into a 2D context (used to build the still glow)
+    snapshot(ctx, w, h) { gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); gl.drawArrays(gl.TRIANGLES, 0, 6); ctx.drawImage(canvas, 0, 0, w, h); },
   };
 }

@@ -54,7 +54,7 @@ h1, h2, h3, h4 { margin: 0; font-weight: 400; }
 .dark { background-color: var(--char); background-image: var(--halftone); background-size: 22px 22px; color: var(--cream); }
 
 /* blur-to-focus reveal */
-[data-reveal] { opacity: 0; filter: blur(14px); transform: translateY(42px); transition: opacity 1.3s var(--ease), filter 1.3s var(--ease), transform 1.3s var(--ease); }
+[data-reveal] { opacity: 0; filter: blur(10px); transform: translateY(32px); transition: opacity 0.95s var(--ease), filter 0.95s var(--ease), transform 0.95s var(--ease); }
 [data-reveal].in { opacity: 1; filter: none; transform: none; }
 
 /* buttons */
@@ -90,8 +90,10 @@ h1, h2, h3, h4 { margin: 0; font-weight: 400; }
 @property --glow { syntax: "<length>"; inherits: true; initial-value: 0px; }
 @property --glow-a { syntax: "<number>"; inherits: true; initial-value: 0; }
 .hero .stage { position: absolute; left: 50%; bottom: 0; height: 93.3vh; aspect-ratio: 1.268; transform: translateX(-50%); transform-origin: 50% 62%; z-index: 1; --glow: 0px; --glow-a: 0; will-change: transform; }
-.hero .stage canvas, .hero .stage img { width: 100%; height: 100%; filter: drop-shadow(0 0 var(--glow) rgba(255, 255, 255, var(--glow-a)));
+.hero .stage canvas, .hero .stage img { position: relative; width: 100%; height: 100%;
   -webkit-mask-image: linear-gradient(to top, transparent 0, #000 16%); mask-image: linear-gradient(to top, transparent 0, #000 16%); }
+/* soft white glow: a still, blurred white silhouette behind the portrait (drawn once, so it costs nothing per frame) */
+.hero .stage .glow { position: absolute; inset: 0; pointer-events: none; opacity: var(--glow-a); }
 .hero .meta { position: absolute; z-index: 3; left: var(--g); right: var(--g); bottom: 26px; display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; }
 .hero .meta p { color: var(--cream-soft); max-width: 52ch; }
 .hero .meta .up { display: block; font-size: clamp(22px, 2vw, 30px); color: var(--cream); margin-bottom: 8px; }

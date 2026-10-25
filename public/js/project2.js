@@ -1,5 +1,5 @@
-// Project page (stage 3), served at /work/<slug>. Dark opener with the title rising in, the cover that opens up
-// to full width as you scroll, the story, the film, the gallery, and the next project.
+// Project page (stage 3), served at /work/<slug>. Dark opener with the title rising in, the cover that grows to
+// full width as you scroll (always whole, never cropped), the story, the film, the gallery, previous and next project.
 import { shell, $, $$, esc, lerp, clamp, cats, cover } from "/js/shell2.js";
 
 const { projects, reveal } = await shell({ current: "work" });
@@ -8,27 +8,35 @@ const slug = location.pathname.match(/^\/work\/([\w-]+)/)?.[1] || new URLSearchP
 const i = projects.findIndex((p) => p.slug === slug);
 const ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 
-// YouTube and Vimeo page links become their players; other player links are used as they are
-const embed = (u) => {
-  const yt = u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([\w-]{6,})/);
-  if (yt) return `https://www.youtube-nocookie.com/embed/${yt[1]}?rel=0`;
+// Vimeo and YouTube links become their players. Other links (the old Adobe/Behance players stopped working) are skipped.
+const embed = (u = "") => {
   const vm = u.match(/vimeo\.com\/(?:video\/)?(\d+)/);
-  if (vm) return `https://player.vimeo.com/video/${vm[1]}?dnt=1`;
-  return u;
+  if (vm) return `https://player.vimeo.com/video/${vm[1]}?dnt=1&autoplay=1`;
+  const yt = u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([\w-]{6,})/);
+  if (yt) return `https://www.youtube-nocookie.com/embed/${yt[1]}?rel=0&autoplay=1`;
+  return "";
 };
 
 if (i < 0) {
   document.title = "Not found, Anas Saleh";
   main.innerHTML = `<header class="ph wrap"><span class="label">404</span><h1 class="ph__title up">Not <span class="acc">found</span></h1>
     <div class="ph__foot"><p>This project doesn't exist or was moved.</p><a class="btn btn--ink" href="/work">See all work ${ARROW}</a></div></header>`;
-} else render(projects[i], projects[(i + 1) % projects.length]);
+} else render(projects[i], projects[(i - 1 + projects.length) % projects.length], projects[(i + 1) % projects.length]);
 
-function render(p, next) {
+function render(p, prev, next) {
   document.title = `${p.title}, Anas Saleh`;
   $('meta[name="description"]').setAttribute("content", `${p.title}: ${p.subtitle}. ${p.description || ""}`.slice(0, 160));
   const meta = [["Client", p.client], ["Year", p.year], ["Role", p.role], ["Tools", p.tools], ["Format", p.format]].filter(([, v]) => v);
   const words = p.title.split(/\s+/);
   const tall = /9:16/.test(p.format || "");
+  const film = embed(p.video);
+  const PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>';
+  const side = (q, dir) => `<a class="pj-nav__item ${dir}" href="/work/${esc(q.slug)}" data-cursor="${dir === "prev" ? "Previous" : "Next"}">
+      <span class="label">${dir === "prev" ? "Previous project" : "Next project"}</span>
+      <span class="pj-nav__t up">${esc(q.title)}</span>
+      <span class="pj-nav__s">${esc(q.subtitle)} · ${cats(q)}</span>
+      <span class="pj-nav__img" aria-hidden="true"><img src="${cover(q)}" alt="" loading="lazy"></span>
+    </a>`;
 
   main.innerHTML = `
   <section class="pj-hero dark" data-dark>
@@ -48,24 +56,26 @@ function render(p, next) {
     <dl class="pj-meta">${meta.map(([k, v]) => `<div data-reveal><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
   </section>
 
-  ${p.video ? `<section class="pj-film dark" data-dark aria-label="Film">
+  ${film ? `<section class="pj-film dark" data-dark aria-label="Film">
     <div class="wrap"><span class="label" data-reveal>Watch</span>
-      <div class="pj-player${tall ? " tall" : ""}" data-reveal><iframe src="${esc(embed(p.video))}" title="${esc(p.title)}, film" loading="lazy" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe></div>
+      <button type="button" class="pj-player${tall ? " tall" : ""}" data-film="${esc(film)}" data-cursor="Play" aria-label="Play the ${esc(p.title)} film" data-reveal>
+        <img src="${cover(p)}" alt="" loading="lazy"><span class="pj-play">${PLAY}</span>
+      </button>
     </div>
   </section>` : ""}
 
   ${(p.images || []).length ? `<section class="pj-gallery wrap" aria-label="Project images">
-    ${p.images.map((src, n) => `<figure class="wide" data-reveal><div class="pj-par"><img src="${esc(src)}" alt="${esc(p.title)}, image ${n + 1}" loading="lazy" decoding="async"></div></figure>`).join("")}
+    ${p.images.map((src, n) => `<figure class="wide" data-reveal><img src="${esc(src)}" alt="${esc(p.title)}, image ${n + 1}" loading="lazy" decoding="async"></figure>`).join("")}
   </section>` : ""}
 
-  <a class="pj-next dark" data-dark href="/work/${esc(next.slug)}" data-cursor="Next">
-    <div class="wrap">
-      <span class="label">Next project</span>
-      <span class="pj-next__t up">${esc(next.title)}</span>
-      <span class="pj-next__s">${esc(next.subtitle)} · ${cats(next)}</span>
-    </div>
-    <span class="pj-next__img" aria-hidden="true"><img src="${cover(next)}" alt="" loading="lazy"></span>
-  </a>`;
+  <nav class="pj-nav dark" data-dark aria-label="More projects">${side(prev, "prev")}${side(next, "next")}</nav>`;
+
+  // the film loads only when asked for: a still cover with a play button until then
+  $("[data-film]")?.addEventListener("click", (e) => {
+    const b = e.currentTarget;
+    b.innerHTML = `<iframe src="${esc(b.dataset.film)}" title="${esc(p.title)}, film" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe>`;
+    b.removeAttribute("data-cursor"); b.classList.add("on");
+  }, { once: true });
 
   // opening: title words rise one after another, the cover comes into focus from below
   const E = "cubic-bezier(.16,1,.3,1)";
@@ -86,13 +96,13 @@ function render(p, next) {
   });
   reveal();
 
-  // scroll: the cover opens out to the full width, gallery images drift inside their frames,
-  // and the next-project cover follows the pointer
-  const coverImg = coverEl.querySelector("img");
-  const pars = $$(".pj-par img");
-  const nx = $(".pj-next"), nImg = $(".pj-next__img");
-  const nm = { x: 0, y: 0, tx: 0, ty: 0 };
-  nx.addEventListener("pointermove", (e) => { const r = nx.getBoundingClientRect(); nm.tx = e.clientX - r.left; nm.ty = e.clientY - r.top; });
+  // scroll: the cover grows to the full width; the previous and next covers follow the pointer
+  const navs = $$(".pj-nav__item").map((a) => {
+    const m = { img: a.querySelector(".pj-nav__img"), x: 0, y: 0, tx: 0, ty: 0 };
+    a.addEventListener("pointermove", (e) => { const r = a.getBoundingClientRect(); m.tx = e.clientX - r.left; m.ty = e.clientY - r.top; });
+    a.addEventListener("pointerenter", (e) => { const r = a.getBoundingClientRect(); m.x = m.tx = e.clientX - r.left; m.y = m.ty = e.clientY - r.top; });
+    return m;
+  });
   let open = 0;
   (function loop() {
     requestAnimationFrame(loop);
@@ -100,17 +110,13 @@ function render(p, next) {
     if (r.top < innerHeight && r.bottom > 0) {
       const target = clamp(1 - (r.top - innerHeight * 0.12) / (innerHeight * 0.7), 0, 1);
       open = lerp(open, target, 0.12);
-      const inset = (1 - open) * Math.min(innerWidth * 0.09, 140);
-      coverEl.style.clipPath = `inset(0 ${inset}px round ${(1 - open) * 22 + 2}px)`;
-      coverImg.style.transform = `scale(${1.12 - open * 0.12}) translateY(${(r.top / innerHeight) * -6}%)`;
+      // the whole picture is always visible: it grows from a framed size to the full width
+      coverEl.style.transform = `scale(${0.8 + open * 0.2})`;
+      coverEl.style.borderRadius = `${(1 - open) * 26}px`;
     }
-    pars.forEach((img) => {
-      const b = img.parentElement.getBoundingClientRect();
-      if (b.bottom < 0 || b.top > innerHeight) return;
-      const k = (b.top + b.height / 2 - innerHeight / 2) / innerHeight;
-      img.style.transform = `translateY(${k * -7}%) scale(1.12)`;
+    navs.forEach((m) => {
+      m.x = lerp(m.x, m.tx, 0.14); m.y = lerp(m.y, m.ty, 0.14);
+      m.img.style.transform = `translate(${m.x}px, ${m.y}px) translate(-50%, -50%) rotate(${clamp((m.tx - m.x) * 0.06, -8, 8)}deg)`;
     });
-    nm.x = lerp(nm.x, nm.tx, 0.12); nm.y = lerp(nm.y, nm.ty, 0.12);
-    nImg.style.transform = `translate(${nm.x}px, ${nm.y}px) translate(-50%, -50%) rotate(${clamp((nm.tx - nm.x) * 0.06, -8, 8)}deg)`;
   })();
 }

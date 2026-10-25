@@ -1,7 +1,6 @@
-// Work page (stage 3): filter chips, the works wheel for the chosen set, and an index of every project.
+// Work page (stage 3): filter chips over an index of every project (the works wheel lives on the home page).
 // ?f=<filter> in the URL picks the starting chip (the home page's discipline words link here).
 import { shell, $, $$, esc, lerp, clamp, pad, cats, cover } from "/js/shell2.js";
-import { mountWorksWheel } from "/js/works-wheel.js";
 
 const { projects, reveal } = await shell({ current: "work" });
 
@@ -18,10 +17,8 @@ const chips = $("[data-chips]");
 chips.innerHTML = FILTERS.map(([k, label]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="false">${label}</button>`).join("");
 
 const fword = $("[data-fword]");
-const works = $("[data-works]");
-const pin = $("[data-works-pin]");
 const list = $("[data-index]");
-let wheel = null, current = "";
+let current = "";
 
 function apply(key, { first = false } = {}) {
   const f = FILTERS.find(([k]) => k === key) || FILTERS[0];
@@ -36,23 +33,15 @@ function apply(key, { first = false } = {}) {
   if (first) fword.textContent = f[1];
   else fword.animate([{ transform: "none" }, { transform: "translateY(-105%)" }], { duration: 320, easing: "cubic-bezier(.7,0,.84,0)", fill: "forwards" }).finished.then(swapWord);
 
-  // wheel: blur out, mount the new set, come back into focus
-  const mount = () => {
-    wheel?.destroy();
-    wheel = mountWorksWheel(works, {
-      items,
-      label: current === "all" ? 'Works <span class="acc">&#39;26</span>' : `${esc(f[1])} <span class="acc">work</span>`,
-      cover,
-      meta: (p) => `${cats(p)} · ${p.year}`,
-    });
-    pin.classList.remove("swap");
+  // index: the lines blur out, the new set comes into focus line by line
+  const build = () => {
+    list.innerHTML = items.map((p, i) => `<li data-reveal><a class="ix__row" href="/work/${esc(p.slug)}" data-cursor="View" data-cover="${cover(p)}">
+      <span class="ix__n">${pad(i + 1)}</span><span class="ix__t up">${esc(p.title)}</span><span class="ix__s">${esc(p.subtitle)}</span><span class="ix__c">${cats(p)}</span><span class="ix__y">${esc(p.year)}</span>
+      <span class="ix__img" aria-hidden="true"><img src="${cover(p)}" alt="" loading="lazy"></span></a></li>`).join("");
+    list.classList.remove("swap");
+    reveal(list);
   };
-  if (first) mount(); else { pin.classList.add("swap"); setTimeout(mount, 380); }
-
-  // index: rebuild the lines and let them come into focus again
-  list.innerHTML = items.map((p, i) => `<li data-reveal><a class="ix__row" href="/work/${esc(p.slug)}" data-cursor="View" data-cover="${cover(p)}">
-    <span class="ix__n">${pad(i + 1)}</span><span class="ix__t up">${esc(p.title)}</span><span class="ix__s">${esc(p.subtitle)}</span><span class="ix__c">${cats(p)}</span><span class="ix__y">${esc(p.year)}</span></a></li>`).join("");
-  reveal(list);
+  if (first) build(); else { list.classList.add("swap"); setTimeout(build, 300); }
 }
 
 chips.addEventListener("click", (e) => { const b = e.target.closest("[data-f]"); if (b) apply(b.dataset.f); });
@@ -84,9 +73,3 @@ list.addEventListener("pointerleave", () => float.classList.remove("on"));
   float.style.transform = `translate(${fl.x}px, ${fl.y}px) translate(28px, -50%) rotate(${clamp((fl.tx - fl.x) * 0.08, -10, 10)}deg)`;
 })();
 
-// in-page links (Index) glide with the smooth scroll
-document.addEventListener("click", (e) => {
-  const a = e.target.closest('a[href^="#"]');
-  const t = a && a.getAttribute("href").length > 1 && $(a.getAttribute("href"));
-  if (t && window.__lenis) { e.preventDefault(); window.__lenis.scrollTo(t, { offset: -40, duration: 1.4 }); }
-});

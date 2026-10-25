@@ -41,7 +41,7 @@ mountPillNav({
   cta: { href: "/contact", label: "Let's talk" },
 });
 mountRingCursor({ accent: "#6f8faf" });
-const lenis = window.Lenis ? new Lenis({ lerp: 0.085, wheelMultiplier: 0.9 }) : null;
+const lenis = window.Lenis ? new Lenis({ lerp: 0.11, wheelMultiplier: 1 }) : null;
 window.__lenis = lenis;
 document.addEventListener("click", (e) => {
   const a = e.target.closest('a[href^="#"]');
@@ -55,10 +55,10 @@ const revealIO = new IntersectionObserver((es) => es.forEach((e) => {
   if (!e.isIntersecting) return;
   const el = e.target;
   const siblings = [...el.parentElement.querySelectorAll(":scope > [data-reveal]")];
-  el.style.transitionDelay = `${Math.max(0, siblings.indexOf(el)) * 90}ms`;
+  el.style.transitionDelay = `${Math.max(0, siblings.indexOf(el)) * 70}ms`;
   el.classList.add("in");
   revealIO.unobserve(el);
-}), { threshold: 0.15, rootMargin: "0px 0px -6% 0px" });
+}), { threshold: 0.15, rootMargin: "0px 0px 4% 0px" });
 const watchReveals = () => $$("[data-reveal]:not(.in)").forEach((el) => revealIO.observe(el));
 
 /* ---------- hero ---------- */
@@ -74,25 +74,46 @@ const heroReady = mountHero(stage, { image: h.heroImage || "/images/portrait-v2.
 $("[data-statement-text]").innerHTML = (h.statement || "").split(/\s+/).map((w) => `<span class="ln" style="display:inline-block;margin-right:.24em"><span>${accent(w)}</span></span>`).join("");
 $("[data-statement-sub]").textContent = h.statementSub || "";
 
+// The soft white glow is drawn once from the portrait's own silhouette (white, blurred) and kept still behind it,
+// so the moving portrait never has to recompute a shadow filter every frame.
+async function makeGlow(hero) {
+  await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+  const k = 0.5, w = Math.round(stage.clientWidth * k), h2 = Math.round(stage.clientHeight * k);
+  const shape = document.createElement("canvas");
+  shape.width = w; shape.height = h2;
+  const sc = shape.getContext("2d");
+  hero.snapshot(sc, w, h2);
+  sc.globalCompositeOperation = "source-in";
+  sc.fillStyle = "#fff"; sc.fillRect(0, 0, w, h2);
+  const glow = document.createElement("canvas");
+  glow.width = w; glow.height = h2; glow.className = "glow";
+  const gc = glow.getContext("2d");
+  gc.filter = `blur(${parseFloat(glowSize) * k / 2}px)`;
+  gc.drawImage(shape, 0, 0);
+  stage.prepend(glow);
+  return glow;
+}
+
 let introDone = false;
 async function playIntro() {
   const portrait = (await heroReady).el;
   const curtain = $("[data-curtain]");
   const words = $$("[data-name] .w");
   const meta = $("[data-meta]");
-  const glow = `drop-shadow(0 0 ${glowSize} rgba(255, 255, 255, ${glowA}))`;
-  const noGlow = "drop-shadow(0 0 0px rgba(255, 255, 255, 0))";
+  const glowImg = await makeGlow(await heroReady);
   curtain.animate([{ transform: "translateY(0)" }, { transform: "translateY(-100%)" }], { duration: 1100, delay: 150, easing: "cubic-bezier(.76, 0, .24, 1)", fill: "forwards" })
     .finished.then(() => (curtain.style.display = "none"));
   portrait.animate([
-    { transform: "scale(1.45)", filter: `blur(24px) ${noGlow}`, opacity: 0, offset: 0 },
-    { transform: "scale(1)", filter: `blur(0px) ${noGlow}`, opacity: 1, offset: 0.72 },
-    { transform: "scale(1)", filter: `blur(0px) ${glow}`, opacity: 1, offset: 1 },
-  ], { duration: 2800, delay: 400, easing: EASE_OUT, fill: "backwards" });
+    { transform: "scale(1.45)", filter: "blur(24px)", opacity: 0 },
+    { transform: "scale(1)", filter: "blur(0px)", opacity: 1 },
+  ], { duration: 2016, delay: 400, easing: EASE_OUT, fill: "backwards" });
+  // the glow fades in last, once the photo has settled
+  glowImg.animate([{ opacity: 0 }, { opacity: 0 }], { duration: 2400, fill: "backwards" });
+  glowImg.animate([{ opacity: 0 }, { opacity: glowA }], { duration: 800, delay: 2400, easing: "ease-out", fill: "backwards" });
   words.forEach((w, i) => w.animate([{ transform: "translateY(110%) rotate(4deg)" }, { transform: "translateY(0) rotate(0)" }], { duration: 1300, delay: 2100 + i * 150, easing: EASE_OUT, fill: "backwards" }));
   [...meta.children].forEach((el, i) => el.animate([{ opacity: 0, transform: "translateY(24px)", filter: "blur(8px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }], { duration: 1200, delay: 2600 + i * 120, easing: EASE_OUT, fill: "backwards" }));
   setTimeout(() => {
-    [curtain, portrait, ...words, ...meta.children].forEach((el) => el.getAnimations().forEach((a) => { if ((a.currentTime ?? 0) < 50) a.finish(); }));
+    [curtain, portrait, glowImg, ...words, ...meta.children].forEach((el) => el.getAnimations().forEach((a) => { if ((a.currentTime ?? 0) < 50) a.finish(); }));
     curtain.style.display = "none";
     introDone = true;
   }, 4000);

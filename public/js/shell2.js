@@ -30,7 +30,7 @@ export async function shell({ current = "" } = {}) {
     cta: { href: "/contact", label: "Let's talk" },
   });
   mountRingCursor({ accent: "#6f8faf" });
-  const lenis = window.Lenis ? new Lenis({ lerp: 0.085, wheelMultiplier: 0.9 }) : null;
+  const lenis = window.Lenis ? new Lenis({ lerp: 0.11, wheelMultiplier: 1 }) : null;
   window.__lenis = lenis;
   const tick = (t) => { lenis?.raf(t); requestAnimationFrame(tick); };
   requestAnimationFrame(tick);
@@ -45,10 +45,10 @@ const revealIO = new IntersectionObserver((es) => es.forEach((e) => {
   if (!e.isIntersecting) return;
   const el = e.target;
   const siblings = [...el.parentElement.querySelectorAll(":scope > [data-reveal]")];
-  el.style.transitionDelay = `${Math.min(6, Math.max(0, siblings.indexOf(el))) * 90}ms`;
+  el.style.transitionDelay = `${Math.min(6, Math.max(0, siblings.indexOf(el))) * 70}ms`;
   el.classList.add("in");
   revealIO.unobserve(el);
-}), { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
+}), { threshold: 0.12, rootMargin: "0px 0px 4% 0px" });
 export function reveal(root = document) { $$("[data-reveal]:not(.in)", root).forEach((el) => revealIO.observe(el)); }
 
 function footerHTML(site) {

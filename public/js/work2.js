@@ -55,6 +55,7 @@ apply(new URLSearchParams(location.search).get("f") || "all", { first: true });
 
 // opening: the title rises into place
 $$(".ph__title .w").forEach((w, i) => w.animate([{ transform: "translateY(110%) rotate(3deg)" }, { transform: "none" }], { duration: 1300, delay: 150 + i * 140, easing: "cubic-bezier(.16,1,.3,1)", fill: "backwards" }));
+document.documentElement.classList.remove("intro");
 reveal();
 
 // index hover: the cover follows the pointer

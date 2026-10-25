@@ -176,5 +176,9 @@
     "behance": "https://www.behance.net/anassaleh2-/",
     "instagram": "https://www.instagram.com/anas_saleh_designs/",
     "whatsapp": "https://wa.me/971567061214"
+  },
+  "journal": {
+    "show": false,
+    "intro": "Notes, stories and things I love. Process, drawings, films, ideas and the odd tip."
   }
 }

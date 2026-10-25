@@ -9,6 +9,7 @@ const E = "cubic-bezier(.16,1,.3,1)";
 if (cp.intro) $("[data-c-intro]").textContent = cp.intro;
 $("[data-c-reply]").textContent = cp.replyNote || "";
 $$(".ph__title .w").forEach((w, i) => w.animate([{ transform: "translateY(110%) rotate(3deg)" }, { transform: "none" }], { duration: 1300, delay: 150 + i * 140, easing: E, fill: "backwards" }));
+document.documentElement.classList.remove("intro");
 
 /* ---------- direct ---------- */
 $("[data-mail]").href = `mailto:${c.email}`;

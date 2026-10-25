@@ -30,6 +30,7 @@ $("[data-progress]").innerHTML = (site.studio || []).map((s, i) => {
 }).join("") || `<p class="pr-empty">Nothing to show right now. Check back soon.</p>`;
 
 $$(".ph__title .w").forEach((w, i) => w.animate([{ transform: "translateY(110%) rotate(3deg)" }, { transform: "none" }], { duration: 1300, delay: 150 + i * 140, easing: E, fill: "backwards" }));
+document.documentElement.classList.remove("intro");
 reveal();
 
 // the pictures drift a little inside their frames as you scroll

@@ -17,6 +17,70 @@ export const thumb = (p) => (cover(p).startsWith("/images/covers/") ? cover(p).r
 
 export const LOGO = `<svg viewBox="0 0 226.08 342.55" aria-hidden="true"><defs><mask id="LMS"><rect width="226.08" height="342.55" fill="#fff"/><path transform="matrix(1,0,0,-1,113.045,265.925)" d="M0 0V65.23H43.11ZM-31.28 94.65H-62.55L-31.28 142.04ZM62.55 142.04H31.27V189.43L0 236.81-31.28 189.42-62.55 142.04-93.83 94.65-62.56 47.27V65.19H-31.28V-.12L0-47.51 93.82 94.65Z" fill="#000"/></mask></defs><g mask="url(#LMS)"><path transform="matrix(1,0,0,-1,113.04,.000091552738)" d="M0 0-17.83-27.01-26.26-39.79-49.1-74.4-57.53-87.169-80.37-121.78-88.81-134.57-111.65-169.17-113.04-171.28-88.81-207.99-83.16-216.55-57.53-255.38-51.88-263.94-26.26-302.76-20.61-311.33 0-342.55 5.02-334.94 20.61-311.33 36.29-287.57 51.88-263.94 67.57-240.169 83.16-216.55 98.84-192.79 113.04-171.28 111.65-169.17 98.84-149.76 80.37-121.78 67.57-102.38 49.1-74.4 36.29-54.99 17.83-27.01Z" fill="currentColor"/></g></svg>`;
 
+/* ---------- layout rows (projects and journal) ---------- */
+// A row: optional text, then 1 to 8 images or .mp4 loops side by side (same height, never cropped), optional caption.
+// `rich` rows carry formatted text from the CMS editor (journal); it is cleaned before it goes on the page.
+export function rowsHTML(rows = [], title = "", { rich = false } = {}) {
+  let count = 0;
+  const media = (src) => {
+    count++;
+    if (/\.(mp4|webm)$/i.test(src)) {
+      const poster = src.replace(/\.(mp4|webm)$/i, "-poster.webp");
+      return `<video src="${esc(src)}" poster="${esc(poster)}" muted loop playsinline preload="none" aria-label="${esc(title)}, animation ${count}"></video>`;
+    }
+    return `<img src="${esc(src)}" alt="${esc(title)}, image ${count}" loading="lazy" decoding="async">`;
+  };
+  return rows.filter((r) => r.images?.length || r.text).map((r) => `<div class="pj-row${rich ? " pj-row--rich" : ""}" data-n="${r.images?.length || 0}" data-reveal>
+      ${r.text ? (rich ? `<div class="pj-row__rich">${cleanHTML(r.text)}</div>` : `<p class="pj-row__text">${esc(r.text)}</p>`) : ""}
+      ${r.images?.length ? `<div class="pj-row__items">${r.images.map((src) => `<figure>${media(src)}</figure>`).join("")}</div>` : ""}
+      ${r.caption ? `<p class="pj-row__cap">${esc(r.caption)}</p>` : ""}
+    </div>`).join("");
+}
+
+// each piece takes width in proportion to its shape, so a row lines up at one height; a piece smaller than the
+// page is never blown up past its own size; loops play only while on screen
+export function fitRows(root = document) {
+  $$(".pj-row figure", root).forEach((f) => {
+    const el = f.firstElementChild;
+    const fit = (w, h) => {
+      if (!w || !h) return;
+      f.style.flex = `${w / h} 1 0`;
+      f.style.aspectRatio = `${w} / ${h}`;
+      if (f.parentElement.children.length === 1) f.style.maxWidth = `${w}px`;
+    };
+    if (el.tagName === "VIDEO") {
+      const still = new Image();
+      still.onload = () => fit(still.naturalWidth, still.naturalHeight);
+      still.src = el.poster;
+      el.addEventListener("loadedmetadata", () => fit(el.videoWidth, el.videoHeight));
+    } else if (el.complete) fit(el.naturalWidth, el.naturalHeight);
+    else el.addEventListener("load", () => fit(el.naturalWidth, el.naturalHeight));
+  });
+  const loopIO = new IntersectionObserver((es) => es.forEach((e) => {
+    if (e.isIntersecting) { e.target.preload = "auto"; e.target.play().catch(() => {}); } else e.target.pause();
+  }), { rootMargin: "200px 0px" });
+  $$(".pj-row video", root).forEach((v) => loopIO.observe(v));
+}
+
+// formatted text from the CMS: keep simple tags and safe links only
+const KEEP = new Set(["P", "H2", "H3", "STRONG", "B", "EM", "I", "A", "UL", "OL", "LI", "BLOCKQUOTE", "BR", "HR"]);
+export function cleanHTML(html = "") {
+  const doc = new DOMParser().parseFromString(`<div>${html}</div>`, "text/html");
+  const walk = (node) => [...node.childNodes].forEach((n) => {
+    if (n.nodeType !== 1) return;
+    walk(n);
+    if (!KEEP.has(n.tagName)) { n.replaceWith(...n.childNodes); return; }
+    [...n.attributes].forEach((a) => { if (!(n.tagName === "A" && a.name === "href")) n.removeAttribute(a.name); });
+    if (n.tagName === "A") {
+      if (!/^(https?:|mailto:|\/)/i.test(n.getAttribute("href") || "")) n.removeAttribute("href");
+      else if (/^https?:/i.test(n.getAttribute("href"))) { n.target = "_blank"; n.rel = "noopener"; }
+    }
+  });
+  const root = doc.body.firstElementChild;
+  walk(root);
+  return root.innerHTML;
+}
+
 export async function shell({ current = "" } = {}) {
   const [site, all] = await Promise.all([
     fetch("/content/site.json").then((r) => r.json()),
@@ -28,7 +92,8 @@ export async function shell({ current = "" } = {}) {
     logo: LOGO,
     name: site.name,
     current,
-    links: [{ href: "/work", label: "Work", key: "work" }, { href: "/about", label: "About", key: "about" }, { href: "/in-progress", label: "In progress", key: "progress" }],
+    links: [{ href: "/work", label: "Work", key: "work" }, { href: "/about", label: "About", key: "about" }, { href: "/in-progress", label: "In progress", key: "progress" },
+      ...(site.journal?.show ? [{ href: "/journal", label: "Journal", key: "journal" }] : [])],
     cta: { href: "/contact", label: "Let's talk" },
   });
   mountRingCursor({ accent: "#6f8faf" });
@@ -60,7 +125,7 @@ function footerHTML(site) {
     <div class="wrap">
       <div class="foot__top">
         <div><span class="foot__logo">${LOGO}</span><p>Visual artist and art director in Dubai. Art direction, design, 3D, motion, film and drawing.</p></div>
-        <div><h3>Pages</h3><ul><li><a href="/">Home</a></li><li><a href="/work">Work</a></li><li><a href="/about">About</a></li><li><a href="/in-progress">In progress</a></li><li><a href="/contact">Contact</a></li></ul></div>
+        <div><h3>Pages</h3><ul><li><a href="/">Home</a></li><li><a href="/work">Work</a></li><li><a href="/about">About</a></li><li><a href="/in-progress">In progress</a></li>${site.journal?.show ? '<li><a href="/journal">Journal</a></li>' : ""}<li><a href="/contact">Contact</a></li></ul></div>
         <div><h3>Follow</h3><ul>${socials.map(([n, u]) => `<li><a href="${esc(u)}" target="_blank" rel="noopener">${n}</a></li>`).join("")}</ul></div>
         <div><h3>Say hi</h3><ul><li><a href="mailto:${esc(c.email)}">${esc(c.email)}</a></li><li><a href="${esc(site.about?.cv || "/Anas_Al_Shikh_Saleh_CV.pdf")}" target="_blank" rel="noopener">Download CV</a></li></ul></div>
       </div>

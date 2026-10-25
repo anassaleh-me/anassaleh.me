@@ -1,6 +1,6 @@
 // Project page (stage 3), served at /work/<slug>. Dark opener with the title rising in, the cover that grows to
 // full width as you scroll (always whole, never cropped), the story, the film, the gallery, previous and next project.
-import { shell, $, $$, esc, lerp, clamp, cats, cover, thumb } from "/js/shell2.js";
+import { shell, $, $$, esc, lerp, clamp, cats, cover, thumb, rowsHTML, fitRows } from "/js/shell2.js";
 
 const { projects, reveal } = await shell({ current: "work" });
 const main = $("[data-project]");
@@ -21,6 +21,7 @@ if (i < 0) {
   document.title = "Not found, Anas Saleh";
   main.innerHTML = `<header class="ph wrap"><span class="label">404</span><h1 class="ph__title up">Not <span class="acc">found</span></h1>
     <div class="ph__foot"><p>This project doesn't exist or was moved.</p><a class="btn btn--ink" href="/work">See all work ${ARROW}</a></div></header>`;
+  document.documentElement.classList.remove("intro");
 } else render(projects[i], projects[(i - 1 + projects.length) % projects.length], projects[(i + 1) % projects.length]);
 
 function render(p, prev, next) {
@@ -31,23 +32,9 @@ function render(p, prev, next) {
   const tall = /9:16/.test(p.format || "");
   const film = embed(p.video);
   const PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>';
-  // layout rows from the CMS: an optional paragraph, then pieces side by side (same height, never cropped).
-  // Older entries with a flat `images` list show one per row.
-  const rows = (p.blocks || (p.images || []).map((src) => ({ images: [src] }))).filter((r) => r.images?.length || r.text);
-  let count = 0;
-  const media = (src) => {
-    count++;
-    if (/\.(mp4|webm)$/i.test(src)) {
-      const poster = src.replace(/\.(mp4|webm)$/i, "-poster.webp");
-      return `<video src="${esc(src)}" poster="${esc(poster)}" muted loop playsinline preload="none" aria-label="${esc(p.title)}, animation ${count}"></video>`;
-    }
-    return `<img src="${esc(src)}" alt="${esc(p.title)}, image ${count}" loading="lazy" decoding="async">`;
-  };
-  const rowHTML = (r) => `<div class="pj-row" data-n="${r.images?.length || 0}" data-reveal>
-      ${r.text ? `<p class="pj-row__text">${esc(r.text)}</p>` : ""}
-      ${r.images?.length ? `<div class="pj-row__items">${r.images.map((src) => `<figure>${media(src)}</figure>`).join("")}</div>` : ""}
-      ${r.caption ? `<p class="pj-row__cap">${esc(r.caption)}</p>` : ""}
-    </div>`;
+  // layout rows from the CMS (older entries with a flat `images` list show one per row)
+  const rows = p.blocks || (p.images || []).map((src) => ({ images: [src] }));
+  const gallery = rowsHTML(rows, p.title);
   const side = (q, dir) => `<a class="pj-nav__item ${dir}" href="/work/${esc(q.slug)}" data-cursor="${dir === "prev" ? "Previous" : "Next"}">
       <span class="label">${dir === "prev" ? "Previous project" : "Next project"}</span>
       <span class="pj-nav__t up">${esc(q.title)}</span>
@@ -81,7 +68,7 @@ function render(p, prev, next) {
     </div>
   </section>` : ""}
 
-  ${rows.length ? `<section class="pj-gallery wrap" aria-label="Project images">${rows.map(rowHTML).join("")}</section>` : ""}
+  ${gallery ? `<section class="pj-gallery wrap" aria-label="Project images">${gallery}</section>` : ""}
 
   <nav class="pj-nav dark" data-dark aria-label="More projects">${side(prev, "prev")}${side(next, "next")}</nav>`;
 
@@ -98,30 +85,9 @@ function render(p, prev, next) {
   $$("[data-intro]").forEach((el, n) => el.animate([{ opacity: 0, transform: "translateY(20px)", filter: "blur(8px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }], { duration: 1100, delay: 500 + n * 160, easing: E, fill: "backwards" }));
   const coverEl = $("[data-cover]");
   coverEl.animate([{ opacity: 0, transform: "translateY(80px)", filter: "blur(18px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }], { duration: 1600, delay: 450, easing: E, fill: "backwards" });
+  document.documentElement.classList.remove("intro");
 
-  // rows: each piece takes width in proportion to its shape, so a row lines up at one height.
-  // A piece smaller than the page is never blown up past its own size.
-  $$(".pj-row figure").forEach((f) => {
-    const el = f.firstElementChild;
-    const fit = (w, h) => {
-      if (!w || !h) return;
-      f.style.flex = `${w / h} 1 0`;
-      f.style.aspectRatio = `${w} / ${h}`;
-      if (f.parentElement.children.length === 1) f.style.maxWidth = `${w}px`;
-    };
-    if (el.tagName === "VIDEO") {
-      const still = new Image();
-      still.onload = () => fit(still.naturalWidth, still.naturalHeight);
-      still.src = el.poster;
-      el.addEventListener("loadedmetadata", () => fit(el.videoWidth, el.videoHeight));
-    } else if (el.complete) fit(el.naturalWidth, el.naturalHeight);
-    else el.addEventListener("load", () => fit(el.naturalWidth, el.naturalHeight));
-  });
-  // loops play only while on screen
-  const loopIO = new IntersectionObserver((es) => es.forEach((e) => {
-    if (e.isIntersecting) { e.target.preload = "auto"; e.target.play().catch(() => {}); } else e.target.pause();
-  }), { rootMargin: "200px 0px" });
-  $$(".pj-row video").forEach((v) => loopIO.observe(v));
+  fitRows(main);
   reveal();
 
   // scroll: the cover grows to the full width; the previous and next covers follow the pointer

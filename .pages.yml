@@ -138,6 +138,12 @@ content:
           - { name: replyNote, label: Reply time note, type: string }
           - { name: budgets, label: Budget options, type: string, list: true }
           - { name: sources, label: "How did you find me? options", type: string, list: true }
+      - name: journal
+        label: Journal
+        type: object
+        fields:
+          - { name: show, label: "Show the journal on the site (adds it to the menu)", type: boolean }
+          - { name: intro, label: Intro line, type: text }
       - name: inProduction
         label: In Production (short film page)
         type: object
@@ -221,17 +227,32 @@ content:
           - { name: caption, label: "Caption under the row (optional)", type: string }
 
   - name: blog
-    label: Blog (hidden on the site until the first post)
+    label: "Journal entries (the page is switched on in Site > Journal)"
     type: file
     path: public/content/blog.json
     format: json
     list: true
     fields:
       - { name: title, label: Title, type: string, required: true }
-      - { name: slug, label: Page address (lowercase-with-dashes), type: string, required: true }
+      - name: slug
+        label: Page address (lowercase-with-dashes)
+        type: string
+        required: true
+        pattern: { regex: "^[a-z0-9]+(-[a-z0-9]+)*$", message: "Use lowercase letters, numbers and dashes only" }
       - { name: date, label: Date, type: date }
+      - { name: tag, label: "Tag (for example Story, Process, Things I love, Tips)", type: string }
+      - { name: excerpt, label: "Short intro (shown on the list and in link previews)", type: text }
       - { name: cover, label: Cover image, type: image, options: { media: images } }
-      - { name: body, label: Body, type: rich-text }
+      - { name: draft, label: "Draft (only visible with ?preview)", type: boolean }
+      - name: blocks
+        label: "Entry: rows from top to bottom"
+        description: "Each row can have formatted text and up to 8 images or .mp4 loops side by side, plus a caption."
+        type: object
+        list: true
+        fields:
+          - { name: text, label: Text, type: rich-text }
+          - { name: images, label: "Images or .mp4 loops side by side (optional, up to 8)", type: file, options: { media: images, multiple: { max: 8 } } }
+          - { name: caption, label: "Caption under the images (optional)", type: string }
 
   - name: offers
     label: Offers (hidden on the site until used)

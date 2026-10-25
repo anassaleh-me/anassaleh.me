@@ -1,7 +1,8 @@
 // Cloudflare Worker in front of the static site.
 // - /work/<slug>   serves project.html with that project's title, description and cover in the page head,
 //                  so shared links show the right preview (404 for unknown or draft projects)
-// - /sitemap.xml   built from projects.json, so new projects are listed without touching code
+// - /journal/<slug> serves journal-post.html with that entry's head (404 for unknown entries)
+// - /sitemap.xml   built from projects.json and blog.json, so new pages are listed without touching code
 // - /api/contact   receives the contact form, stores it (KV) and emails it (send_email binding)
 // Everything else falls through to the static assets in ./public.
 import { EmailMessage } from "cloudflare:email";
@@ -10,6 +11,11 @@ const SITE = "https://anassaleh.me";
 const json = (data, status = 200) =>
   new Response(JSON.stringify(data), { status, headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" } });
 const attr = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+
+async function content(env, url, name) {
+  const res = await env.ASSETS.fetch(new Request(new URL(`/content/${name}.json`, url)));
+  return res.ok ? res.json() : null;
+}
 
 async function projects(env, url) {
   const res = await env.ASSETS.fetch(new Request(new URL("/content/projects.json", url)));
@@ -26,7 +32,9 @@ export default {
     }
 
     if (url.pathname === "/sitemap.xml") {
-      const pages = ["/", "/work", "/about", "/in-progress", "/contact", ...(await projects(env, url)).map((p) => `/work/${p.slug}`)];
+      const [list, site, blog] = await Promise.all([projects(env, url), content(env, url, "site"), content(env, url, "blog")]);
+      const journal = site?.journal?.show ? ["/journal", ...(blog || []).filter((p) => !p.draft).map((p) => `/journal/${p.slug}`)] : [];
+      const pages = ["/", "/work", "/about", "/in-progress", "/contact", ...journal, ...list.map((p) => `/work/${p.slug}`)];
       const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map((p) => `  <url><loc>${SITE}${p}</loc></url>`).join("\n")}\n</urlset>\n`;
       return new Response(xml, { headers: { "content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600" } });
     }
@@ -48,6 +56,23 @@ export default {
         .on('meta[name="description"]', set(desc))
         .on('meta[property="og:image"]', set(image))
         .on("head", { element: (el) => el.append(`<meta property="og:title" content="${attr(title)}"><meta property="og:description" content="${attr(desc)}"><meta property="og:type" content="article"><meta property="og:url" content="${SITE}/work/${p.slug}"><meta name="twitter:card" content="summary_large_image"><link rel="canonical" href="${SITE}/work/${p.slug}">`, { html: true }) })
+        .transform(out);
+    }
+
+    const j = url.pathname.match(/^\/journal\/([a-z0-9-]+)\/?$/);
+    if (j) {
+      const [res, blog] = await Promise.all([env.ASSETS.fetch(new Request(new URL("/journal-post", url), request)), content(env, url, "blog")]);
+      const p = (blog || []).find((x) => x.slug === j[1]);
+      const out = new Response(res.body, { status: p ? res.status : 404, headers: res.headers });
+      if (!p) return out;
+      const title = `${p.title}, Anas Saleh`;
+      const desc = (p.excerpt || "").slice(0, 160);
+      const set = (value) => ({ element: (el) => el.setAttribute("content", value) });
+      return new HTMLRewriter()
+        .on("title", { element: (el) => el.setInnerContent(title) })
+        .on('meta[name="description"]', set(desc || "A journal entry by Anas Al Shikh Saleh."))
+        .on('meta[property="og:image"]', set(p.cover ? SITE + p.cover : `${SITE}/images/og.jpg`))
+        .on("head", { element: (el) => el.append(`<meta property="og:title" content="${attr(title)}"><meta property="og:description" content="${attr(desc)}"><meta property="og:type" content="article"><meta property="og:url" content="${SITE}/journal/${p.slug}"><meta name="twitter:card" content="summary_large_image">`, { html: true }) })
         .transform(out);
     }
 

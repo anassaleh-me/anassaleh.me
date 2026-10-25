@@ -153,7 +153,14 @@ h1, h2, h3, h4 { margin: 0; font-weight: 400; }
 .ww-index button.on { color: var(--acc-t); transform: translateX(-8px); }
 .progress { position: absolute; left: var(--g); right: var(--g); bottom: 30px; height: 2px; background: rgba(241, 236, 226, 0.12); z-index: 5; }
 .progress i { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--accent); }
-@media (max-width: 760px) { .ww-title { left: 5%; top: auto; bottom: 14vh; transform: none; max-width: 70vw; } .ww-index { display: none; } .works__all { bottom: 5vh; } }
+@media (max-width: 760px) {
+  .ww-wheel { top: 42%; }
+  .ww-title { z-index: 150; left: 0; right: 0; top: auto; bottom: 10vh; transform: none; max-width: none; padding: 40px 5% 10px; }
+  .ww-title::before { content: ""; position: absolute; inset: 0 0 -10vh; z-index: -1; background: linear-gradient(to top, var(--char) 62%, rgba(29, 29, 27, 0)); }
+  .ww-index { display: none; }
+  .works__all { bottom: 5vh; z-index: 151; }
+  .progress { z-index: 151; }
+}
 
 /* ---------- spider 3D slot ---------- */
 .spider { padding-block: clamp(90px, 12vw, 170px); }

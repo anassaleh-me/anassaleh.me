@@ -13,6 +13,7 @@ const preview = new URLSearchParams(location.search).has("preview");
 if (!f.show && !preview) {
   main.innerHTML = `<header class="ph wrap"><span class="label">In production</span><h1 class="ph__title up">Coming <span class="acc">soon</span></h1>
     <div class="ph__foot"><p>This page isn't open yet.</p><a class="btn btn--ink" href="/">Back home ${ARROW}</a></div></header>`;
+  document.documentElement.classList.remove("intro");
 } else render();
 
 function render() {
@@ -67,6 +68,7 @@ function render() {
 
   $$(".pr-title .w").forEach((w, i) => w.animate([{ transform: "translateY(110%) rotate(4deg)" }, { transform: "none" }], { duration: 1300, delay: 250 + i * 130, easing: E, fill: "backwards" }));
   $$("[data-intro]").forEach((el, i) => el.animate([{ opacity: 0, transform: "translateY(20px)", filter: "blur(8px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }], { duration: 1100, delay: 650 + i * 160, easing: E, fill: "backwards" }));
+  document.documentElement.classList.remove("intro");
   reveal();
 
   // a running timecode in the corner, like a camera that's recording

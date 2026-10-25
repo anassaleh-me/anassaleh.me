@@ -18,6 +18,8 @@ mountHero(stage, { image: a.portrait || site.home?.heroImage || "/images/portrai
 // opening: the title words rise one after another, then the rest comes into focus
 $$(".ab-title .w").forEach((w, i) => w.animate([{ transform: "translateY(110%) rotate(4deg)" }, { transform: "none" }], { duration: 1200, delay: 250 + i * 110, easing: E, fill: "backwards" }));
 $$("[data-intro]").forEach((el, i) => el.animate([{ opacity: 0, transform: "translateY(20px)", filter: "blur(8px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }], { duration: 1100, delay: 700 + i * 140, easing: E, fill: "backwards" }));
+stage.animate([{ opacity: 0 }, { opacity: 0 }], { duration: 400, fill: "backwards" });
+document.documentElement.classList.remove("intro");
 
 // story: every word is its own span so it can brighten as the paragraph moves up the screen
 const story = $("[data-story]");

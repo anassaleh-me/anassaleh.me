@@ -37,18 +37,20 @@ export function mountWorksWheel(root, { items, label, meta = () => "", cover }) 
   };
   measure();
   addEventListener("resize", measure);
+  let dead = false;
 
   const progress = () => { const r = root.getBoundingClientRect(); return clamp(-r.top / (r.height - innerHeight), 0, 1); };
   const S = { turn: 0, active: -1, visible: false };
-  new IntersectionObserver(([e]) => (S.visible = e.isIntersecting), { rootMargin: "200px 0px" }).observe(root);
+  const io = new IntersectionObserver(([e]) => (S.visible = e.isIntersecting), { rootMargin: "200px 0px" });
+  io.observe(root);
 
-  index.addEventListener("click", (e) => {
+  index.onclick = (e) => {
     const b = e.target.closest("button");
     if (!b) return;
     const top = root.getBoundingClientRect().top + scrollY;
     const y = top + ((Number(b.dataset.i) + 1) / (items.length + 0.6)) * (root.offsetHeight - innerHeight);
     window.__lenis ? window.__lenis.scrollTo(y, { duration: 1.4 }) : scrollTo({ top: y, behavior: "smooth" });
-  });
+  };
 
   const setBlur = (el, px) => { const v = Math.round(px * 2) / 2; const f = v > 0 ? `blur(${v}px)` : "none"; if (el._f !== f) { el.style.filter = f; el._f = f; } };
   const swap = (text) => {
@@ -60,6 +62,7 @@ export function mountWorksWheel(root, { items, label, meta = () => "", cover }) 
   };
 
   function draw() {
+    if (dead) return;
     requestAnimationFrame(draw);
     if (!S.visible) return;
     const p = progress();
@@ -90,4 +93,6 @@ export function mountWorksWheel(root, { items, label, meta = () => "", cover }) 
     }
   }
   requestAnimationFrame(draw);
+  // destroy() stops this wheel, so a filtered set can be mounted in the same place
+  return { destroy() { dead = true; io.disconnect(); removeEventListener("resize", measure); clearTimeout(nameEl._t); delete nameEl.dataset.t; } };
 }

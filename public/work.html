@@ -1,38 +1,69 @@
 <!doctype html>
-<html lang="en" data-palette="paper">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Work, Anas Saleh</title>
-<meta name="description" content="Design, 3D, motion and video work by Anas Al Shikh Saleh, multimedia designer in Dubai.">
+<meta name="description" content="Art direction, design, 3D, motion and film by Anas Al Shikh Saleh, visual artist and art director in Dubai.">
 <meta property="og:title" content="Work, Anas Saleh">
+<meta property="og:description" content="Art direction, design, 3D, motion and film. Client work and personal projects.">
 <meta property="og:image" content="https://anassaleh.me/images/og.jpg">
-<meta name="theme-color" content="#151514">
+<meta name="theme-color" content="#f1ece2">
 <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Semi+Condensed:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="/css/site.css">
-<script src="/js/palette.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Flip.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.css">
+<link rel="stylesheet" href="/css/nav.css">
+<link rel="stylesheet" href="/css/v2.css">
+<link rel="stylesheet" href="/css/pages2.css">
 <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js"></script>
-<script type="module" src="/js/site.js"></script>
+<script type="module" src="/js/work2.js"></script>
 </head>
-<body data-page="work">
+<body>
 <a class="skip" href="#main">Skip to content</a>
-<header id="nav"></header>
 <main id="main">
-  <header class="page-head wrap">
-    <h1 class="display" data-reveal>Work</h1>
-    <p class="lead muted" data-reveal="1">Design, 3D, motion and video. Client work and personal projects.</p>
+
+  <header class="ph wrap">
+    <span class="label" data-reveal>Work</span>
+    <h1 class="ph__title up" aria-live="polite"><span class="ln"><span class="w" data-fword>All</span></span> <span class="ln"><span class="w acc">work</span></span></h1>
+    <div class="ph__foot">
+      <p data-reveal>Art direction, design, 3D, motion and film. Client work and personal projects.</p>
+      <div class="chips" role="group" aria-label="Filter projects" data-chips data-reveal></div>
+    </div>
   </header>
-  <section class="wrap" style="padding-bottom:clamp(80px,12vw,160px)">
-    <div class="chips" role="group" aria-label="Filter projects" data-chips></div>
-    <div class="grid-work" data-grid aria-live="polite"></div>
+
+  <!-- Works wheel, filtered by the chips -->
+  <section class="works dark" data-works data-dark aria-label="Projects">
+    <div class="works__pin" data-works-pin>
+      <span class="label works__head">Turn the wheel</span>
+      <div class="ww-stage" data-ww-stage><div class="ww-wheel" data-ww-wheel></div></div>
+      <div class="ww-label up" data-ww-label></div>
+      <div class="ww-title" data-ww-title><span class="n" data-ww-n></span><span class="up" data-ww-name></span><span class="cat" data-ww-cat></span></div>
+      <ol class="ww-index" data-ww-index></ol>
+      <a class="arrow works__all" href="#index">Index</a>
+      <div class="progress"><i data-ww-bar></i></div>
+    </div>
+  </section>
+
+  <!-- Index: every project as a line -->
+  <section class="ix wrap" id="index" aria-labelledby="ix-title">
+    <div class="ix__head">
+      <span class="label" id="ix-title" data-reveal>Index</span>
+      <p data-reveal>Every project in one list. Hover a line to see it.</p>
+    </div>
+    <ol class="ix__list" data-index></ol>
+    <div class="float-img" data-float aria-hidden="true"></div>
+  </section>
+
+  <section class="cta-band dark" data-dark aria-labelledby="cta-title">
+    <div class="wrap">
+      <span class="label" data-reveal>Contact</span>
+      <h2 class="up" id="cta-title" data-reveal>Have a project <span class="acc">in mind?</span></h2>
+      <div class="contact__actions" data-reveal><a class="btn btn--accent" href="/contact">Start a project <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+    </div>
   </section>
 </main>
-<footer id="footer"></footer>
+<footer data-footer></footer>
 </body>
 </html>

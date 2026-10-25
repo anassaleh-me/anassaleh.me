@@ -5,7 +5,7 @@ import { mountPillNav } from "/js/nav.js";
 import { mountRingCursor } from "/js/cursors.js";
 import { mountWorksWheel } from "/js/works-wheel.js";
 import { getJSON, prefetchOnHover } from "/js/data.js";
-import { mountMailMenu } from "/js/mailto.js";
+import { mountMailButton } from "/js/mailto.js";
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -240,7 +240,7 @@ row.dataset.cursor = "Drag";
 /* ---------- contact and footer ---------- */
 $("[data-mail]").href = `mailto:${c.email}`;
 $("[data-mail]").textContent = c.email;
-mountMailMenu($("[data-mailto]"), c.email);
+mountMailButton($("[data-mailto]"), c.email);
 const wa = $("[data-wa]");
 if (c.whatsapp) wa.href = c.whatsapp; else wa.remove();
 $("[data-copy]").addEventListener("click", async (e) => {

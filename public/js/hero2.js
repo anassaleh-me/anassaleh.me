@@ -25,6 +25,7 @@ uniform float uTime;
 uniform float uStrength;
 uniform vec3 uAccent;
 uniform vec2 uTexel;
+uniform vec4 uFit;       // where the photo sits in the canvas: offset xy, size zw (leaves room for the glow)
 varying vec2 vUv;
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
@@ -36,11 +37,13 @@ float noise(vec2 p) {
 
 void main() {
   // Near pixels (bright in the depth map) move toward the pointer, so the face turns to follow it.
+  vec2 base = (vUv - uFit.xy) / uFit.zw;
   vec2 p = uPointer * uStrength;
-  float d = texture2D(uDepth, vUv).r;
-  vec2 uv = vUv - p * (d - 0.5);
+  float d = texture2D(uDepth, base).r;
+  vec2 uv = base - p * (d - 0.5);
   d = texture2D(uDepth, uv).r;
-  uv = vUv - p * (d - 0.5);
+  uv = base - p * (d - 0.5);
+  if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) { gl_FragColor = vec4(0.0); return; }
   vec4 col = texture2D(uImage, uv);
 
 
@@ -128,6 +131,7 @@ export async function mountHero(stage, opts) {
   gl.uniform1i(U("uSketch"), 2);
   gl.uniform2f(U("uTexel"), 1 / imgs[1].width, 1 / imgs[1].height);
   gl.uniform1f(U("uStrength"), 0.05);
+  gl.uniform4f(U("uFit"), ...(opts.fit || [0, 0, 1, 1]));
   gl.enable(gl.BLEND);
   gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
   const uP = U("uPointer"), uL = U("uLens"), uR = U("uLensR"), uA = U("uAspect"), uM = U("uMode"), uT = U("uTime"), uC = U("uAccent");

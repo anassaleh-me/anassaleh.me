@@ -68,7 +68,7 @@ stage.style.setProperty("--glow", glowSize);
 stage.style.setProperty("--glow-a", glowA);
 $("[data-headline]").innerHTML = accent(h.headline ? h.headline.replace(/art director/i, "[art director]") : "Visual artist and [art director]");
 $("[data-intro]").textContent = h.intro || "";
-const heroReady = mountHero(stage, { image: h.heroImage || "/images/portrait-v2.webp", depth: h.heroDepth || "/images/portrait-v2-depth.png", alt: `Portrait of ${site.fullName}`, mode: 0, reduceMotion: reduce });
+const heroReady = mountHero(stage, { image: h.heroImage || "/images/portrait-v2.webp", depth: h.heroDepth || "/images/portrait-v2-depth.png", alt: `Portrait of ${site.fullName}`, mode: 0, reduceMotion: reduce, fit: [0.07, 0.1, 0.86, 0.9] });
 
 // statement: each word is its own mask, so the words rise into place one after another
 $("[data-statement-text]").innerHTML = (h.statement || "").split(/\s+/).map((w) => `<span class="ln" style="display:inline-block;margin-right:.24em"><span>${accent(w)}</span></span>`).join("");
@@ -134,7 +134,11 @@ disc.addEventListener("pointerover", (e) => {
   if (!t) return;
   const d = discs[Number(t.dataset.i)];
   clearInterval(cycle);
+  // random order every time, but only this discipline's work
+  d.images = d.images.map((v) => [Math.random(), v]).sort((a, b) => a[0] - b[0]).map(([, v]) => v);
   cycleI = 0;
+  // switching words: drop the previous word's pictures at once, so no other discipline shows through
+  $$("img", float).forEach((o) => o.remove());
   showImg(d.images[0]);
   $("[data-float-count]").textContent = `${d.images.length} ${d.filter === "drawing" ? (d.images.length === 1 ? "drawing" : "drawings") : d.images.length === 1 ? "project" : "projects"}`;
   if (d.images.length > 1) cycle = setInterval(() => showImg(d.images[(++cycleI) % d.images.length]), 750);
@@ -177,12 +181,29 @@ if (dr.title) $("[data-draw-title]").innerHTML = accent(dr.title.replace(/draw$/
 $("[data-draw-text]").textContent = dr.text || "";
 const row = $("[data-draw-row]");
 const tilts = [-4, 3, -2, 4, -3, 2];
-row.innerHTML = [...(dr.images || []), ...(dr.images || []).slice(0, 2)].map((src, i) => `<figure class="paper" style="margin:0;transform:rotate(${tilts[i % tilts.length]}deg)" data-tilt="${tilts[i % tilts.length]}"><img src="${esc(src)}" alt="Pencil drawing by ${esc(site.fullName)}" loading="lazy"></figure>`).join("");
+// An endless strip: the set of drawings is repeated three times and wraps around, so every drawing comes by.
+// It drifts on its own, speeds up with the scroll, and can be dragged (with a little throw when you let go).
+const drawSet = dr.images || [];
+const drawRepeat = drawSet.length ? Math.max(3, Math.ceil(12 / drawSet.length)) : 0;
+row.innerHTML = Array.from({ length: drawRepeat }, () => drawSet).flat().map((src, i) => `<figure class="paper" style="margin:0;transform:rotate(${tilts[i % tilts.length]}deg)" data-tilt="${tilts[i % tilts.length]}"><img src="${esc(src)}" alt="${i < drawSet.length ? `Pencil drawing by ${esc(site.fullName)}` : ""}" loading="lazy" draggable="false"></figure>`).join("");
+const drawSection = row.closest(".draw");
+const drag = { x: 0, v: -0.45, down: false, lastX: 0, moved: 0 };
+const setW = () => (row.children[drawSet.length]?.offsetLeft || 0) - (row.children[0]?.offsetLeft || 0);
+row.addEventListener("pointerdown", (e) => { drag.down = true; drag.lastX = e.clientX; drag.moved = 0; row.setPointerCapture(e.pointerId); row.classList.add("dragging"); });
+row.addEventListener("pointermove", (e) => {
+  if (!drag.down) return;
+  const dx = e.clientX - drag.lastX;
+  drag.lastX = e.clientX; drag.moved += Math.abs(dx);
+  drag.x += dx; drag.v = dx;
+});
+const dragEnd = () => { drag.down = false; row.classList.remove("dragging"); };
+row.addEventListener("pointerup", dragEnd);
+row.addEventListener("pointercancel", dragEnd);
 $$(".paper", row).forEach((p) => {
-  p.addEventListener("pointerenter", () => (p.style.transform = "rotate(0deg) scale(1.06) translateY(-10px)"));
+  p.addEventListener("pointerenter", () => { if (!drag.down) p.style.transform = "rotate(0deg) scale(1.06) translateY(-10px)"; });
   p.addEventListener("pointerleave", () => (p.style.transform = `rotate(${p.dataset.tilt}deg)`));
 });
-const drawSection = row.closest(".draw");
+row.dataset.cursor = "Drag";
 
 /* ---------- contact and footer ---------- */
 $("[data-mail]").href = `mailto:${c.email}`;
@@ -209,7 +230,7 @@ const meta = $("[data-meta]");
 const stWords = $$("[data-statement-text] .ln > span");
 const stSub = $("[data-statement-sub]");
 const sceneP = { v: 0 };
-let drawX = 0;
+let lastScroll = scrollY;
 function loop(t) {
   requestAnimationFrame(loop);
   lenis?.raf(t);
@@ -228,7 +249,7 @@ function loop(t) {
       meta.style.opacity = String(1 - sstep(0, 0.2, q));
     }
     const sink = sstep(0.05, 0.6, q);
-    stage.style.transform = `translateX(-50%) scale(${1 - sink * 0.22})`;
+    stage.style.transform = `translateX(-50%) scale(${1 - sink * 0.14})`;
     stage.style.opacity = String(1 - sink * 0.55);
     stWords.forEach((w, i) => {
       const k = sstep(0.32 + i * 0.045, 0.62 + i * 0.045, q);
@@ -249,12 +270,18 @@ function loop(t) {
   sh.x = lerp(sh.x, sh.tx, 0.08); sh.y = lerp(sh.y, sh.ty, 0.08);
   spHint.style.transform = `translate(${sh.x * 30}px, ${sh.y * 20}px)`;
 
-  // drawings drift sideways with the scroll
+  // drawings: endless strip that drifts, follows the scroll and can be dragged
   const dRect = drawSection.getBoundingClientRect();
-  if (dRect.bottom > 0 && dRect.top < innerHeight) {
-    const dp = (innerHeight - dRect.top) / (innerHeight + dRect.height);
-    drawX = lerp(drawX, (0.5 - dp) * 22, 0.1);
-    row.style.transform = `translateX(${drawX}vw)`;
+  if (dRect.bottom > 0 && dRect.top < innerHeight && drawSet.length) {
+    const vy = scrollY - lastScroll;
+    if (!drag.down) {
+      drag.v = lerp(drag.v, -0.45 - Math.abs(vy) * 0.25, 0.04);
+      drag.x += drag.v;
+    }
+    const w = setW();
+    if (w > 0) drag.x = ((drag.x % w) - w) % w;
+    row.style.transform = `translateX(${drag.x}px)`;
   }
+  lastScroll = scrollY;
 }
 requestAnimationFrame(loop);

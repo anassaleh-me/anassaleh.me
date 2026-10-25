@@ -40,7 +40,8 @@ export function mountRingCursor({ accent = "#6f8faf" } = {}) {
     const el = document.elementFromPoint(x, y);
     root.classList.toggle("on-dark", Boolean(el?.closest?.("[data-dark]")));
     const t = el?.closest?.("a, button, [data-cursor]");
-    const text = t ? (t.dataset.cursor ?? (t.tagName === "A" ? "View" : "")) : "";
+    // Only project covers (links with an image) say "View"; other links and buttons keep the small ring.
+    const text = t ? (t.dataset.cursor ?? (t.tagName === "A" && t.querySelector("img") ? "View" : "")) : "";
     big = Boolean(text);
     root.classList.toggle("big", big);
     if (label.textContent !== text) label.textContent = text;

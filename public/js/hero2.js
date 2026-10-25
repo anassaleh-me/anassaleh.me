@@ -35,12 +35,23 @@ float noise(vec2 p) {
 }
 
 void main() {
+  // Near pixels (bright in the depth map) move toward the pointer, so the face turns to follow it.
   vec2 p = uPointer * uStrength;
   float d = texture2D(uDepth, vUv).r;
-  vec2 uv = vUv + p * (d - 0.5);
+  vec2 uv = vUv - p * (d - 0.5);
   d = texture2D(uDepth, uv).r;
-  uv = vUv + p * (d - 0.5);
+  uv = vUv - p * (d - 0.5);
   vec4 col = texture2D(uImage, uv);
+
+  // Soft, grainy edge: average the alpha around the pixel, then dither it with noise.
+  vec2 e = uTexel * 5.0;
+  float a = 0.0;
+  for (int i = -2; i <= 2; i++) for (int j = -2; j <= 2; j++) a += texture2D(uImage, uv + vec2(float(i), float(j)) * e).a;
+  a /= 25.0;
+  float grain = hash(vUv * 900.0 + fract(uTime * 7.0) * 50.0);
+  a = clamp(smoothstep(0.08, 0.95, a) + (grain - 0.5) * 0.5 * a * (1.0 - a) * 4.0, 0.0, 1.0);
+  col.a = min(col.a, a) * smoothstep(0.0, 0.12, a);
+  col.rgb += (grain - 0.5) * 0.07;
 
   // relight from the pointer side using the depth gradient
   float dx = texture2D(uDepth, uv + vec2(uTexel.x * 5.0, 0.0)).r - texture2D(uDepth, uv - vec2(uTexel.x * 5.0, 0.0)).r;
@@ -130,7 +141,7 @@ export async function mountHero(stage, opts) {
   gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
   const uP = U("uPointer"), uL = U("uLens"), uR = U("uLensR"), uA = U("uAspect"), uM = U("uMode"), uT = U("uTime"), uC = U("uAccent");
 
-  const state = { mode: opts.mode ?? 1, accent: opts.accent || [0.8, 0.6, 0.3], lensSize: opts.lensSize ?? 0.17 };
+  const state = { mode: opts.mode ?? 0, accent: opts.accent || [0.8, 0.6, 0.3], lensSize: opts.lensSize ?? 0.17 };
   stage.innerHTML = "";
   stage.append(canvas);
   const resize = () => {

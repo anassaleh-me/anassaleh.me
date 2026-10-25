@@ -1,6 +1,7 @@
 // Stage 1b options board: hero sample, floating glass nav, and project layouts VI to X plus IV and V.
 import { mountHero } from "/js/hero2.js";
 import { mountPillNav } from "/js/nav.js";
+import { setCursor } from "/js/cursors.js";
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -18,15 +19,69 @@ mountPillNav({
 
 /* reveal: blurred, then into focus */
 const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && (e.target.classList.add("in"), io.unobserve(e.target))), { threshold: 0.12 });
-$$(".head, .demo-title, .demo-note, .tag, .chosen, .controls").forEach((el) => { el.classList.add("reveal"); io.observe(el); });
+$$(".head, .demo-title, .demo-note, .tag, .controls").forEach((el) => { el.classList.add("reveal"); io.observe(el); });
+
+/* option rows: build buttons, keep one pressed */
+function optionRow(container, items, onPick, start = 0) {
+  items.forEach((it, i) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = it.label;
+    b.setAttribute("aria-pressed", String(i === start));
+    b.addEventListener("click", () => {
+      [...container.querySelectorAll("button")].forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      onPick(it);
+    });
+    container.append(b);
+  });
+  onPick(items[start]);
+}
+
+/* cursors */
+optionRow($("[data-cursors]"), [
+  { label: "1 · Liquid", v: "liquid" },
+  { label: "2 · Ring", v: "ring" },
+  { label: "3 · Ink smoke", v: "ink" },
+  { label: "4 · Pencil", v: "pencil" },
+  { label: "5 · Spotlight", v: "spotlight" },
+  { label: "عادي", v: "default" },
+], (it) => setCursor(it.v));
+
+/* dark textures, drawn on a canvas */
+const canvasURL = (w, h, draw) => { const c = document.createElement("canvas"); c.width = w; c.height = h; draw(c.getContext("2d"), w, h); return c.toDataURL("image/png"); };
+// value noise that repeats every `P` cells, so textures tile without seams
+const noiseField = (seed, P = 64) => { let s = seed; const r = () => ((s = (s * 16807) % 2147483647) / 2147483647); const g = Array.from({ length: P * P }, r); const m = (v) => ((v % P) + P) % P; return (x, y) => { const xi = m(Math.floor(x)), yi = m(Math.floor(y)), xf = x - Math.floor(x), yf = y - Math.floor(y); const a = g[yi * P + xi], b = g[yi * P + m(xi + 1)], c = g[m(yi + 1) * P + xi], d = g[m(yi + 1) * P + m(xi + 1)]; const u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf); return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v; }; };
+const DTEX = {
+  film: { url: canvasURL(256, 256, (g, w, h) => { const d = g.createImageData(w, h); for (let i = 0; i < d.data.length; i += 4) { const v = Math.random() * 255; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 40; } g.putImageData(d, 0, 0); }), size: "256px", op: 0.6, cls: "anim" },
+  charcoal: { url: canvasURL(600, 600, (g, w, h) => { for (let i = 0; i < 1400; i++) { const x = Math.random() * w, y = Math.random() * h, l = 4 + Math.random() * 30, a = -0.7 + Math.random() * 0.3; g.strokeStyle = `rgba(255,255,255,${Math.random() * 0.07})`; g.lineWidth = Math.random() * 2.2; g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a) * l, y + Math.sin(a) * l); g.stroke(); } const d = g.getImageData(0, 0, w, h); for (let i = 0; i < d.data.length; i += 4) { if (Math.random() < 0.5) { d.data[i] = d.data[i + 1] = d.data[i + 2] = 255; d.data[i + 3] = Math.max(d.data[i + 3], Math.random() * 18); } } g.putImageData(d, 0, 0); }), size: "600px", op: 0.9, cls: "" },
+  topo: { url: canvasURL(900, 900, (g, w, h) => { const n = noiseField(5, 10), n2 = noiseField(6, 20), st = 6, cols = w / st + 1, rows = h / st + 1, f = []; for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) f.push(n(x * st / 90, y * st / 90) * 0.7 + n2(x * st / 45, y * st / 45) * 0.3); g.strokeStyle = "rgba(255,255,255,.16)"; g.lineWidth = 1; for (let lv = 0.05; lv < 1; lv += 0.07) { g.beginPath(); for (let y = 0; y < rows - 1; y++) for (let x = 0; x < cols - 1; x++) { const a = f[y * cols + x], b = f[y * cols + x + 1], c = f[(y + 1) * cols + x + 1], d = f[(y + 1) * cols + x]; const p = []; const e = (v1, v2, x1, y1, x2, y2) => { if ((v1 < lv) !== (v2 < lv)) { const t = (lv - v1) / (v2 - v1); p.push([(x1 + t * (x2 - x1)) * st, (y1 + t * (y2 - y1)) * st]); } }; e(a, b, x, y, x + 1, y); e(b, c, x + 1, y, x + 1, y + 1); e(c, d, x + 1, y + 1, x, y + 1); e(d, a, x, y + 1, x, y); if (p.length >= 2) { g.moveTo(...p[0]); g.lineTo(...p[1]); } } g.stroke(); } }), size: "900px", op: 0.8, cls: "drift" },
+  halftone: { url: canvasURL(12, 12, (g) => { g.fillStyle = "rgba(255,255,255,.11)"; g.beginPath(); g.arc(6, 6, 1.4, 0, 7); g.fill(); }), size: "12px", op: 1, cls: "" },
+  smoke: { url: canvasURL(512, 512, (g, w, h) => { const n1 = noiseField(9, 4), n2 = noiseField(4, 16), n3 = noiseField(2, 32); const d = g.createImageData(w, h); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const v = n1(x / 128, y / 128) * 0.6 + n2(x / 32, y / 32) * 0.3 + n3(x / 16, y / 16) * 0.1; const i = (y * w + x) * 4; d.data[i] = d.data[i + 1] = d.data[i + 2] = 255; d.data[i + 3] = Math.max(0, v - 0.45) * 120; } g.putImageData(d, 0, 0); }), size: "1024px", op: 0.7, cls: "drift" },
+};
+const dtexEl = $("[data-dtex]");
+optionRow($("[data-dtexs]"), [
+  { label: "1 · Film grain", v: "film" },
+  { label: "2 · Charcoal paper", v: "charcoal" },
+  { label: "3 · Topographic", v: "topo" },
+  { label: "4 · Halftone", v: "halftone" },
+  { label: "5 · Smoke", v: "smoke" },
+], (it) => {
+  const t = DTEX[it.v];
+  dtexEl.style.setProperty("--dtex", `url(${t.url})`);
+  dtexEl.style.setProperty("--dtex-size", t.size);
+  dtexEl.style.setProperty("--dtex-op", t.op);
+  dtexEl.className = `dtex ${t.cls}`;
+});
+optionRow($("[data-grains]"), [
+  { label: "خفيف", v: 0.45 }, { label: "وسط", v: 0.75 }, { label: "قوي", v: 1 },
+], (it) => document.documentElement.style.setProperty("--grain", String(it.v)), 1);
 
 /* hero */
 (async () => {
-  const hero = await mountHero($("[data-stage]"), {
-    image: "/images/portrait-v2.webp", depth: "/images/portrait-v2-depth.png", sketch: "/images/portrait-v2-sketch.webp",
-    alt: "Portrait of Anas Saleh", mode: 1, accent: ACCENT, reduceMotion: reduce,
+  await mountHero($("[data-stage]"), {
+    image: "/images/portrait-v2.webp", depth: "/images/portrait-v2-depth.png",
+    alt: "Portrait of Anas Saleh", mode: 0, accent: ACCENT, reduceMotion: reduce,
   });
-  $$("[data-lens]").forEach((b) => b.addEventListener("click", () => { hero.set({ mode: Number(b.dataset.lens) }); $$("[data-lens]").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); }));
   $$("[data-bg]").forEach((b) => b.addEventListener("click", () => {
     const light = b.dataset.bg === "light";
     $("[data-hero]").classList.toggle("light", light);
@@ -109,6 +164,103 @@ $("[data-sk]").innerHTML = list.slice(0, 5).map((p, i) => `<article class="sk-ca
 const sizeRl = () => (rl.style.height = `${Math.max(200, ($("[data-rl-track]").scrollWidth / innerWidth) * 100)}vh`);
 sizeRl();
 addEventListener("resize", sizeRl);
+
+/* ---------- XI to XV ---------- */
+// XI endless reel
+const mq = $("[data-mq]");
+mq.innerHTML = [...list, ...list].map((p) => `<a class="mq-card" href="/work/${p.slug}"><div class="img"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></div><span class="up">${p.title}</span></a>`).join("");
+const mqS = { x: 0, speed: 0.6, hover: false };
+mq.addEventListener("pointerenter", () => (mqS.hover = true));
+mq.addEventListener("pointerleave", () => (mqS.hover = false));
+
+// XII orbit
+const ob = $("[data-ob]");
+const orbit = list.slice(0, 9);
+const R = Math.min(innerWidth * 0.5, 720);
+$("[data-ob-ring]").innerHTML = orbit.map((p, i) => `<a class="ob-card" href="/work/${p.slug}" style="transform:rotateY(${(i * 360) / orbit.length}deg) translateZ(${R}px)"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></a>`).join("");
+const obCards = $$(".ob-card");
+const obS = { rot: 0, drag: 0, tdrag: 0, down: false, sx: 0, base: 0, cur: -1 };
+const obPin = $(".ob-pin");
+obPin.addEventListener("pointerdown", (e) => { obS.down = true; obS.sx = e.clientX; obS.base = obS.tdrag; });
+addEventListener("pointermove", (e) => { if (obS.down) obS.tdrag = obS.base + (e.clientX - obS.sx) * 0.25; });
+addEventListener("pointerup", () => (obS.down = false));
+
+// XIII wave reel
+const wv = $("[data-wv]");
+wv.style.height = "320vh";
+$("[data-wv-track]").innerHTML = list.map((p) => `<a class="wv-card" href="/work/${p.slug}"><div class="img"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></div><span class="up">${p.title}</span></a>`).join("");
+const wvCards = $$(".wv-card");
+let wvP = 0;
+
+// XIV spotlight index
+const spList = list.slice(0, 8);
+$("[data-sp-bg]").innerHTML = spList.map((p, i) => `<img src="${cover(p)}" alt=""${i === 0 ? ' class="on"' : ""}>`).join("");
+$("[data-sp-card]").innerHTML = spList.map((p, i) => `<img src="${cover(p)}" alt="${p.title}"${i === 0 ? ' class="on"' : ""}>`).join("");
+$("[data-sp-list]").innerHTML = spList.map((p, i) => `<li data-i="${i}"${i === 0 ? ' class="on"' : ""}>${p.title}</li>`).join("");
+const spSet = (i) => ["[data-sp-bg] img", "[data-sp-card] img", "[data-sp-list] li"].forEach((s) => $$(s).forEach((el, j) => el.classList.toggle("on", i === j)));
+$("[data-sp-list]").addEventListener("pointerover", (e) => { const li = e.target.closest("li"); if (li) spSet(Number(li.dataset.i)); });
+const spCard = $("[data-sp-card]");
+const spTilt = { x: 0, y: 0 };
+
+// XV split columns
+const sc = $("[data-sc]");
+const half = Math.ceil(list.length / 2);
+const colHTML = (arr) => [...arr, ...arr].map((p) => `<a href="/work/${p.slug}"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></a>`).join("");
+$("[data-sc-a]").innerHTML = colHTML(list.slice(0, half));
+$("[data-sc-b]").innerHTML = colHTML(list.slice(half));
+let scP = 0;
+
+let lastY2 = scrollY, vel2 = 0;
+function loop2() {
+  const v = scrollY - lastY2; lastY2 = scrollY;
+  vel2 = lerp(vel2, v, 0.1);
+  // XI
+  const target = mqS.hover ? 0.15 : 0.6 + Math.abs(vel2) * 0.5;
+  mqS.speed = lerp(mqS.speed, target * (vel2 < -0.5 ? -1 : 1), 0.06);
+  mqS.x -= mqS.speed;
+  const halfW = mq.scrollWidth / 2;
+  if (mqS.x < -halfW) mqS.x += halfW;
+  if (mqS.x > 0) mqS.x -= halfW;
+  mq.style.transform = `translateX(${mqS.x}px)`;
+  // XII
+  obS.drag = lerp(obS.drag, obS.tdrag, 0.08);
+  obS.rot = lerp(obS.rot, -prog(ob) * 360 * 1.5 + obS.drag, 0.08);
+  $("[data-ob-ring]").style.transform = `translateZ(${-R}px) rotateX(-6deg) rotateY(${obS.rot}deg)`;
+  const step = 360 / orbit.length;
+  const front = ((Math.round(-obS.rot / step) % orbit.length) + orbit.length) % orbit.length;
+  obCards.forEach((c, i) => {
+    const a = (((i * step + obS.rot) % 360) + 540) % 360 - 180;
+    c.style.opacity = String(clamp(1 - Math.abs(a) / 160, 0.15, 1));
+  });
+  if (front !== obS.cur) { obS.cur = front; $("[data-ob-title]").textContent = orbit[front].title; }
+  // XIII
+  wvP = lerp(wvP, prog(wv), 0.08);
+  const W = innerWidth, t = performance.now() / 1000;
+  const spread = W * 0.3;
+  const total = (wvCards.length - 1) * spread + W;
+  wvCards.forEach((c, i) => {
+    const x = W * 0.9 + i * spread - wvP * total;
+    const ph = x / W * Math.PI * 2 + t * 0.6;
+    const y = Math.sin(ph) * innerHeight * 0.12;
+    const rot = Math.cos(ph) * 8;
+    c.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${rot}deg)`;
+  });
+  $("[data-wv-bar]").style.width = `${wvP * 100}%`;
+  // XIV
+  const r = spCard.getBoundingClientRect();
+  const mx = ((tilt.tx + 1) / 2) * innerWidth, my = ((tilt.ty + 1) / 2) * innerHeight;
+  spTilt.x = lerp(spTilt.x, clamp((mx - (r.left + r.width / 2)) / r.width, -1, 1), 0.07);
+  spTilt.y = lerp(spTilt.y, clamp((my - (r.top + r.height / 2)) / r.height, -1, 1), 0.07);
+  spCard.style.transform = `perspective(1200px) rotateY(${spTilt.x * 10}deg) rotateX(${spTilt.y * -8}deg)`;
+  // XV
+  scP = lerp(scP, prog(sc), 0.08);
+  const colA = $("[data-sc-a]"), colB = $("[data-sc-b]");
+  const travel = colA.scrollHeight / 2;
+  colA.style.transform = `translateY(${-scP * travel}px)`;
+  colB.style.transform = `translateY(${-travel + scP * travel}px)`;
+  requestAnimationFrame(loop2);
+}
+requestAnimationFrame(loop2);
 
 /* ---------- one smooth loop ---------- */
 const lenis = window.Lenis ? new Lenis({ lerp: 0.08, wheelMultiplier: 0.9 }) : null;

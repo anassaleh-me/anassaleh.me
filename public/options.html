@@ -24,8 +24,11 @@
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--cream); color: var(--char); font-family: var(--body); font-size: 18px; line-height: 1.5; overflow-x: clip; }
 /* fine grain over everything (choice 1) */
-body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 95; opacity: .5; mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .42 0 0 0 0 .38 0 0 0 .42 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+body::after { content: ""; position: fixed; inset: -50%; pointer-events: none; z-index: 95; opacity: var(--grain, .9); mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .38 0 0 0 0 .35 0 0 0 0 .3 0 0 0 .75 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 1.2s steps(6) infinite; }
+@keyframes grain { 0%{transform:translate(0,0)} 20%{transform:translate(-3%,2%)} 40%{transform:translate(2%,-3%)} 60%{transform:translate(-2%,-1%)} 80%{transform:translate(3%,3%)} 100%{transform:translate(0,0)} }
+.grain-row { display: flex; gap: 8px; align-items: center; direction: rtl; font-family: var(--ar); margin-top: 10px; }
 img { display: block; max-width: 100%; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; padding: 0; }
 a { color: inherit; }
@@ -52,6 +55,69 @@ section.block { padding-block: clamp(70px, 10vw, 130px); }
 .hero.light .name { color: var(--char); }
 .hero .name em { font-style: normal; color: var(--accent); }
 .hero .stage { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); height: 86%; aspect-ratio: 1600 / 1321; z-index: 1; }
+.hero .stage::before { content: ""; position: absolute; inset: 4% 8% -4%; background: url(/images/portrait-v2.webp) center bottom / contain no-repeat; filter: blur(46px) brightness(1.4); opacity: .32; transform: scale(1.08); z-index: -1; }
+.hero.light .stage::before { filter: blur(46px) brightness(.6); opacity: .25; }
+.dtex { position: absolute; inset: -10%; z-index: -1; pointer-events: none; background-image: var(--dtex, none); background-size: var(--dtex-size, auto); opacity: var(--dtex-op, .5); mix-blend-mode: screen; }
+.dtex.anim { animation: grain 1s steps(5) infinite; }
+.dtex.drift { animation: drift 40s linear infinite; }
+@keyframes drift { from { transform: translate(0, 0); } to { transform: translate(-30%, -12%); } }
+.hero.light .dtex { display: none; }
+.hero .vignette { position: absolute; inset: 0; z-index: 0; pointer-events: none; background: radial-gradient(80% 75% at 50% 55%, transparent 40%, rgba(0,0,0,.55)); }
+.hero.light .vignette { background: radial-gradient(80% 75% at 50% 55%, transparent 50%, rgba(80,70,55,.18)); }
+.opt-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; direction: rtl; align-items: center; }
+.opt-row b { font-family: var(--ar); font-weight: 600; margin-left: 6px; min-width: 110px; }
+.opt-row button { font-family: var(--ar); font-size: 15px; padding: 9px 16px; border-radius: 99px; border: 1px solid rgba(29,29,27,.2); transition: background .3s, color .3s; }
+.opt-row button[aria-pressed="true"] { background: var(--char); color: var(--cream); border-color: var(--char); }
+
+/* XI marquee */
+.mq { overflow: hidden; padding-block: 40px; }
+.mq-track { display: flex; gap: 2.4vw; width: max-content; will-change: transform; }
+.mq-card { flex: none; width: 26vw; min-width: 260px; text-decoration: none; transition: opacity .6s, transform .9s var(--ease); }
+.mq-card .img { aspect-ratio: 4 / 3.1; border-radius: 10px; overflow: hidden; }
+.mq-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
+.mq-track:hover .mq-card { opacity: .35; }
+.mq-track .mq-card:hover { opacity: 1; transform: scale(1.06); }
+.mq-card .up { display: block; margin-top: 12px; font-size: 22px; }
+
+/* XII orbit */
+.ob { position: relative; height: 300vh; }
+.ob-pin { position: sticky; top: 0; height: 100vh; overflow: hidden; perspective: 1800px; display: grid; place-items: center; background: var(--char); color: var(--cream); cursor: grab; touch-action: pan-y; }
+.ob-ring { position: relative; width: min(30vw, 400px); height: min(23vw, 310px); transform-style: preserve-3d; will-change: transform; }
+.ob-card { position: absolute; inset: 0; border-radius: 10px; overflow: hidden; backface-visibility: hidden; will-change: opacity; }
+.ob-card img { width: 100%; height: 100%; object-fit: cover; }
+.ob-title { position: absolute; left: 0; right: 0; bottom: 8vh; text-align: center; font-size: clamp(36px, 5vw, 80px); }
+.ob-hint { position: absolute; top: 9vh; left: 0; right: 0; text-align: center; color: #9c978b; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; font-size: 13px; }
+
+/* XIII wave reel */
+.wv { position: relative; }
+.wv-pin { position: sticky; top: 0; height: 100vh; overflow: hidden; display: flex; align-items: center; }
+.wv-track { position: relative; width: 100%; height: 60vh; }
+.wv-card { position: absolute; left: 0; top: 50%; width: min(24vw, 360px); margin-top: calc(min(24vw, 360px) * -0.39); will-change: transform; text-decoration: none; }
+.wv-card .img { aspect-ratio: 4 / 3.1; border-radius: 10px; overflow: hidden; box-shadow: 0 20px 50px rgba(20,20,18,.18); }
+.wv-card img { width: 100%; height: 100%; object-fit: cover; }
+.wv-card .up { display: block; margin-top: 10px; font-size: 18px; }
+
+/* XIV spotlight index */
+.sp { position: relative; height: 92vh; overflow: hidden; border-radius: 12px; background: var(--char); color: var(--cream); display: grid; grid-template-columns: 1fr 1.25fr; align-items: center; padding-inline: clamp(24px, 4vw, 64px); isolation: isolate; }
+.sp-bg { position: absolute; inset: -10%; z-index: -1; }
+.sp-bg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: blur(60px) saturate(1.2) brightness(.55); opacity: 0; transition: opacity 1s var(--ease); }
+.sp-bg img.on { opacity: 1; }
+.sp-list { list-style: none; margin: 0; padding: 0; }
+.sp-list li { font-family: var(--display); text-transform: uppercase; font-size: clamp(22px, 2.6vw, 40px); line-height: 1.12; color: rgba(241,236,226,.28); cursor: pointer; transition: color .5s, transform .7s var(--ease); }
+.sp-list li.on { color: var(--cream); transform: translateX(14px); }
+.sp-list li.on::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); margin-right: 14px; vertical-align: middle; }
+.sp-card { position: relative; aspect-ratio: 4 / 3.1; border-radius: 12px; overflow: hidden; box-shadow: 0 40px 90px rgba(0,0,0,.5); transform-style: preserve-3d; will-change: transform; }
+.sp-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.08); transition: opacity .8s var(--ease), transform 1.2s var(--ease); }
+.sp-card img.on { opacity: 1; transform: none; }
+
+/* XV split columns */
+.sc { position: relative; height: 300vh; }
+.sc-pin { position: sticky; top: 0; height: 100vh; overflow: hidden; display: grid; grid-template-columns: 1fr 1fr; gap: 2vw; padding-inline: var(--g); }
+.sc-col { display: flex; flex-direction: column; gap: 2vw; will-change: transform; }
+.sc-col a { display: block; aspect-ratio: 4 / 3.1; border-radius: 10px; overflow: hidden; }
+.sc-col img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
+.sc-col a:hover img { transform: scale(1.06); }
+.sc-mid { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 3; mix-blend-mode: difference; color: #fff; text-align: center; font-size: clamp(40px, 7vw, 120px); pointer-events: none; white-space: nowrap; }
 .hero .stage canvas, .hero .stage img { width: 100%; height: 100%; }
 .hero .meta { position: absolute; z-index: 2; left: var(--g); right: var(--g); bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; color: var(--cream); transition: color .6s; }
 .hero.light .meta { color: var(--char); }
@@ -161,33 +227,63 @@ section.block { padding-block: clamp(70px, 10vw, 130px); }
     <div class="head ar">
       <span class="num">01</span>
       <h2>الهيرو: صورتك مع العمق 3D</h2>
-      <p>حرّك الماوس بأي مكان على الصفحة: الوجه بيلف والضو بيمشي معه. حط الماوس فوق الوجه لتطلع العدسة. (صلّحت المشكلة: ويندوز عندك موقّف "تأثيرات الحركة"، وهلق الموقع بيشتغل حتى مع هالإعداد.)</p>
+      <p>الوجه هلق بيلحق الماوس (مش عكسو)، وحوالين الصورة في تغبيش ناعم مع noise وهالة خفيفة. جرّب أشكال الماوس وتكستشرات الخلفية الفحمية من الأزرار تحت.</p>
     </div>
     <div class="hero" data-hero data-dark>
+      <div class="dtex" data-dtex></div>
+      <div class="vignette"></div>
       <h1 class="name up">Anas <em>Saleh</em></h1>
       <div class="stage" data-stage></div>
       <div class="meta"><p><span class="up">Visual artist</span>Design, 3D, motion, film and drawing.</p><span class="up" style="font-size:14px;letter-spacing:.1em">Scroll</span></div>
     </div>
     <div class="controls ar">
-      <button type="button" data-lens="1" aria-pressed="true">العدسة: رسم بالرصاص</button>
-      <button type="button" data-lens="2" aria-pressed="false">العدسة: خطوط العمق 3D</button>
-      <button type="button" data-lens="0" aria-pressed="false">بدون عدسة</button>
-      <span style="width:14px"></span>
-      <button type="button" data-bg="dark" aria-pressed="true">خلفية فحمية</button>
-      <button type="button" data-bg="light" aria-pressed="false">خلفية كريمية</button>
-    </div>
-    <div class="chosen">
-      <div><i style="background:#6f8faf"></i>اللون التالت: E · Mist blue <b style="font-family:var(--body)">#6f8faf</b></div>
-      <div>التكستشر: 1 · Fine grain (مطبّق على هالصفحة)</div>
-      <div>البار: حبة زجاج بالنص فوق. نزّل بالسكرول ورجاع، وقرّب الماوس لفوق</div>
+      <div class="opt-row" data-cursors><b>شكل الماوس:</b></div>
+      <div class="opt-row" data-dtexs><b>تكستشر الفحمي:</b></div>
+      <div class="opt-row" data-grains><b>قوة حبيبات الكريمي:</b></div>
+      <div class="opt-row"><b>الخلفية:</b><button type="button" data-bg="dark" aria-pressed="true">فحمية</button><button type="button" data-bg="light" aria-pressed="false">كريمية</button></div>
     </div>
   </section>
 
   <section class="block" id="layouts">
     <div class="wrap head ar">
       <span class="num">02</span>
-      <h2>عرض المشاريع: خيارات أكتر إبداع</h2>
-      <p>خلّيت التنتين يلي عجبوك (IV وV)، وزدت 5 أفكار جديدة (VI لـ X). كل وحدة فيها حركة ناعمة وتفاعل مع الماوس. جرّبهن كلهن واختار وحدة أو تنتين.</p>
+      <h2>عرض المشاريع: 5 خيارات جديدة كمان</h2>
+      <p>زدت 5 أفكار جديدة (XI لـ XV)، وأغلبهن مبنيين على فكرة الـ Reel لأنها عجبتك. وتحتهن الخيارات السابقة (VI لـ X) مشان تقارن.</p>
+    </div>
+
+    <div class="demo">
+      <div class="wrap"><span class="tag new">XI</span> <span class="tag">NEW</span>
+      <h3 class="up demo-title">Endless reel</h3>
+      <p class="demo-note">شريط بيمشي لحالو بلا نهاية متل شريط فيلم. لما تنزل بالسكرول بيسرّع وبيمشي باتجاهك، ولما تمرق على مشروع بيكبر والباقي بيخفت.</p></div>
+      <div class="mq"><div class="mq-track" data-mq></div></div>
+    </div>
+
+    <div class="demo">
+      <div class="wrap"><span class="tag new">XII</span> <span class="tag">NEW</span>
+      <h3 class="up demo-title">Orbit</h3>
+      <p class="demo-note">المشاريع على حلقة 3D بتدور حواليك. بتدور مع السكرول، وفيك تسحبها بالماوس كمان. المشروع يلي قدّام بيضوي واسمو بيطلع تحت.</p></div>
+      <div class="ob" data-ob><div class="ob-pin" data-dark data-cursor="Drag"><span class="ob-hint">Scroll or drag</span><div class="ob-ring" data-ob-ring></div><span class="ob-title up" data-ob-title></span></div></div>
+    </div>
+
+    <div class="demo">
+      <div class="wrap"><span class="tag new">XIII</span> <span class="tag">NEW</span>
+      <h3 class="up demo-title">Wave reel</h3>
+      <p class="demo-note">الريل بس الأغلفة راكبة على موجة بتتحرك. مع السكرول بتمشي بالعرض وبتطلع وبتنزل وبتميل متل فيلم طاير بالهوا.</p></div>
+      <div class="wv" data-wv><div class="wv-pin"><div class="wv-track" data-wv-track></div><div class="bar-progress"><i data-wv-bar></i></div></div></div>
+    </div>
+
+    <div class="demo wrap">
+      <span class="tag new">XIV</span> <span class="tag">NEW</span>
+      <h3 class="up demo-title">Spotlight index</h3>
+      <p class="demo-note">لائحة أسماء ع الشمال، وع اليمين غلاف المشروع كبير بيميل مع الماوس. والخلفية بتاخد ألوان المشروع بتغبيش ناعم. مرّق على الأسماء.</p>
+      <div class="sp" data-sp data-dark><div class="sp-bg" data-sp-bg></div><ul class="sp-list" data-sp-list></ul><div class="sp-card" data-sp-card></div></div>
+    </div>
+
+    <div class="demo">
+      <div class="wrap"><span class="tag new">XV</span> <span class="tag">NEW</span>
+      <h3 class="up demo-title">Split columns</h3>
+      <p class="demo-note">عمودين أغلفة: واحد طالع وواحد نازل مع السكرول، والكلمة بالنص ثابتة وبتعكس اللون فوق الصور.</p></div>
+      <div class="sc" data-sc><div class="sc-pin"><div class="sc-col" data-sc-a></div><div class="sc-col" data-sc-b></div><span class="sc-mid up">Selected work</span></div></div>
     </div>
 
     <div class="demo">

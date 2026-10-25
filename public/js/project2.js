@@ -1,6 +1,6 @@
 // Project page (stage 3), served at /work/<slug>. Dark opener with the title rising in, the cover that grows to
 // full width as you scroll (always whole, never cropped), the story, the film, the gallery, previous and next project.
-import { shell, $, $$, esc, lerp, clamp, cats, cover } from "/js/shell2.js";
+import { shell, $, $$, esc, lerp, clamp, cats, cover, thumb } from "/js/shell2.js";
 
 const { projects, reveal } = await shell({ current: "work" });
 const main = $("[data-project]");
@@ -31,9 +31,9 @@ function render(p, prev, next) {
   const tall = /9:16/.test(p.format || "");
   const film = embed(p.video);
   const PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>';
-  // layout rows from the CMS: 1 to 4 pieces side by side, same height, never cropped.
+  // layout rows from the CMS: an optional paragraph, then pieces side by side (same height, never cropped).
   // Older entries with a flat `images` list show one per row.
-  const rows = (p.blocks || (p.images || []).map((src) => ({ images: [src] }))).filter((r) => r.images?.length);
+  const rows = (p.blocks || (p.images || []).map((src) => ({ images: [src] }))).filter((r) => r.images?.length || r.text);
   let count = 0;
   const media = (src) => {
     count++;
@@ -43,15 +43,16 @@ function render(p, prev, next) {
     }
     return `<img src="${esc(src)}" alt="${esc(p.title)}, image ${count}" loading="lazy" decoding="async">`;
   };
-  const rowHTML = (r) => `<div class="pj-row" data-n="${r.images.length}" data-reveal>
-      <div class="pj-row__items">${r.images.map((src) => `<figure>${media(src)}</figure>`).join("")}</div>
+  const rowHTML = (r) => `<div class="pj-row" data-n="${r.images?.length || 0}" data-reveal>
+      ${r.text ? `<p class="pj-row__text">${esc(r.text)}</p>` : ""}
+      ${r.images?.length ? `<div class="pj-row__items">${r.images.map((src) => `<figure>${media(src)}</figure>`).join("")}</div>` : ""}
       ${r.caption ? `<p class="pj-row__cap">${esc(r.caption)}</p>` : ""}
     </div>`;
   const side = (q, dir) => `<a class="pj-nav__item ${dir}" href="/work/${esc(q.slug)}" data-cursor="${dir === "prev" ? "Previous" : "Next"}">
       <span class="label">${dir === "prev" ? "Previous project" : "Next project"}</span>
       <span class="pj-nav__t up">${esc(q.title)}</span>
       <span class="pj-nav__s">${esc(q.subtitle)} · ${cats(q)}</span>
-      <span class="pj-nav__img" aria-hidden="true"><img src="${cover(q)}" alt="" loading="lazy"></span>
+      <span class="pj-nav__img" aria-hidden="true"><img src="${thumb(q)}" alt="" loading="lazy"></span>
     </a>`;
 
   main.innerHTML = `

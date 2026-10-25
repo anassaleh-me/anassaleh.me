@@ -210,11 +210,12 @@ content:
       - { name: video, label: "Film link (Vimeo, or YouTube). Shown with a play button", type: string }
       - name: blocks
         label: "Layout: rows from top to bottom"
-        description: "Each row shows 1 to 4 images side by side, at the same height and never cropped. Short animations: upload an .mp4 loop instead of a GIF."
+        description: "Works like Behance modules. Each row can have a short text and up to 8 images side by side (same height, never cropped). Drag rows to reorder. Short animations: upload an .mp4 loop instead of a GIF."
         type: object
         list: true
         fields:
-          - { name: images, label: "Images or .mp4 loops in this row (1 to 4)", type: file, options: { media: images, multiple: { max: 4 } } }
+          - { name: text, label: "Text above the images (optional)", type: text }
+          - { name: images, label: "Images or .mp4 loops side by side (1 = full width, up to 8)", type: file, options: { media: images, multiple: { max: 8 } } }
           - { name: caption, label: "Caption under the row (optional)", type: string }
 
   - name: blog

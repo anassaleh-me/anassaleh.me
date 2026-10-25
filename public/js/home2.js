@@ -18,6 +18,7 @@ const EASE_OUT = "cubic-bezier(.16, 1, .3, 1)";
 const CAT = { design: "Design", "3d": "3D", motion: "Motion", video: "Video" };
 const cats = (p) => (p.categories || []).map((c) => CAT[c]).join(" · ");
 const cover = (p) => `/images/covers/${p.slug}.webp`;
+const thumb = (p) => `/images/covers/thumb/${p.slug}.webp`;
 const GLOWS = { none: ["0px", 0], "very-light": ["28px", 0.1], light: ["44px", 0.16], strong: ["64px", 0.24] };
 
 const LOGO = `<svg viewBox="0 0 226.08 342.55" aria-hidden="true"><defs><mask id="LM"><rect width="226.08" height="342.55" fill="#fff"/><path transform="matrix(1,0,0,-1,113.045,265.925)" d="M0 0V65.23H43.11ZM-31.28 94.65H-62.55L-31.28 142.04ZM62.55 142.04H31.27V189.43L0 236.81-31.28 189.42-62.55 142.04-93.83 94.65-62.56 47.27V65.19H-31.28V-.12L0-47.51 93.82 94.65Z" fill="#000"/></mask></defs><g mask="url(#LM)"><path transform="matrix(1,0,0,-1,113.04,.000091552738)" d="M0 0-17.83-27.01-26.26-39.79-49.1-74.4-57.53-87.169-80.37-121.78-88.81-134.57-111.65-169.17-113.04-171.28-88.81-207.99-83.16-216.55-57.53-255.38-51.88-263.94-26.26-302.76-20.61-311.33 0-342.55 5.02-334.94 20.61-311.33 36.29-287.57 51.88-263.94 67.57-240.169 83.16-216.55 98.84-192.79 113.04-171.28 111.65-169.17 98.84-149.76 80.37-121.78 67.57-102.38 49.1-74.4 36.29-54.99 17.83-27.01Z" fill="currentColor"/></g></svg>`;
@@ -131,8 +132,8 @@ hero.addEventListener("pointermove", (e) => { sp.tx = e.clientX; sp.ty = e.clien
 const disc = $("[data-disc]");
 const discImages = (f) => {
   if (f === "drawing") return (site.drawings?.images || []).slice();
-  if (f === "direction") return projects.filter((p) => /direct/i.test(`${p.role} ${p.subtitle}`)).map(cover);
-  return projects.filter((p) => (p.categories || []).includes(f)).map(cover);
+  if (f === "direction") return projects.filter((p) => /direct/i.test(`${p.role} ${p.subtitle}`)).map(thumb);
+  return projects.filter((p) => (p.categories || []).includes(f)).map(thumb);
 };
 const discHref = (f) => (f === "drawing" ? "#drawings" : f ? `/work?f=${esc(f)}` : "/work");
 const discs = (h.disciplines || []).map((d) => ({ ...d, images: discImages(d.filter).length ? discImages(d.filter) : [d.image] }));
@@ -145,9 +146,10 @@ let cycle = 0, cycleI = 0;
 addEventListener("pointermove", (e) => { fl.tx = e.clientX; fl.ty = e.clientY; }, { passive: true });
 const showImg = (src) => {
   const img = new Image();
-  img.src = src; img.alt = ""; img.style.opacity = "0";
+  img.alt = ""; img.style.opacity = "0";
+  img.onload = () => requestAnimationFrame(() => (img.style.opacity = "1"));
+  img.src = src;
   float.append(img);
-  requestAnimationFrame(() => (img.style.opacity = "1"));
   $$("img", float).slice(0, -2).forEach((o) => o.remove());
 };
 disc.addEventListener("pointerover", (e) => {

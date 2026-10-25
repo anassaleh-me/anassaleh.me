@@ -1,6 +1,6 @@
 // Work page (stage 3): filter chips over an index of every project (the works wheel lives on the home page).
 // ?f=<filter> in the URL picks the starting chip (the home page's discipline words link here).
-import { shell, $, $$, esc, lerp, clamp, pad, cats, cover } from "/js/shell2.js";
+import { shell, $, $$, esc, lerp, clamp, pad, cats, thumb } from "/js/shell2.js";
 
 const { projects, reveal } = await shell({ current: "work" });
 
@@ -19,6 +19,12 @@ chips.innerHTML = FILTERS.map(([k, label]) => `<button type="button" class="chip
 
 const fnote = $("[data-fnote]");
 const list = $("[data-index]");
+// the hover previews are fetched as soon as the list comes near, so the first hover already has its picture
+new IntersectionObserver(([e], io) => {
+  if (!e.isIntersecting) return;
+  projects.forEach((p) => { new Image().src = thumb(p); });
+  io.disconnect();
+}, { rootMargin: "400px 0px" }).observe(list);
 let current = "";
 
 function apply(key, { first = false } = {}) {
@@ -35,9 +41,9 @@ function apply(key, { first = false } = {}) {
 
   // index: the lines blur out, the new set comes into focus line by line
   const build = () => {
-    list.innerHTML = items.map((p, i) => `<li data-reveal><a class="ix__row" href="/work/${esc(p.slug)}" data-cursor="View" data-cover="${cover(p)}">
+    list.innerHTML = items.map((p, i) => `<li data-reveal><a class="ix__row" href="/work/${esc(p.slug)}" data-cursor="View" data-cover="${thumb(p)}">
       <span class="ix__n">${pad(i + 1)}</span><span class="ix__t up">${esc(p.title)}</span><span class="ix__s">${esc(p.subtitle)}</span><span class="ix__c">${cats(p)}</span><span class="ix__y">${esc(p.year)}</span>
-      <span class="ix__img" aria-hidden="true"><img src="${cover(p)}" alt="" loading="lazy"></span></a></li>`).join("");
+      <span class="ix__img" aria-hidden="true"><img src="${thumb(p)}" alt="" loading="lazy"></span></a></li>`).join("");
     list.classList.remove("swap");
     reveal(list);
   };
@@ -60,9 +66,10 @@ list.addEventListener("pointerover", (e) => {
   if (!row || float.dataset.src === row.dataset.cover) return;
   float.dataset.src = row.dataset.cover;
   const img = new Image();
-  img.src = row.dataset.cover; img.alt = ""; img.style.opacity = "0";
+  img.alt = ""; img.style.opacity = "0";
+  img.onload = () => requestAnimationFrame(() => (img.style.opacity = "1"));
+  img.src = row.dataset.cover;
   float.append(img);
-  requestAnimationFrame(() => (img.style.opacity = "1"));
   $$("img", float).slice(0, -2).forEach((o) => o.remove());
   float.classList.add("on");
 });

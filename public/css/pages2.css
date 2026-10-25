@@ -178,29 +178,29 @@
 
 /* ---------- contact ---------- */
 .ct-direct { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 14px; padding-bottom: clamp(70px, 9vw, 130px); }
-.ct-card { display: flex; flex-direction: column; gap: 22px; min-height: 280px; padding: clamp(22px, 2.4vw, 34px); border-radius: 18px; border: 1.5px solid rgba(29, 29, 27, 0.16); transition: transform 0.6s var(--ease), box-shadow 0.6s var(--ease), background-color 0.4s; }
-.ct-card--mail { border-color: transparent; }
-.ct-card--mail .label { color: var(--accent); }
-.ct-card--mail .ct-mail { color: var(--cream); }
-.ct-card--mail .chip { border-color: rgba(241, 236, 226, 0.3); color: var(--cream); }
-.ct-card--mail .chip:hover { border-color: var(--accent); color: var(--accent); }
-.ct-card--mail .chip--ink { background: var(--accent); border-color: var(--accent); color: var(--char); }
-.ct-card--mail .chip--ink:hover { background: var(--cream); border-color: var(--cream); color: var(--char); }
-.ct-card--wa { background: var(--accent); border-color: transparent; }
-.ct-card--wa .label, .ct-card--wa .ct-card__hint { color: var(--char); }
-.ct-card--wa .ct-big .acc { color: var(--cream); }
-a.ct-card:hover { transform: translateY(-6px); box-shadow: 0 30px 60px -24px rgba(20, 20, 18, 0.35); }
+/* all three cards share one outlined style and fill with the blue when you point at them */
+.ct-card { display: flex; flex-direction: column; gap: 22px; min-height: 280px; padding: clamp(22px, 2.4vw, 34px); border-radius: 18px; border: 1.5px solid rgba(29, 29, 27, 0.2);
+  transition: transform 0.6s var(--ease), box-shadow 0.6s var(--ease), background-color 0.45s, border-color 0.45s; }
+.ct-card:hover, .ct-card:focus-within { background: var(--accent); border-color: var(--accent); transform: translateY(-6px); box-shadow: 0 30px 60px -24px rgba(20, 20, 18, 0.3); }
+.ct-card .label, .ct-card .acc, .ct-socials a i { transition: color 0.45s; }
+.ct-card:hover .label, .ct-card:focus-within .label { color: var(--char); }
+.ct-card:hover .acc, .ct-card:focus-within .acc { color: var(--cream); }
 .ct-mail { font-weight: 700; font-size: clamp(20px, 2vw, 32px); word-break: break-all; border-bottom: 2px solid rgba(111, 143, 175, 0.5); align-self: flex-start; transition: color 0.3s, border-color 0.3s; }
-.ct-mail:hover { color: var(--accent); border-color: var(--accent); }
+.ct-card:hover .ct-mail { border-color: var(--char); }
+.ct-mail:hover { color: var(--cream); }
 .ct-card__actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: auto; }
 .chip--ink { display: inline-flex; align-items: center; background: var(--char); border-color: var(--char); color: var(--cream); }
-.chip--ink:hover { background: var(--accent); border-color: var(--accent); color: var(--char); }
+.chip--ink:hover { background: var(--cream); border-color: var(--cream); color: var(--char); }
+.ct-card:hover .chip:not(.chip--ink) { border-color: rgba(29, 29, 27, 0.4); }
 .ct-big { font-size: clamp(40px, 4.4vw, 76px); line-height: 0.9; }
-.ct-card__hint { margin-top: auto; font-weight: 600; }
+.ct-card__hint { margin-top: auto; color: var(--ink-soft); font-weight: 600; transition: color 0.45s; }
+.ct-card:hover .ct-card__hint { color: var(--char); }
 .ct-socials { list-style: none; margin: 0; padding: 0; display: grid; }
 .ct-socials a { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(29, 29, 27, 0.12); font-family: var(--display); text-transform: uppercase; font-size: clamp(20px, 1.8vw, 28px); transition: color 0.3s, padding 0.5s var(--ease); }
 .ct-socials a i { font-style: normal; color: var(--accent); transition: transform 0.5s var(--ease); }
-.ct-socials a:hover { color: var(--accent); padding-left: 8px; }
+.ct-card:hover .ct-socials a { border-color: rgba(29, 29, 27, 0.25); }
+.ct-card:hover .ct-socials a i { color: var(--char); }
+.ct-socials a:hover { color: var(--cream); padding-left: 8px; }
 .ct-socials a:hover i { transform: translate(3px, -3px); }
 @media (max-width: 960px) { .ct-direct { grid-template-columns: 1fr; } }
 

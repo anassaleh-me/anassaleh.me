@@ -29,6 +29,10 @@ const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting &
 $$(".head, .demo-title, .demo-note, .tag").forEach((el) => { el.classList.add("reveal"); io.observe(el); });
 
 /* hero: opening animation, cursor spotlight, glow options */
+// The chosen glow, set without a transition at load so the intro ends exactly on it.
+const glowNow = { size: "44px", a: 0.16 };
+$("[data-stage]").style.setProperty("--glow", glowNow.size);
+$("[data-stage]").style.setProperty("--glow-a", glowNow.a);
 const heroEl = $("[data-hero]");
 const EASE_OUT = "cubic-bezier(.16, 1, .3, 1)";
 const heroReady = mountHero($("[data-stage]"), { image: "/images/portrait-v2.webp", depth: "/images/portrait-v2-depth.png", alt: "Portrait of Anas Saleh", mode: 0, reduceMotion: reduce });
@@ -41,8 +45,7 @@ async function playIntro() {
   curtain.animate([{ transform: "translateY(0)" }, { transform: "translateY(-100%)" }], { duration: 1100, delay: 150, easing: "cubic-bezier(.76, 0, .24, 1)", fill: "forwards" })
     .finished.then(() => (curtain.style.display = "none"));
   // The glow is part of the same filter chain, so it fades in at the end instead of switching on.
-  const st = getComputedStyle($("[data-stage]"));
-  const glow = `drop-shadow(0 0 ${st.getPropertyValue("--glow").trim() || "0px"} rgba(255, 255, 255, ${st.getPropertyValue("--glow-a").trim() || 0}))`;
+  const glow = `drop-shadow(0 0 ${glowNow.size} rgba(255, 255, 255, ${glowNow.a}))`;
   const noGlow = "drop-shadow(0 0 0px rgba(255, 255, 255, 0))";
   portrait.animate(
     [
@@ -81,6 +84,8 @@ const glowRow = $("[data-glows]");
   const b = document.createElement("button");
   b.type = "button"; b.textContent = label; b.setAttribute("aria-pressed", String(i === 2));
   b.addEventListener("click", () => {
+    glowNow.size = size; glowNow.a = a;
+    $("[data-stage]").classList.add("anim-glow");
     $("[data-stage]").style.setProperty("--glow", size);
     $("[data-stage]").style.setProperty("--glow-a", a);
     $$("button", glowRow).forEach((x) => x.setAttribute("aria-pressed", String(x === b)));

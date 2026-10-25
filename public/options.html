@@ -70,7 +70,8 @@ section.block { padding-block: clamp(70px, 10vw, 130px); }
 .hero--full .stage { height: 84vh; }
 @property --glow { syntax: "<length>"; inherits: true; initial-value: 0px; }
 @property --glow-a { syntax: "<number>"; inherits: true; initial-value: 0; }
-.hero .stage { --glow: 0px; --glow-a: 0; transition: --glow .9s var(--ease), --glow-a .9s var(--ease); }
+.hero .stage { --glow: 0px; --glow-a: 0; }
+.hero .stage.anim-glow { transition: --glow .9s var(--ease), --glow-a .9s var(--ease); }
 .hero .stage canvas { filter: drop-shadow(0 0 var(--glow) rgba(255, 255, 255, var(--glow-a))); }
 .spot { position: absolute; left: 0; top: 0; width: 760px; height: 760px; margin: -380px 0 0 -380px; border-radius: 50%; pointer-events: none; z-index: 0;
   background: radial-gradient(circle, rgba(241,236,226,.14), rgba(241,236,226,.05) 38%, transparent 68%); opacity: 0; transition: opacity .8s; will-change: transform; }

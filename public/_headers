@@ -1,8 +1,8 @@
 # Browser caching for the static files (Cloudflare Workers static assets).
 # Fonts and vendor files have fixed names and never change, so browsers keep them for a year.
 # Images are kept for a week: when replacing an image, upload it under a new file name so visitors see it at once.
-# Code (CSS, JS) and content (JSON) are used from the browser's copy at once and checked in the background,
-# so pages never wait on a check; a change shows up on the next page or visit.
+# Code (CSS, JS) is checked on every visit so a new release never mixes with old files; pages preload all their
+# modules, so the checks run side by side. Content (JSON) is used at once and refreshed in the background.
 
 /fonts/*
   Cache-Control: public, max-age=31536000, immutable
@@ -14,10 +14,10 @@
   Cache-Control: public, max-age=604800
 
 /css/*
-  Cache-Control: public, max-age=60, stale-while-revalidate=604800
+  Cache-Control: public, max-age=0, must-revalidate
 
 /js/*
-  Cache-Control: public, max-age=60, stale-while-revalidate=604800
+  Cache-Control: public, max-age=0, must-revalidate
 
 /content/*
   Cache-Control: public, max-age=0, stale-while-revalidate=604800

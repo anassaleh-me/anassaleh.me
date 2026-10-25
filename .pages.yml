@@ -96,14 +96,14 @@ content:
             type: select
             options:
               values:
-                - { name: in-production, label: In production }
+                - { name: in-production, label: In the works }
                 - { name: coming-soon, label: Coming soon }
                 - { name: idea, label: Idea }
           - { name: text, label: Text, type: text }
           - { name: image, label: Image, type: image, options: { media: images } }
           - { name: details, label: "Longer note (optional, In progress page only)", type: text }
           - { name: gallery, label: "Extra images (optional, In progress page only)", type: image, options: { media: images, multiple: { max: 6 } } }
-          - { name: link, label: "Link (optional, for example /in-production)", type: string }
+          - { name: link, label: "Link (optional, for example /film)", type: string }
       - name: drawings
         label: Drawings
         type: object
@@ -145,7 +145,7 @@ content:
           - { name: show, label: "Show the journal on the site (adds it to the menu)", type: boolean }
           - { name: intro, label: Intro line, type: text }
       - name: inProduction
-        label: In Production (short film page)
+        label: Film diary (the short film's own page, at /film)
         type: object
         fields:
           - { name: show, label: Show this page on the site, type: boolean }

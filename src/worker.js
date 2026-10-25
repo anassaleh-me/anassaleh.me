@@ -35,7 +35,7 @@ export default {
     if (url.pathname === "/sitemap.xml") {
       const [list, site, blog] = await Promise.all([projects(env, url), content(env, url, "site"), content(env, url, "blog")]);
       const journal = site?.journal?.show ? ["/journal", ...(blog || []).filter((p) => !p.draft).map((p) => `/journal/${p.slug}`)] : [];
-      const pages = ["/", "/work", "/about", "/in-progress", "/contact", ...journal, ...list.map((p) => `/work/${p.slug}`)];
+      const pages = ["/", "/work", "/about", ...(site?.studio?.length ? ["/in-progress"] : []), "/contact", ...journal, ...list.map((p) => `/work/${p.slug}`)];
       const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map((p) => `  <url><loc>${SITE}${p}</loc></url>`).join("\n")}\n</urlset>\n`;
       return new Response(xml, { headers: { "content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600" } });
     }

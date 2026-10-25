@@ -1,4 +1,4 @@
-// In Production page (stage 5): the short film, its current stage, the story and a production diary.
+// Film diary page (/film): the short film, its current stage, the story and a production diary.
 // Hidden until "Show this page" is ticked in Pages CMS; add ?preview to the address to see it anyway.
 import { shell, $, $$, esc } from "/js/shell2.js";
 
@@ -11,14 +11,14 @@ const ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 const preview = new URLSearchParams(location.search).has("preview");
 
 if (!f.show && !preview) {
-  main.innerHTML = `<header class="ph wrap"><span class="label">In production</span><h1 class="ph__title up">Coming <span class="acc">soon</span></h1>
+  main.innerHTML = `<header class="ph wrap"><span class="label">Film diary</span><h1 class="ph__title up">Coming <span class="acc">soon</span></h1>
     <div class="ph__foot"><p>This page isn't open yet.</p><a class="btn btn--ink" href="/">Back home ${ARROW}</a></div></header>`;
   document.documentElement.classList.remove("intro");
 } else render();
 
 function render() {
   if (f.show) $("[data-robots]")?.remove();
-  document.title = `${f.title || "Short film"}, in production, Anas Saleh`;
+  document.title = `${f.title || "Short film"}, film diary, Anas Saleh`;
   const current = Math.max(0, STAGES.findIndex(([k]) => k === f.stage));
   const diary = [...(f.diary || [])].sort((a, b) => String(b.date).localeCompare(String(a.date)));
   const words = (f.title || "Untitled short film").split(/\s+/);
@@ -29,7 +29,7 @@ function render() {
     <div class="pr-hero__shade"></div>
     <div class="pr-rec" aria-hidden="true"><i></i>REC <span data-tc>00:00:00:00</span></div>
     <div class="wrap pr-hero__in">
-      <span class="label" data-intro>In production</span>
+      <span class="label" data-intro>Film diary</span>
       <h1 class="pr-title up">${words.map((w, i) => `<span class="ln"><span class="w${i === words.length - 1 ? " acc" : ""}">${esc(w)}</span></span>`).join(" ")}</h1>
       <p class="pr-log" data-intro>${esc(f.logline || "")}</p>
     </div>

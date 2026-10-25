@@ -79,14 +79,14 @@ heroEl.addEventListener("pointermove", (e) => { const r = heroEl.getBoundingClie
 const glowRow = $("[data-glows]");
 [["بدون", "0px", 0], ["خفيف جداً", "28px", 0.1], ["خفيف", "44px", 0.16], ["أوضح", "64px", 0.24]].forEach(([label, size, a], i) => {
   const b = document.createElement("button");
-  b.type = "button"; b.textContent = label; b.setAttribute("aria-pressed", String(i === 1));
+  b.type = "button"; b.textContent = label; b.setAttribute("aria-pressed", String(i === 2));
   b.addEventListener("click", () => {
     $("[data-stage]").style.setProperty("--glow", size);
     $("[data-stage]").style.setProperty("--glow-a", a);
     $$("button", glowRow).forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
   });
   glowRow.append(b);
-  if (i === 1) b.click();
+  if (i === 2) b.click();
 });
 let lenisRef = null;
 
@@ -150,31 +150,6 @@ const swapText = (el, text) => {
   el._t = setTimeout(() => { el.textContent = text; el.style.opacity = "1"; el.style.transform = "none"; }, 200);
 };
 
-/* A curved reel */
-const cv = $("[data-cv]");
-cv.style.height = `${list.length * 70}vh`;
-$("[data-cv-track]").innerHTML = list.map((p, i) => `<a class="cv-card" href="/work/${p.slug}"><div class="img"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></div><div class="row"><span class="up">${p.title}</span><span class="n">${pad(i + 1)}</span></div></a>`).join("");
-const cvCards = $$(".cv-card");
-
-/* B orbit */
-const ob = $("[data-ob]");
-const R = Math.min(innerWidth * 0.5, 720);
-$("[data-ob-ring]").innerHTML = list.map((p, i) => `<a class="ob-card" href="/work/${p.slug}" style="transform:rotateY(${(i * 360) / list.length}deg) translateZ(${R}px)"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></a>`).join("");
-const obCards = $$(".ob-card");
-const obS = { rot: 0, drag: 0, tdrag: 0, down: false, sx: 0, base: 0 };
-$(".ob-pin").addEventListener("pointerdown", (e) => { obS.down = true; obS.sx = e.clientX; obS.base = obS.tdrag; });
-addEventListener("pointermove", (e) => { if (obS.down) obS.tdrag = obS.base + (e.clientX - obS.sx) * 0.25; });
-addEventListener("pointerup", () => (obS.down = false));
-
-/* E split columns */
-const sc = $("[data-sc]");
-const half = Math.ceil(list.length / 2);
-const colA = list.slice(0, half), colB = list.slice(half);
-const colHTML = (arr) => [...arr, ...arr].map((p) => `<a href="/work/${p.slug}" data-title="${p.title}" data-sub="${cats(p)} · ${p.year}"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></a>`).join("");
-$("[data-sc-a]").innerHTML = colHTML(colA);
-$("[data-sc-b]").innerHTML = colHTML(colB);
-let scP = 0;
-
 /* 5 works wheel (ported from the React component Anas sent).
    One number, `turn`: 0 = cards in a ring round the label, 1 = vertical drum with item 0 at the front,
    each whole number after that = one more item turned past. Here the page scroll drives it. */
@@ -216,29 +191,29 @@ function wwDraw() {
   const hold = f < 0.3 ? 0 : f > 0.7 ? 1 : ((x) => x * x * (3 - 2 * x))((f - 0.3) / 0.4);
   const t = wwS.turn, m = clamp(t, 0, 1), pos = base + hold;
   const { ringR, drumR, bow, ringScale, lens } = wwM;
-  // Two clean phases instead of a morph, so cards never pass through each other:
-  // 0 to 0.5 the ring spins a little, shrinks and fades; 0.5 to 1 the drum fades and sharpens in.
-  // Each card carries its own perspective (the wheel is flat), so 3D planes can't cut into each other.
-  const out = clamp(m / 0.5, 0, 1), inn = clamp((m - 0.5) / 0.5, 0, 1);
-  const ease = (x) => 1 - Math.pow(1 - x, 3);
+  // The original morph: the ring blows open into the drum in one move.
+  // No overlaps: every card carries its own perspective (the wheel is flat, so 3D planes can't cut into each other),
+  // the cards that won't be on the drum fade out early in the move, and the front card always stacks on top.
+  const sstep = (a, b, x) => { const k = clamp((x - a) / (b - a), 0, 1); return k * k * (3 - 2 * k); };
   wwCards.forEach((c, i) => {
-    const d = i - pos, ad = Math.abs(d);
-    if (m < 0.5) {
-      const ringDeg = i * (360 / wwItems.length) + out * 40;
-      c.style.transform = `perspective(${lens}px) rotateZ(${ringDeg}deg) translateY(${-ringR * (1 - ease(out) * 0.35)}px) scale(${ringScale * (1 - ease(out) * 0.4)})`;
-      c.style.opacity = String(1 - ease(out));
-      c.style.zIndex = String(i);
-      setBlur(wwFaces[i], out * 6);
-    } else {
-      const drumDeg = d * WW.STEP;
-      c.style.transform = `perspective(${lens}px) translateZ(${-drumR}px) translateX(${-bow * (1 - Math.cos(rad(drumDeg)))}px) rotateX(${drumDeg}deg) translateZ(${drumR}px) scale(${0.92 + ease(inn) * 0.08})`;
-      c.style.opacity = ad > WW.CULL ? "0" : String(ease(inn) * clamp(1.5 - ad * 0.45, 0, 1));
-      c.style.zIndex = String(Math.round(100 - ad * 10));
-      setBlur(wwFaces[i], (1 - inn) * 8 + clamp((ad - 0.25) * 6, 0, 6));
-    }
+    const d = i - pos, ad = Math.abs(d), drumDeg = d * WW.STEP, ringDeg = i * (360 / wwItems.length);
+    c.style.transform =
+      `perspective(${lens}px) translateZ(${-m * drumR}px)` +
+      ` translateX(${m * -bow * (1 - Math.cos(rad(drumDeg)))}px)` +
+      ` rotateZ(${(1 - m) * ringDeg}deg) translateY(${-(1 - m) * ringR}px)` +
+      ` rotateX(${m * drumDeg}deg) translateZ(${m * drumR}px)`;
+    const onDrum = ad <= WW.CULL, front = ad < 0.5;
+    // Only the front card travels the whole way; its drum neighbours step aside mid-move and come back
+    // once the drum has formed, so nothing slides across the front card.
+    const op = front ? 1 : onDrum ? 1 - sstep(0.02, 0.2, m) + sstep(0.72, 1, m) : 1 - sstep(0.01, 0.16, m);
+    c.style.opacity = String(op);
+    c.style.visibility = op < 0.01 ? "hidden" : "visible";
+    c.style.zIndex = String(m > 0.02 ? Math.round(100 - ad * 10) : i);
+    wwFaces[i].style.transform = `scale(${lerp(ringScale, 1, m)})`;
+    setBlur(wwFaces[i], m > 0.6 ? clamp((ad - 0.25) * 6, 0, 6) : 0);
   });
-  $("[data-ww-label]").style.opacity = String(1 - ease(out));
-  $("[data-ww-title]").style.opacity = String(ease(inn));
+  $("[data-ww-label]").style.opacity = String(1 - sstep(0, 0.35, m));
+  $("[data-ww-title]").style.opacity = String(sstep(0.6, 1, m));
   $("[data-ww-bar]").style.width = `${prog(ww) * 100}%`;
   const near = clamp(Math.round(pos), 0, wwItems.length - 1);
   if (near !== wwS.active) {
@@ -250,63 +225,6 @@ function wwDraw() {
     $$("[data-ww-index] button").forEach((b, i) => b.classList.toggle("on", i === near));
   }
 }
-
-/* 4 dome gallery: covers on a sphere, drag with inertia, click to open */
-const dm = $("[data-dm]");
-const sphere = $("[data-dm-sphere]");
-const SEG = 30, UNIT = 360 / SEG / 2;
-const dmR = clamp(Math.max(innerWidth, innerHeight) * 1.05, 700, 1700);
-dm.style.setProperty("--R", `${dmR}px`);
-const tile = (2 * Math.PI * dmR) / SEG;
-const tiles = [];
-let k = 0;
-for (let x = -SEG; x < SEG; x += 2) {
-  const ys = ((x / 2) & 1) ? [-3, -1, 1, 3] : [-4, -2, 0, 2, 4];
-  for (const y of ys) {
-    const p = projects[(k * 7 + (x & 3)) % projects.length];
-    k++;
-    tiles.push(`<div class="dm-item" style="width:${tile}px;height:${tile * 0.82}px;margin:${-tile * 0.41}px 0 0 ${-tile / 2}px;transform:rotateY(${UNIT * (x + 1)}deg) rotateX(${UNIT * y}deg) translateZ(${dmR}px)"><button type="button" data-cursor="Open" data-slug="${p.slug}" aria-label="${p.title}"><img src="${cover(p)}" alt="" loading="lazy"></button></div>`);
-  }
-}
-sphere.innerHTML = tiles.join("");
-const dmS = { rx: -4, ry: 0, vx: 0, vy: 0, down: false, lx: 0, ly: 0, moved: 0 };
-dm.addEventListener("pointerdown", (e) => { dmS.down = true; dmS.moved = 0; dmS.lx = e.clientX; dmS.ly = e.clientY; dmS.vx = dmS.vy = 0; dmS.pid = e.pointerId; });
-dm.addEventListener("pointermove", (e) => {
-  if (!dmS.down) return;
-  const dx = e.clientX - dmS.lx, dy = e.clientY - dmS.ly;
-  dmS.lx = e.clientX; dmS.ly = e.clientY;
-  dmS.moved += Math.abs(dx) + Math.abs(dy);
-  if (dmS.moved > 6 && !dm.hasPointerCapture(e.pointerId)) dm.setPointerCapture(e.pointerId);
-  dmS.vy = dx * 0.14; dmS.vx = -dy * 0.1;
-  dmS.ry += dmS.vy; dmS.rx = clamp(dmS.rx + dmS.vx, -12, 12);
-});
-const dmUp = () => (dmS.down = false);
-dm.addEventListener("pointerup", dmUp);
-dm.addEventListener("pointercancel", dmUp);
-const viewer = $("[data-dm-viewer]");
-const closeViewer = () => { viewer.classList.remove("show"); setTimeout(() => viewer.classList.remove("on"), 400); };
-dm.addEventListener("click", (e) => {
-  const b = e.target.closest("button[data-slug]");
-  if (!b || dmS.moved > 6) return;
-  const p = projects.find((x) => x.slug === b.dataset.slug);
-  viewer.innerHTML = `<button class="x" type="button" aria-label="Close">&times;</button><div class="card"><img src="${cover(p)}" alt="${p.title}"><div class="row"><div><span class="up">${p.title}</span><span class="meta">${cats(p)} · ${p.year}</span></div><a href="/work/${p.slug}">View project</a></div></div>`;
-  viewer.classList.add("on");
-  requestAnimationFrame(() => viewer.classList.add("show"));
-});
-viewer.addEventListener("pointerdown", (e) => e.stopPropagation());
-viewer.addEventListener("click", (e) => { if (e.target === viewer || e.target.closest(".x")) closeViewer(); });
-addEventListener("keydown", (e) => e.key === "Escape" && closeViewer());
-function dmLoop() {
-  requestAnimationFrame(dmLoop);
-  if (!onScreen(dm)) return;
-  if (!dmS.down) {
-    dmS.vy *= 0.95; dmS.vx *= 0.9;
-    dmS.ry += dmS.vy + 0.03;
-    dmS.rx = clamp(dmS.rx + dmS.vx, -12, 12);
-  }
-  sphere.style.transform = `translateZ(${-dmR}px) rotateX(${dmS.rx}deg) rotateY(${dmS.ry}deg)`;
-}
-requestAnimationFrame(dmLoop);
 
 /* ---------- one smooth loop ---------- */
 // Only animate what's on screen; off-screen sections cost nothing, which keeps the cursor smooth.
@@ -325,60 +243,8 @@ function loop(t) {
   const W = innerWidth, H = innerHeight;
   if (onScreen(ww)) wwDraw();
 
-  // A curved reel
-  if (onScreen(cv)) {
-  sm.cv = lerp(sm.cv, prog(cv), 0.09);
-  const off = sm.cv * (cvCards.length - 1);
-  const cw = cvCards[0].offsetWidth * 1.08;
-  cvCards.forEach((c, i) => {
-    const rel = i - off, ar = Math.abs(rel);
-    const a = clamp(rel * -24 + sm.vel * -0.4, -70, 70);
-    c.style.transform = `translateX(${rel * cw}px) translateZ(${-ar * 160}px) rotateY(${a}deg)`;
-    c.style.opacity = String(clamp(1.4 - ar * 0.35, 0, 1));
-    setBlur(c, clamp((ar - 0.35) * 7, 0, 12), ar > 0.5 ? `grayscale(${Math.min(1, ar - 0.4)})` : "");
-  });
-  const cvi = clamp(Math.round(off), 0, cvCards.length - 1);
-  $("[data-cv-big]").textContent = list[cvi].title;
-  $("[data-cv-count]").textContent = `${pad(cvi + 1)} / ${pad(list.length)}`;
-  $("[data-cv-bar]").style.width = `${sm.cv * 100}%`;
-  }
-
-  // B orbit
-  if (onScreen(ob)) {
-  obS.drag = lerp(obS.drag, obS.tdrag, 0.08);
-  obS.rot = lerp(obS.rot, -prog(ob) * 360 * 1.5 + obS.drag, 0.08);
-  $("[data-ob-ring]").style.transform = `translateZ(${-R}px) rotateX(-6deg) rotateY(${obS.rot}deg)`;
-  const step = 360 / list.length;
-  const front = ((Math.round(-obS.rot / step) % list.length) + list.length) % list.length;
-  obCards.forEach((c, i) => {
-    const ang = Math.abs((((i * step + obS.rot) % 360) + 540) % 360 - 180);
-    c.style.opacity = String(clamp(1 - ang / 170, 0.12, 1));
-    setBlur(c, clamp((ang - 18) / 9, 0, 10));
-  });
-  swapText($("[data-ob-title]"), list[front].title);
-  $("[data-ob-sub]").textContent = `${pad(front + 1)} · ${cats(list[front])}`;
-  }
-
-  // E split columns: sharp in the middle band, blurred toward the edges
-  if (onScreen(sc)) {
-  scP = lerp(scP, prog(sc), 0.08);
-  const ca = $("[data-sc-a]"), cb = $("[data-sc-b]");
-  const travel = ca.scrollHeight / 2;
-  ca.style.transform = `translateY(${-scP * travel}px)`;
-  cb.style.transform = `translateY(${-travel + scP * travel}px)`;
-  let scBest = null, scD = 1e9;
-  [...$$("a", ca), ...$$("a", cb)].forEach((a) => {
-    const r = a.getBoundingClientRect();
-    if (r.bottom < -50 || r.top > H + 50) return;
-    const d = Math.abs(r.top + r.height / 2 - H / 2) / (H / 2);
-    setBlur(a, clamp((d - 0.3) * 10, 0, 9));
-    a.style.transform = `scale(${1 - clamp(d - 0.3, 0, 0.6) * 0.12})`;
-    if (d < scD) { scD = d; scBest = a; }
-  });
-  if (scBest) { swapText($("[data-sc-name]"), scBest.dataset.title); $("[data-sc-sub]").textContent = scBest.dataset.sub; }
-  }
 
   requestAnimationFrame(loop);
 }
-[ww, cv, ob, sc, dm].forEach((el) => visIO.observe(el));
+visIO.observe(ww);
 requestAnimationFrame(loop);

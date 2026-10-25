@@ -14,7 +14,7 @@
     "tools": "Sony a6700, DJI Ronin, Premiere Pro",
     "featured": true,
     "draft": false,
-    "cover": "/images/projects/exoskeleton-film/cover.webp",
+    "cover": "/images/covers/exoskeleton-film.webp",
     "video": "https://player.vimeo.com/video/1239052181",
     "description": "A product film for MangoBot's wearable exoskeleton, from unboxing to a run on the grass. I took it from the first idea to the final file: concept, creative direction, filming, editing, colour grading, motion type and sound design. Shot in 4K on a Sony a6700 with a DJI Ronin, then cut and graded in Premiere Pro.",
     "blocks": [
@@ -67,7 +67,7 @@
     "tools": "Premiere Pro, After Effects",
     "featured": true,
     "draft": false,
-    "cover": "/images/projects/mangobot-production/cover.webp",
+    "cover": "/images/covers/mangobot-production.webp",
     "video": "https://www.youtube.com/watch?v=4fMmY7Bs0_g",
     "description": "A brand film for MangoBot, from storyboard to final delivery. I planned the visual sequence, directed the look on set so every shot fit the edit, then cut the film, built the motion graphics and VFX, graded it and synced the sound.",
     "blocks": [
@@ -117,7 +117,7 @@
     "tools": "Blender",
     "featured": true,
     "draft": false,
-    "cover": "/images/projects/g2-humanoid-robot/cover.webp",
+    "cover": "/images/covers/g2-humanoid-robot.webp",
     "video": "",
     "description": "G2 is MangoBot's humanoid robot, and this is its official 3D model, built end to end in Blender. I handled the whole pipeline: hard-surface modeling, materials and texturing, lighting and the final renders. The goal was a clean, premium look that holds up in close-ups, product films and the website.",
     "blocks": [
@@ -187,7 +187,7 @@
     "tools": "Blender, Premiere Pro",
     "featured": true,
     "draft": false,
-    "cover": "/images/projects/mechanical-spider/cover.webp",
+    "cover": "/images/covers/mechanical-spider.webp",
     "video": "https://www-ccv.adobe.io/v1/player/ccv/QMIEnuLQmFf/embed",
     "description": "An unknown mechanical spider wakes up inside a sterile white room. Captured after a mysterious arrival on Earth, it explores the space and itself while people watch from behind reinforced glass. The scene is about isolation, confusion and the feeling of being observed. I made everything myself: character design, modeling and texturing, rigging, animation, lighting, sound design and the final edit.",
     "blocks": [
@@ -290,7 +290,7 @@
     "tools": "Illustrator, InDesign, Photoshop",
     "featured": true,
     "draft": false,
-    "cover": "/images/projects/mangobot-brand-identity/cover.webp",
+    "cover": "/images/covers/mangobot-brand-identity.webp",
     "video": "",
     "description": "MangoBot builds humanoid robots for hospitality, events and lifestyle spaces in the Middle East. When I started, the only brand asset was the logo. I built everything around it: the colour system, typography, graphic elements, layouts and the rules that keep them consistent across digital, print, events and products.",
     "blocks": [
@@ -497,7 +497,7 @@
     "tools": "Photoshop, Illustrator, Blender",
     "featured": true,
     "draft": false,
-    "cover": "/images/projects/promate-ecommerce/cover.webp",
+    "cover": "/images/covers/promate-ecommerce.webp",
     "video": "",
     "description": "Product visuals for Promate's mobile and computer accessories. The job was to turn technical features into clear, engaging stories for online shoppers. Where real photography was missing or limited, I modeled the products in 3D and rendered them for listings, campaigns and launches.",
     "blocks": [
@@ -591,7 +591,7 @@
     "tools": "Blender, Photoshop, Illustrator, After Effects",
     "featured": false,
     "draft": false,
-    "cover": "/images/projects/selected-work-2025/cover.webp",
+    "cover": "/images/covers/selected-work-2025.webp",
     "video": "",
     "description": "A collection of pieces from 2024 and 2025: product renders and conceptual scenes in Blender, motion work, illustration and marketing visuals for brands. Every piece started from the brand's core message and ended with a consistent look.",
     "blocks": [
@@ -815,7 +815,7 @@
     "tools": "Photoshop, Illustrator, Blender",
     "featured": false,
     "draft": false,
-    "cover": "/images/projects/mangobot-social/cover.webp",
+    "cover": "/images/covers/mangobot-social.webp",
     "video": "",
     "description": "Social content for MangoBot's robot rental service across the GCC, including a step by step carousel on renting a robot, robot introductions and a series of feed posts. Clear explanations, the brand system, and the robots front and centre.",
     "blocks": [
@@ -865,7 +865,7 @@
     "tools": "Illustrator, Photoshop",
     "featured": false,
     "draft": false,
-    "cover": "/images/projects/promate-packaging/cover.webp",
+    "cover": "/images/covers/promate-packaging.webp",
     "video": "",
     "description": "Retail packaging for a Promate product, built for clarity and shelf presence. The layout leads with the product's key features in a bold, minimal, retail-ready look.",
     "blocks": [
@@ -904,7 +904,7 @@
     "tools": "After Effects, Blender, Premiere Pro",
     "featured": false,
     "draft": false,
-    "cover": "/images/projects/intro-video/cover.webp",
+    "cover": "/images/covers/intro-video.webp",
     "video": "https://www-ccv.adobe.io/v1/player/ccv/4EkPLDqBJA6/embed",
     "description": "A short self-introduction that shows the range of what I do: illustration, graphic design, motion graphics, 3D and video editing, cut together in one piece.",
     "blocks": [
@@ -933,7 +933,7 @@
     "tools": "Figma, Framer",
     "featured": false,
     "draft": false,
-    "cover": "/images/projects/mangobot-website/cover.webp",
+    "cover": "/images/covers/mangobot-website.webp",
     "video": "",
     "description": "The company's first website, built around the new visual identity. Responsive layouts for desktop and mobile, in English and Arabic.",
     "blocks": [
@@ -1048,7 +1048,7 @@
     "tools": "Photoshop",
     "featured": false,
     "draft": true,
-    "cover": "",
+    "cover": "/images/covers/social-carousel.webp",
     "video": "",
     "description": "A carousel system for social media that keeps a single story moving across several frames.",
     "blocks": [

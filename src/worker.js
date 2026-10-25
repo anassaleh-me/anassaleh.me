@@ -1,11 +1,20 @@
 // Cloudflare Worker in front of the static site.
-// - /work/<slug>   serves project.html (the page reads the slug from the URL)
+// - /work/<slug>   serves project.html with that project's title, description and cover in the page head,
+//                  so shared links show the right preview (404 for unknown or draft projects)
+// - /sitemap.xml   built from projects.json, so new projects are listed without touching code
 // - /api/contact   receives the contact form, stores it (KV) and emails it (send_email binding)
 // Everything else falls through to the static assets in ./public.
 import { EmailMessage } from "cloudflare:email";
 
+const SITE = "https://anassaleh.me";
 const json = (data, status = 200) =>
   new Response(JSON.stringify(data), { status, headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" } });
+const attr = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+
+async function projects(env, url) {
+  const res = await env.ASSETS.fetch(new Request(new URL("/content/projects.json", url)));
+  return res.ok ? (await res.json()).filter((p) => !p.draft) : [];
+}
 
 export default {
   async fetch(request, env, ctx) {
@@ -16,10 +25,30 @@ export default {
       return handleContact(request, env, ctx);
     }
 
+    if (url.pathname === "/sitemap.xml") {
+      const pages = ["/", "/work", "/about", "/contact", ...(await projects(env, url)).map((p) => `/work/${p.slug}`)];
+      const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map((p) => `  <url><loc>${SITE}${p}</loc></url>`).join("\n")}\n</urlset>\n`;
+      return new Response(xml, { headers: { "content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600" } });
+    }
+
     const m = url.pathname.match(/^\/work\/([a-z0-9-]+)\/?$/);
     if (m) {
-      const res = await env.ASSETS.fetch(new Request(new URL("/project", url), request));
-      return new Response(res.body, { status: res.status, headers: res.headers });
+      const [res, list] = await Promise.all([env.ASSETS.fetch(new Request(new URL("/project", url), request)), projects(env, url)]);
+      const p = list.find((x) => x.slug === m[1]);
+      const out = new Response(res.body, { status: p ? res.status : 404, headers: res.headers });
+      if (!p) return out;
+      const title = `${p.title}, Anas Saleh`;
+      const desc = `${p.subtitle}. ${p.description || ""}`.slice(0, 160);
+      // share previews: a JPG copy where there is one (some apps don't show WebP), else the CMS cover
+      const c = p.cover || `/images/covers/${p.slug}.webp`;
+      const image = SITE + (c.startsWith("/images/covers/") ? c.replace("/images/covers/", "/images/covers/og/").replace(/\.webp$/, ".jpg") : c);
+      const set = (content) => ({ element: (el) => el.setAttribute("content", content) });
+      return new HTMLRewriter()
+        .on("title", { element: (el) => el.setInnerContent(title) })
+        .on('meta[name="description"]', set(desc))
+        .on('meta[property="og:image"]', set(image))
+        .on("head", { element: (el) => el.append(`<meta property="og:title" content="${attr(title)}"><meta property="og:description" content="${attr(desc)}"><meta property="og:type" content="article"><meta property="og:url" content="${SITE}/work/${p.slug}"><meta name="twitter:card" content="summary_large_image"><link rel="canonical" href="${SITE}/work/${p.slug}">`, { html: true }) })
+        .transform(out);
     }
 
     return env.ASSETS.fetch(request);

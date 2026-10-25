@@ -1,28 +1,41 @@
 <!doctype html>
-<html lang="en" data-palette="paper">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Page not found, Anas Saleh</title>
 <meta name="robots" content="noindex">
+<meta name="theme-color" content="#1d1d1b">
 <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Semi+Condensed:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="/css/site.css">
-<script src="/js/palette.js"></script>
-<script type="module" src="/js/site.js"></script>
+<link rel="stylesheet" href="/css/nav.css">
+<link rel="stylesheet" href="/css/v2.css">
+<link rel="stylesheet" href="/css/pages2.css">
+<script type="module">
+  // The big 404 leans away from the pointer.
+  import { shell, $ } from "/js/shell2.js";
+  await shell();
+  const big = $("[data-404]");
+  addEventListener("pointermove", (e) => {
+    const x = e.clientX / innerWidth - 0.5, y = e.clientY / innerHeight - 0.5;
+    big.style.transform = `perspective(900px) rotateY(${x * -16}deg) rotateX(${y * 12}deg) translate(${x * -30}px, ${y * -20}px)`;
+  }, { passive: true });
+</script>
 </head>
-<body data-page="notfound">
-<header id="nav"></header>
+<body>
+<a class="skip" href="#main">Skip to content</a>
 <main id="main">
-  <section class="page-head wrap" style="min-height:70svh">
-    <p class="eyebrow">404</p>
-    <h1 class="display">Lost the frame.</h1>
-    <p class="lead" style="margin:22px 0 32px">This page doesn't exist. Try the work instead.</p>
-    <a class="btn" href="/work">See the work</a>
+  <section class="nf dark" data-dark aria-labelledby="nf-title">
+    <div class="wrap">
+      <p class="nf__big up" data-404 aria-hidden="true">4<span class="acc">0</span>4</p>
+      <h1 class="up" id="nf-title">Lost the <span class="acc">frame</span></h1>
+      <p class="nf__text">This page doesn't exist or it moved. Try the work instead.</p>
+      <div class="contact__actions"><a class="btn btn--accent" href="/work">See the work <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="btn btn--line" href="/">Home</a></div>
+    </div>
   </section>
 </main>
-<footer id="footer"></footer>
+<footer data-footer></footer>
 </body>
 </html>

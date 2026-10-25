@@ -205,7 +205,7 @@ content:
       - { name: tools, label: Tools and gear, type: string }
       - { name: featured, label: Show on homepage, type: boolean }
       - { name: draft, label: Hide from site (draft), type: boolean }
-      - { name: cover, label: Cover image, type: image, options: { media: images } }
+      - { name: cover, label: "Cover image (about 1600 x 1250, used on the cards, the project page and link previews)", type: image, options: { media: images } }
       - { name: description, label: Description, type: text }
       - { name: video, label: "Film link (Vimeo, or YouTube). Shown with a play button", type: string }
       - name: blocks

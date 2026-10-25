@@ -6,38 +6,69 @@
     "palette": "paper"
   },
   "home": {
-    "headline": "Multimedia designer in Dubai.",
-    "intro": "Design, 3D, motion and video, from the first idea to the final frame.",
-    "statement": "I design, film, animate and edit. One person, from the first sketch to the light on the last frame.",
+    "headline": "Visual artist",
+    "intro": "Design, 3D, motion, film and drawing.",
+    "statement": "I design, model, animate, film and [draw].",
+    "statementSub": "One artist, from the first pencil line to the final frame. Based in Dubai.",
     "heroType": "portrait",
     "heroVideo": "",
-    "heroImage": "/images/portrait.webp",
-    "heroDepth": "/images/portrait-depth.png",
+    "heroImage": "/images/portrait-v2.webp",
+    "heroDepth": "/images/portrait-v2-depth.png",
+    "heroGlow": "light",
     "heroModel": "",
     "showreelUrl": "",
+    "worksLabel": "Works '26",
     "disciplines": [
-      {
-        "title": "Design",
-        "filter": "design",
-        "text": "Brand identities, design systems, packaging and campaign visuals that stay consistent from a logo to an exhibition stand.",
-        "image": "/images/projects/mangobot-social/cover.webp"
-      },
-      {
-        "title": "3D",
-        "filter": "3d",
-        "text": "Products, robots and characters modeled, lit and rendered in Blender, for stills, films and the web.",
-        "image": "/images/projects/mechanical-spider/cover.webp"
-      },
-      {
-        "title": "Motion and video",
-        "filter": "video",
-        "text": "Directing, filming, editing and motion graphics. Product films, brand films and short cinematic scenes.",
-        "image": "/images/projects/exoskeleton-film/06.webp"
-      }
+      { "title": "Design", "filter": "design", "image": "/images/covers/mangobot-brand-identity.webp" },
+      { "title": "3D", "filter": "3d", "image": "/images/covers/g2-humanoid-robot.webp" },
+      { "title": "Motion", "filter": "motion", "image": "/images/covers/intro-video.webp" },
+      { "title": "Film", "filter": "video", "image": "/images/covers/exoskeleton-film.webp" },
+      { "title": "Drawing", "filter": "", "image": "/images/drawings/drawing-3.webp" }
+    ]
+  },
+  "spider": {
+    "title": "Mechanical Spider",
+    "text": "A creature I designed, modeled, rigged and animated in Blender. Soon you'll be able to turn it around right here.",
+    "model": "",
+    "poster": "/images/covers/mechanical-spider.webp",
+    "link": "/work/mechanical-spider"
+  },
+  "studio": [
+    {
+      "title": "My short film",
+      "status": "in-production",
+      "text": "Writing and producing my own short film: the script, the character design and the 3D animation.",
+      "image": "/images/drawings/drawing-4.webp",
+      "link": ""
+    },
+    {
+      "title": "Showreel 2026",
+      "status": "coming-soon",
+      "text": "A new cut of my design, 3D, motion and film work from the last two years.",
+      "image": "/images/covers/mangobot-production.webp",
+      "link": ""
+    },
+    {
+      "title": "Interactive spider",
+      "status": "in-production",
+      "text": "Turning the Mechanical Spider into a real-time 3D model you can play with on this site.",
+      "image": "/images/covers/mechanical-spider.webp",
+      "link": ""
+    }
+  ],
+  "drawings": {
+    "title": "I also draw",
+    "text": "Pencil on paper is where most of my ideas start. Faces, expressions, characters, before any of them become 3D.",
+    "images": [
+      "/images/drawings/drawing-1.webp",
+      "/images/drawings/drawing-2.webp",
+      "/images/drawings/drawing-3.webp",
+      "/images/drawings/drawing-4.webp",
+      "/images/drawings/drawing-5.webp"
     ]
   },
   "about": {
-    "portrait": "/images/portrait.webp",
+    "portrait": "/images/portrait-v2.webp",
     "bio": [
       "I'm Anas, a multimedia designer based in Dubai. I work across graphic design, 3D, motion and video, and I like owning a piece of work from the idea to the final file.",
       "Today I lead creative and video production at MangoBot, a company building AI and humanoid robots. When I joined, the company had a logo and nothing else. I built the brand identity, the first website and the in-house video production, and I now direct, film and edit the company's videos.",

@@ -8,8 +8,16 @@ export function mountPillNav({ links = [], logo = "", name = "Anas Saleh", cta =
   nav.innerHTML = `
     <a class="pn-brand" href="/">${logo}<span>${name}</span></a>
     <ul class="pn-links">${links.map((l) => `<li><a href="${l.href}"${l.key === current ? ' aria-current="page"' : ""}>${roll(l.label)}</a></li>`).join("")}</ul>
-    <a class="pn-cta" href="${cta.href}"><i></i>${roll(cta.label)}</a>`;
+    <a class="pn-cta" href="${cta.href}"><i></i>${roll(cta.label)}</a>
+    <button class="pn-menu" type="button" aria-expanded="false" aria-label="Menu"><span></span></button>
+    <div class="pn-panel">${links.map((l) => `<a href="${l.href}">${l.label}</a>`).join("")}<a href="${cta.href}" class="acc">${cta.label}</a></div>`;
   document.body.prepend(nav);
+  const menuBtn = nav.querySelector(".pn-menu");
+  menuBtn.addEventListener("click", () => {
+    const open = nav.classList.toggle("is-open");
+    menuBtn.setAttribute("aria-expanded", String(open));
+  });
+  nav.querySelector(".pn-panel").addEventListener("click", () => { nav.classList.remove("is-open"); menuBtn.setAttribute("aria-expanded", "false"); });
 
   let lastY = scrollY, away = false, nearTop = false, hovering = false;
   const set = () => {

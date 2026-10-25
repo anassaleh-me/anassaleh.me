@@ -1,106 +1,138 @@
 <!doctype html>
-<html lang="en" data-palette="paper">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Anas Saleh, multimedia designer in Dubai</title>
-<meta name="description" content="Anas Al Shikh Saleh, multimedia designer in Dubai. Design, 3D, motion and video, from the first idea to the final frame.">
-<meta property="og:title" content="Anas Saleh">
-<meta property="og:description" content="Multimedia designer in Dubai. Design, 3D, motion and video.">
+<title>Anas Saleh, visual artist in Dubai</title>
+<meta name="description" content="Anas Al Shikh Saleh, visual artist in Dubai. Design, 3D, motion, film and drawing.">
+<meta property="og:title" content="Anas Saleh, visual artist">
+<meta property="og:description" content="Design, 3D, motion, film and drawing. Based in Dubai.">
 <meta property="og:image" content="https://anassaleh.me/images/og.jpg">
 <meta property="og:type" content="website">
-<meta name="theme-color" content="#151514">
+<meta name="theme-color" content="#1d1d1b">
 <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Semi+Condensed:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="/css/site.css">
-<link rel="preload" href="/images/portrait.webp" as="image" fetchpriority="high">
-<script src="/js/palette.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.css">
+<link rel="stylesheet" href="/css/nav.css">
+<link rel="stylesheet" href="/css/v2.css">
+<link rel="preload" href="/images/portrait-v2.webp" as="image" fetchpriority="high">
 <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js"></script>
-<script type="module" src="/js/site.js"></script>
+<script type="module" src="/js/home2.js"></script>
 </head>
-<body data-page="home">
+<body>
 <a class="skip" href="#main">Skip to content</a>
-<header id="nav"></header>
-
 <main id="main">
-  <section class="hero is-dark" aria-label="Introduction">
-    <div class="hero__bg"></div>
-    <h1 class="hero__name display"><span class="w">Anas</span> <span class="w">Saleh</span></h1>
-    <div class="hero__stage"></div>
-    <div class="hero__fade"></div>
-    <div class="hero__meta wrap">
-      <div class="hero__intro">
-        <strong data-hero-headline>Multimedia designer in Dubai.</strong>
-        <p data-hero-intro>Design, 3D, motion and video, from the first idea to the final frame.</p>
+
+  <!-- Hero: opening animation, then a pinned scroll scene -->
+  <div class="hero-scene" data-hero-scene>
+    <section class="hero dark" data-hero data-dark aria-label="Introduction">
+      <div class="spot" data-spot></div>
+      <div class="vignette"></div>
+      <h1 class="name up" data-name><span class="ln" data-ln="l"><span class="w">Anas</span></span><span class="ln" data-ln="r"><span class="w acc">Saleh</span></span></h1>
+      <div class="stage" data-stage></div>
+      <div class="meta" data-meta>
+        <p><span class="up" data-headline>Visual <span class="acc">artist</span></span><span data-intro>Design, 3D, motion, film and drawing.</span></p>
+        <span class="scroll"><i></i>SCROLL</span>
       </div>
-      <div class="hero__actions">
-        <button class="btn" type="button" data-reel hidden><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>Watch showreel</button>
-        <a class="scroll-cue" href="#statement"><i></i>Scroll</a>
+      <div class="statement" data-statement>
+        <div>
+          <h2 class="up" data-statement-text></h2>
+          <p data-statement-sub></p>
+        </div>
+      </div>
+      <div class="curtain" data-curtain></div>
+    </section>
+  </div>
+
+  <!-- What I do -->
+  <section class="disc wrap" aria-labelledby="disc-title">
+    <div class="disc__head">
+      <span class="label" id="disc-title" data-reveal>What I do</span>
+      <p data-reveal>Hover a word to see the work. Click it to see every project in that discipline.</p>
+    </div>
+    <ul class="disc__words up" data-disc></ul>
+    <div class="float-img" data-float aria-hidden="true"></div>
+  </section>
+
+  <!-- Selected work: works wheel -->
+  <section class="works dark" data-works data-dark aria-label="Selected work">
+    <div class="works__pin">
+      <span class="label works__head">Selected work</span>
+      <div class="ww-stage" data-ww-stage><div class="ww-wheel" data-ww-wheel></div></div>
+      <div class="ww-label up" data-ww-label>Works <span class="acc">'26</span></div>
+      <div class="ww-title" data-ww-title><span class="n" data-ww-n></span><span class="up" data-ww-name></span><span class="cat" data-ww-cat></span></div>
+      <ol class="ww-index" data-ww-index></ol>
+      <a class="arrow works__all" href="/work">All projects</a>
+      <div class="progress"><i data-ww-bar></i></div>
+    </div>
+  </section>
+
+  <!-- Mechanical Spider: slot for the interactive 3D model -->
+  <section class="spider wrap" aria-labelledby="spider-title">
+    <div class="spider__grid">
+      <div class="spider__text">
+        <span class="label" data-reveal>3D</span>
+        <h2 class="up" id="spider-title" data-reveal data-spider-title>Mechanical <span class="acc">spider</span></h2>
+        <p data-reveal data-spider-text></p>
+        <a class="arrow" href="/work/mechanical-spider" data-reveal data-spider-link>See the project</a>
+      </div>
+      <div class="spider__stage dark" data-spider-stage data-reveal>
+        <i class="spider__corner tl"></i><i class="spider__corner tr"></i><i class="spider__corner bl"></i><i class="spider__corner br"></i>
+        <div class="spider__floor"></div>
+        <div class="spider__hint" data-spider-hint><span class="up">Interactive 3D model</span><span>Coming soon</span></div>
       </div>
     </div>
   </section>
 
-  <section class="section" id="statement">
+  <!-- In the studio -->
+  <section class="studio wrap" id="studio" aria-labelledby="studio-title">
+    <div class="studio__head">
+      <div><span class="label" data-reveal>Work in progress</span><h2 class="up" id="studio-title" data-reveal>In the <span class="acc">studio</span></h2></div>
+      <p data-reveal>What I'm making right now, and what's coming next.</p>
+    </div>
+    <div class="studio__grid" data-studio></div>
+  </section>
+
+  <!-- Drawings -->
+  <section class="draw" aria-labelledby="draw-title">
+    <div class="wrap draw__head">
+      <div><span class="label" data-reveal>Drawing</span><h2 class="up" id="draw-title" data-reveal data-draw-title>I also <span class="acc">draw</span></h2></div>
+      <p data-reveal data-draw-text></p>
+    </div>
+    <div class="draw__row" data-draw-row></div>
+  </section>
+
+  <!-- Contact -->
+  <section class="contact dark" data-dark aria-labelledby="contact-title">
     <div class="wrap">
-      <p class="eyebrow" data-reveal>Design, 3D, motion, video</p>
-      <p class="statement" data-statement data-reveal="1">I design, film, animate and edit. One person, from the first sketch to the light on the last frame.</p>
-    </div>
-  </section>
-
-  <section class="section section--tight" aria-labelledby="what-title">
-    <div class="wrap">
-      <div class="section-head"><h2 id="what-title" class="display" data-reveal>What I do</h2></div>
-      <div class="disc">
-        <ol class="disc__list"></ol>
-        <div class="disc__media" aria-hidden="true"></div>
+      <span class="label" data-reveal>Contact</span>
+      <h2 class="up" id="contact-title" data-reveal style="margin-top:26px">Let's <span class="acc">talk</span></h2>
+      <p class="lead" data-reveal>Got a project, a film or an idea? Tell me about it and I'll get back to you.</p>
+      <div class="contact__actions" data-reveal>
+        <a class="btn btn--accent" href="/contact">Start a project <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn btn--line" data-wa href="#" target="_blank" rel="noopener">WhatsApp</a>
       </div>
-    </div>
-  </section>
-
-  <section class="section" aria-labelledby="work-title">
-    <div class="wrap">
-      <div class="section-head">
-        <h2 id="work-title" class="display" data-reveal>Selected work</h2>
-        <a class="arrow-link" href="/work" data-reveal="1">All projects <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-      </div>
-      <div class="grid-work grid-work--featured" data-featured></div>
-    </div>
-  </section>
-
-  <section class="section section--tight" aria-labelledby="about-title">
-    <div class="wrap teaser">
-      <div class="teaser__img" data-teaser-img data-reveal></div>
-      <div>
-        <p class="eyebrow" data-reveal>About</p>
-        <h2 id="about-title" class="display" style="font-size:var(--step-3)" data-reveal="1">Hi, I'm Anas.</h2>
-        <p class="lead" style="margin-top:20px" data-teaser-text data-reveal="2"></p>
-        <a class="arrow-link" href="/about" data-reveal="3">More about me <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-      </div>
-    </div>
-  </section>
-
-  <section class="section is-dark cta" aria-labelledby="cta-title">
-    <div class="wrap">
-      <p class="eyebrow" data-reveal>Have a project in mind?</p>
-      <h2 id="cta-title" class="display" data-reveal="1">Let's make it together.</h2>
-      <div class="cta__row" data-reveal="2">
-        <a class="btn" href="/contact">Start a project <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        <a class="btn btn--ghost" data-cta-wa target="_blank" rel="noopener" href="#">WhatsApp</a>
-        <a class="btn btn--ghost" data-cta-mail href="#">Email</a>
-      </div>
+      <div class="contact__mail" data-reveal><a data-mail href="#"></a><button class="copy" type="button" data-copy>Copy</button></div>
     </div>
   </section>
 </main>
 
-<footer id="footer"></footer>
-
-<div class="modal" role="dialog" aria-modal="true" aria-label="Showreel">
-  <button class="modal__close" type="button" aria-label="Close">&times;</button>
-  <div class="modal__box"></div>
-</div>
+<footer class="foot dark" data-dark>
+  <div class="wrap">
+    <div class="foot__top">
+      <div>
+        <span class="foot__logo" data-logo></span>
+        <p>Visual artist in Dubai. Design, 3D, motion, film and drawing.</p>
+      </div>
+      <div><h3>Pages</h3><ul><li><a href="/work">Work</a></li><li><a href="/about">About</a></li><li><a href="#studio">In the studio</a></li><li><a href="/contact">Contact</a></li></ul></div>
+      <div><h3>Follow</h3><ul data-socials></ul></div>
+      <div><h3>CV</h3><ul><li><a href="/Anas_Al_Shikh_Saleh_CV.pdf" target="_blank" rel="noopener">Download CV</a></li></ul></div>
+    </div>
+    <p class="foot__big up" aria-hidden="true">Anas <span class="acc">Saleh</span></p>
+    <div class="foot__bottom"><span data-year></span><span>anassaleh.me</span></div>
+  </div>
+</footer>
 </body>
 </html>

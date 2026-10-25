@@ -3,14 +3,21 @@
 import { shell, $, $$, esc, pad } from "/js/shell2.js";
 
 const { site, reveal } = await shell({ current: "progress" });
-const STATUS = { "in-production": ["In production", true], "coming-soon": ["Coming soon", false], idea: ["Idea", false] };
+const STATUS = { "in-production": ["In the works", true], "coming-soon": ["Coming soon", false], idea: ["Idea", false] };
 const ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
 const ig = $("[data-ig]");
 if (site.contact?.instagram) ig.href = site.contact.instagram; else ig.remove();
 
-$("[data-progress]").innerHTML = (site.studio || []).map((s, i) => {
+// nothing in progress: the page says so, and it's left out of the menu and the sitemap
+if (!site.studio?.length) {
+  $(".ph__foot p").textContent = "Nothing in the works right now. New projects show up here first.";
+  $(".ip").remove();
+  $('meta[name="description"]').insertAdjacentHTML("afterend", '<meta name="robots" content="noindex">');
+}
+
+if ($("[data-progress]")) $("[data-progress]").innerHTML = (site.studio || []).map((s, i) => {
   const [label, live] = STATUS[s.status] || ["In progress", true];
   return `<article class="ip-item" id="${slug(s.title)}">
     <div class="ip-item__media" data-reveal>

@@ -39,7 +39,7 @@ const c = site.contact || {};
 mountPillNav({
   logo: LOGO,
   name: site.name,
-  links: [{ href: "/work", label: "Work" }, { href: "/about", label: "About" }, { href: "/in-progress", label: "In progress" }],
+  links: [{ href: "/work", label: "Work" }, { href: "/about", label: "About" }, ...(site.studio?.length ? [{ href: "/in-progress", label: "In progress" }] : [])],
   cta: { href: "/contact", label: "Let's talk" },
 });
 mountRingCursor({ accent: "#6f8faf" });
@@ -189,9 +189,14 @@ const sh = { x: 0, y: 0, tx: 0, ty: 0 };
 spStage.addEventListener("pointermove", (e) => { const r = spStage.getBoundingClientRect(); sh.tx = (e.clientX - r.left) / r.width - 0.5; sh.ty = (e.clientY - r.top) / r.height - 0.5; });
 spStage.addEventListener("pointerleave", () => { sh.tx = 0; sh.ty = 0; });
 
-/* ---------- in progress (teaser of the In progress page) ---------- */
-const STATUS = { "in-production": ["In production", true], "coming-soon": ["Coming soon", false], idea: ["Idea", false] };
-$("[data-studio]").innerHTML = (site.studio || []).map((s) => {
+/* ---------- in progress (teaser of the In progress page; the section and its links go away while it's empty) ---------- */
+if (!site.studio?.length) {
+  $("#in-progress")?.remove();
+  document.querySelectorAll('a[href="/in-progress"]').forEach((a) => a.closest("li")?.remove());
+}
+const STATUS = { "in-production": ["In the works", true], "coming-soon": ["Coming soon", false], idea: ["Idea", false] };
+const studioGrid = $("[data-studio]");
+if (studioGrid) studioGrid.innerHTML = (site.studio || []).map((s) => {
   const [label, live] = STATUS[s.status] || ["In progress", true];
   const href = `/in-progress#${String(s.title).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`;
   const tag = "a";

@@ -3,7 +3,8 @@
 //                  so shared links show the right preview (404 for unknown or draft projects)
 // - /journal/<slug> serves journal-post.html with that entry's head (404 for unknown entries)
 // - /sitemap.xml   built from projects.json and blog.json, so new pages are listed without touching code
-// - /api/contact   receives the contact form, stores it (KV) and emails it (send_email binding)
+// - /api/contact   receives the contact form, stores it (KV), adds it to the Notion database "Project requests"
+//                  (NOTION_TOKEN secret + NOTION_DB) and emails it (send_email binding)
 // Everything else falls through to the static assets in ./public.
 import { EmailMessage } from "cloudflare:email";
 
@@ -128,6 +129,14 @@ async function handleContact(request, env, ctx) {
     await env.SUBMISSIONS.put(key, JSON.stringify(entry), { metadata: { name: entry.name, email: entry.email, services: entry.services.join(", ") } });
     stored = true;
   }
+  if (env.NOTION_TOKEN && env.NOTION_DB) {
+    try {
+      await addToNotion(env, entry);
+      stored = true;
+    } catch (err) {
+      console.error("notion failed", err);
+    }
+  }
   if (env.MAILER && env.MAIL_FROM && env.MAIL_TO) {
     try {
       await sendMail(env, entry);
@@ -138,6 +147,45 @@ async function handleContact(request, env, ctx) {
   }
   if (!stored && !mailed) return json({ ok: false, error: "unavailable" }, 503);
   return json({ ok: true });
+}
+
+// One row in Notion's "Project requests" database (Work > Website), with the brief also written into the page.
+async function addToNotion(env, e) {
+  const text = (s) => {
+    const parts = [];
+    for (let i = 0; i < String(s).length; i += 1900) parts.push({ text: { content: String(s).slice(i, i + 1900) } });
+    return parts.slice(0, 50);
+  };
+  const option = (s) => s.replace(/,/g, " ").slice(0, 100);
+  const props = {
+    Name: { title: text(e.name || "No name") },
+    Status: { status: { name: "New" } },
+    Services: { multi_select: e.services.map((s) => ({ name: option(s) })) },
+    Company: { rich_text: text(e.company) },
+    Email: { email: e.email || null },
+    Phone: { phone_number: e.phone || null },
+    Budget: { rich_text: text(e.budget) },
+    Brief: { rich_text: text(e.brief) },
+    Links: { rich_text: text(e.links) },
+    Country: { rich_text: text(e.country) },
+    Received: { date: { start: e.receivedAt } },
+  };
+  if (/^\d{4}-\d{2}-\d{2}$/.test(e.date)) props.Deadline = { date: { start: e.date } };
+  if (e.source) props["Found me via"] = { select: { name: option(e.source) } };
+  if (/^https?:\/\//.test(e.page)) props["From page"] = { url: e.page };
+  const res = await fetch("https://api.notion.com/v1/pages", {
+    method: "POST",
+    headers: { authorization: `Bearer ${env.NOTION_TOKEN}`, "notion-version": "2022-06-28", "content-type": "application/json" },
+    body: JSON.stringify({
+      parent: { database_id: env.NOTION_DB },
+      properties: props,
+      children: [
+        { object: "block", type: "heading_3", heading_3: { rich_text: text("Brief") } },
+        ...e.brief.split(/\n{2,}/).filter(Boolean).slice(0, 40).map((p) => ({ object: "block", type: "paragraph", paragraph: { rich_text: text(p) } })),
+      ],
+    }),
+  });
+  if (!res.ok) throw new Error(`notion ${res.status}: ${(await res.text()).slice(0, 300)}`);
 }
 
 function encodeHeader(s) {

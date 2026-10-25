@@ -159,7 +159,7 @@
     "intro": "Notes, stories and things I love. Process, drawings, films, ideas and the odd tip."
   },
   "inProduction": {
-    "show": true,
+    "show": false,
     "title": "Untitled short film",
     "logline": "A short animated film, written, designed and animated in 3D.",
     "stage": "development",

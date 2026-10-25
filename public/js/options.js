@@ -28,8 +28,52 @@ mountRingCursor({ accent: "#6f8faf" });
 const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && (e.target.classList.add("in"), io.unobserve(e.target))), { threshold: 0.12 });
 $$(".head, .demo-title, .demo-note, .tag").forEach((el) => { el.classList.add("reveal"); io.observe(el); });
 
-/* hero */
-mountHero($("[data-stage]"), { image: "/images/portrait-v2.webp", depth: "/images/portrait-v2-depth.png", alt: "Portrait of Anas Saleh", mode: 0, reduceMotion: reduce });
+/* hero: opening animation, cursor spotlight, glow options */
+const heroEl = $("[data-hero]");
+const EASE_OUT = "cubic-bezier(.16, 1, .3, 1)";
+const heroReady = mountHero($("[data-stage]"), { image: "/images/portrait-v2.webp", depth: "/images/portrait-v2-depth.png", alt: "Portrait of Anas Saleh", mode: 0, reduceMotion: reduce });
+async function playIntro() {
+  const portrait = (await heroReady).el;
+  const curtain = $("[data-curtain]");
+  const words = $$("[data-name] .w");
+  const meta = $("[data-meta]");
+  curtain.style.display = "block";
+  curtain.animate([{ transform: "translateY(0)" }, { transform: "translateY(-100%)" }], { duration: 1100, delay: 150, easing: "cubic-bezier(.76, 0, .24, 1)", fill: "forwards" })
+    .finished.then(() => (curtain.style.display = "none"));
+  portrait.animate(
+    [{ transform: "scale(1.45)", filter: "blur(24px)", opacity: 0 }, { transform: "scale(1)", filter: "blur(0px)", opacity: 1 }],
+    { duration: 2200, delay: 450, easing: EASE_OUT, fill: "backwards" },
+  );
+  words.forEach((w, i) => w.animate(
+    [{ transform: "translateY(110%) rotate(4deg)" }, { transform: "translateY(0) rotate(0)" }],
+    { duration: 1300, delay: 950 + i * 140, easing: EASE_OUT, fill: "backwards" },
+  ));
+  [...meta.children].forEach((el, i) => el.animate(
+    [{ opacity: 0, transform: "translateY(24px)", filter: "blur(8px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }],
+    { duration: 1200, delay: 1600 + i * 120, easing: EASE_OUT, fill: "backwards" },
+  ));
+}
+playIntro();
+$("[data-replay]").addEventListener("click", () => { scrollTo({ top: 0 }); lenisRef?.scrollTo(0, { immediate: true }); setTimeout(playIntro, 80); });
+
+const spot = $("[data-spot]");
+const spotP = { x: innerWidth / 2, y: innerHeight / 2, tx: innerWidth / 2, ty: innerHeight / 2 };
+heroEl.addEventListener("pointermove", (e) => { const r = heroEl.getBoundingClientRect(); spotP.tx = e.clientX - r.left; spotP.ty = e.clientY - r.top; });
+(function spotLoop() { requestAnimationFrame(spotLoop); spotP.x = lerp(spotP.x, spotP.tx, 0.1); spotP.y = lerp(spotP.y, spotP.ty, 0.1); spot.style.transform = `translate(${spotP.x}px, ${spotP.y}px)`; })();
+
+const glowRow = $("[data-glows]");
+[["بدون", "0px", 0], ["خفيف جداً", "28px", 0.1], ["خفيف", "44px", 0.16], ["أوضح", "64px", 0.24]].forEach(([label, size, a], i) => {
+  const b = document.createElement("button");
+  b.type = "button"; b.textContent = label; b.setAttribute("aria-pressed", String(i === 1));
+  b.addEventListener("click", () => {
+    $("[data-stage]").style.setProperty("--glow", size);
+    $("[data-stage]").style.setProperty("--glow-a", a);
+    $$("button", glowRow).forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+  });
+  glowRow.append(b);
+  if (i === 1) b.click();
+});
+let lenisRef = null;
 
 /* cream textures */
 const canvasURL = (w, h, draw) => { const c = document.createElement("canvas"); c.width = w; c.height = h; draw(c.getContext("2d"), w, h); return c.toDataURL("image/png"); };
@@ -116,6 +160,67 @@ $("[data-sc-a]").innerHTML = colHTML(colA);
 $("[data-sc-b]").innerHTML = colHTML(colB);
 let scP = 0;
 
+/* 5 works wheel (ported from the React component Anas sent).
+   One number, `turn`: 0 = cards in a ring round the label, 1 = vertical drum with item 0 at the front,
+   each whole number after that = one more item turned past. Here the page scroll drives it. */
+const ww = $("[data-ww]");
+const wwItems = projects;
+const WW = { CARD_H: 0.4, CARD_MAX_W: 0.36, RATIO: 1.29, STEP: 40, DRUM: 2.22, LENS: 2.7, RING_R: 1.14, BOW: 1.82, CULL: 1.6 };
+ww.style.height = `${(wwItems.length + 2) * 55}vh`;
+const wwWheel = $("[data-ww-wheel]"), wwStage = $("[data-ww-stage]");
+wwWheel.innerHTML = wwItems.map((p) => `<a class="ww-card" href="/work/${p.slug}"><span class="face"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></span></a>`).join("");
+$("[data-ww-index]").innerHTML = wwItems.map((p, i) => `<li><button type="button" data-i="${i}" data-cursor="Go">${p.title}</button></li>`).join("");
+const wwCards = $$(".ww-card");
+const wwFaces = wwCards.map((c) => c.firstElementChild);
+const wwM = {};
+const wwMeasure = () => {
+  const w = wwStage.clientWidth, h = wwStage.clientHeight;
+  const cardW = Math.min(h * WW.CARD_H * WW.RATIO, w * WW.CARD_MAX_W), cardH = cardW / WW.RATIO;
+  Object.assign(wwM, { cardW, cardH, drumR: cardH * WW.DRUM, ringR: cardH * WW.RING_R, bow: cardH * WW.BOW });
+  wwM.ringScale = clamp((((2 * Math.PI * wwM.ringR) / wwItems.length) * 0.82) / cardW, 0.16, 1);
+  wwStage.style.perspective = `${cardH * WW.LENS}px`;
+  wwCards.forEach((c) => { c.style.width = `${cardW}px`; c.style.height = `${cardH}px`; c.style.margin = `${-cardH / 2}px 0 0 ${-cardW / 2}px`; });
+};
+wwMeasure();
+addEventListener("resize", wwMeasure);
+const rad = (d) => (d * Math.PI) / 180;
+const wwS = { turn: 0, active: -1 };
+$("[data-ww-index]").addEventListener("click", (e) => {
+  const b = e.target.closest("button");
+  if (!b) return;
+  const top = ww.getBoundingClientRect().top + scrollY;
+  const y = top + ((Number(b.dataset.i) + 1) / (wwItems.length + 0.6)) * (ww.offsetHeight - innerHeight);
+  lenisRef ? lenisRef.scrollTo(y, { duration: 1.4 }) : scrollTo({ top: y, behavior: "smooth" });
+});
+function wwDraw() {
+  // scroll progress -> target turn, eased
+  const target = prog(ww) * (wwItems.length + 0.6);
+  wwS.turn = lerp(wwS.turn, target, 0.12);
+  const t = wwS.turn, m = clamp(t, 0, 1), pos = Math.max(0, t - 1);
+  const { ringR, drumR, bow, ringScale } = wwM;
+  wwWheel.style.transform = `translateZ(${-m * drumR}px) rotateZ(${(1 - m) * t * 30}deg)`;
+  wwCards.forEach((c, i) => {
+    const d = i - pos, drumDeg = d * WW.STEP, ringDeg = i * (360 / wwItems.length);
+    c.style.transform = `translateX(${m * -bow * (1 - Math.cos(rad(drumDeg)))}px) rotateZ(${(1 - m) * ringDeg}deg) translateY(${-(1 - m) * ringR}px) rotateX(${m * drumDeg}deg) translateZ(${m * drumR}px)`;
+    c.style.opacity = m > 0.5 && Math.abs(d) > WW.CULL ? "0" : "1";
+    c.style.zIndex = String(Math.round(100 - Math.abs(d) * 2));
+    wwFaces[i].style.transform = `scale(${lerp(ringScale, 1, m)})`;
+    setBlur(wwFaces[i], m > 0.5 ? clamp((Math.abs(d) - 0.25) * 6, 0, 6) : 0);
+  });
+  $("[data-ww-label]").style.opacity = String(1 - m);
+  $("[data-ww-title]").style.opacity = String(m);
+  $("[data-ww-bar]").style.width = `${prog(ww) * 100}%`;
+  const near = clamp(Math.round(pos), 0, wwItems.length - 1);
+  if (near !== wwS.active) {
+    wwS.active = near;
+    const p = wwItems[near];
+    swapText($("[data-ww-name]"), p.title);
+    $("[data-ww-n]").textContent = `${pad(near + 1)} / ${pad(wwItems.length)}`;
+    $("[data-ww-cat]").textContent = `${cats(p)} · ${p.year}`;
+    $$("[data-ww-index] button").forEach((b, i) => b.classList.toggle("on", i === near));
+  }
+}
+
 /* 4 dome gallery: covers on a sphere, drag with inertia, click to open */
 const dm = $("[data-dm]");
 const sphere = $("[data-dm-sphere]");
@@ -173,6 +278,7 @@ addEventListener("keydown", (e) => e.key === "Escape" && closeViewer());
 
 /* ---------- one smooth loop ---------- */
 const lenis = window.Lenis ? new Lenis({ lerp: 0.08, wheelMultiplier: 0.9 }) : null;
+lenisRef = lenis;
 const prog = (el) => { const r = el.getBoundingClientRect(); return clamp(-r.top / (r.height - innerHeight), 0, 1); };
 const sm = { cv: 0, vel: 0 };
 let lastY = scrollY;
@@ -181,6 +287,7 @@ function loop(t) {
   const v = scrollY - lastY; lastY = scrollY;
   sm.vel = lerp(sm.vel, v, 0.1);
   const W = innerWidth, H = innerHeight;
+  wwDraw();
 
   // A curved reel
   sm.cv = lerp(sm.cv, prog(cv), 0.09);

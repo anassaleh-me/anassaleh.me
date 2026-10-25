@@ -1,8 +1,11 @@
-// Ring cursor: a small dot plus a ring in the accent colour that trails the pointer and stretches with speed.
+// Ring cursor: a small dot plus an accent ring that trails the pointer and stretches with speed.
 // Over links and [data-cursor] elements the ring grows into a filled disc with a label ("View", "Drag").
+// Everything moves with transforms only (no width/height changes), so the big state keeps up with the pointer.
 // No blend modes: colours switch explicitly between light and dark areas ([data-dark]).
 const fine = matchMedia("(pointer: fine)").matches;
 const lerp = (a, b, t) => a + (b - a) * t;
+const SIZE = 92;          // the ring is drawn at its big size and scaled down when small
+const SMALL = 40 / SIZE;  // small ring diameter, as a fraction of SIZE
 
 export function mountRingCursor({ accent = "#6f8faf" } = {}) {
   if (!fine) return;
@@ -13,15 +16,15 @@ export function mountRingCursor({ accent = "#6f8faf" } = {}) {
   .ring-cursor, .ring-cursor * { pointer-events: none; }
   .ring-cursor { --rc-accent: ${accent}; --rc-dot: #1d1d1b; }
   .ring-cursor.on-dark { --rc-dot: #f1ece2; }
-  .ring-cursor i { position: fixed; left: 0; top: 0; z-index: 9999; border-radius: 50%; will-change: transform; }
-  .rc-dot { width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; background: var(--rc-dot); transition: background .3s, opacity .3s; }
-  .rc-ring { width: 42px; height: 42px; margin: -21px 0 0 -21px; border: 1.5px solid var(--rc-accent); display: grid; place-items: center;
-    transition: width .22s cubic-bezier(.2,.9,.3,1), height .22s cubic-bezier(.2,.9,.3,1), margin .22s cubic-bezier(.2,.9,.3,1), background .18s, border-color .18s; }
-  .rc-ring b { font: 700 11px/1 "Barlow Semi Condensed", sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #1d1d1b; opacity: 0; transition: opacity .15s; }
-  .ring-cursor.big .rc-ring { width: 92px; height: 92px; margin: -46px 0 0 -46px; background: var(--rc-accent); }
+  .ring-cursor > i { position: fixed; left: 0; top: 0; z-index: 9999; border-radius: 50%; will-change: transform; }
+  .rc-dot { width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; background: var(--rc-dot); transition: background .25s, opacity .15s; }
+  .rc-ring { width: ${SIZE}px; height: ${SIZE}px; margin: -${SIZE / 2}px 0 0 -${SIZE / 2}px; display: grid; place-items: center; }
+  .rc-ring::before { content: ""; position: absolute; inset: 0; border-radius: 50%; border: var(--rc-bw, 3.4px) solid var(--rc-accent); background: transparent; transition: background-color .14s; }
+  .ring-cursor.big .rc-ring::before { background-color: var(--rc-accent); }
+  .rc-ring b { position: relative; font: 700 11px/1 "Barlow Semi Condensed", sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #1d1d1b; opacity: 0; transition: opacity .12s; }
   .ring-cursor.big .rc-ring b { opacity: 1; }
   .ring-cursor.big .rc-dot { opacity: 0; }
-  .ring-cursor.hidden i { opacity: 0; }
+  .ring-cursor.hidden > i { opacity: 0; }
   html.rc-hide, html.rc-hide * { cursor: none !important; }
   </style>
   <i class="rc-ring"><b></b></i><i class="rc-dot"></i>`;
@@ -30,19 +33,20 @@ export function mountRingCursor({ accent = "#6f8faf" } = {}) {
   const ring = root.querySelector(".rc-ring");
   const label = ring.querySelector("b");
   const dot = root.querySelector(".rc-dot");
-  const m = { x: -100, y: -100 }, r = { x: -100, y: -100 }, prev = { x: 0, y: 0 };
+  const m = { x: -200, y: -200 }, r = { x: -200, y: -200 }, prev = { x: 0, y: 0 };
+  let big = false, size = SMALL, stretch = 1, angle = 0;
 
-  addEventListener("pointermove", (e) => {
-    m.x = e.clientX; m.y = e.clientY;
-    const el = document.elementFromPoint(m.x, m.y);
+  const check = (x, y) => {
+    const el = document.elementFromPoint(x, y);
     root.classList.toggle("on-dark", Boolean(el?.closest?.("[data-dark]")));
-  }, { passive: true });
-  addEventListener("pointerover", (e) => {
-    const t = e.target.closest?.("a, button, [data-cursor]");
-    const text = t?.dataset?.cursor || (t?.tagName === "A" ? "View" : "");
-    root.classList.toggle("big", Boolean(text));
-    label.textContent = text;
-  });
+    const t = el?.closest?.("a, button, [data-cursor]");
+    const text = t ? (t.dataset.cursor ?? (t.tagName === "A" ? "View" : "")) : "";
+    big = Boolean(text);
+    root.classList.toggle("big", big);
+    if (label.textContent !== text) label.textContent = text;
+  };
+  addEventListener("pointermove", (e) => { m.x = e.clientX; m.y = e.clientY; check(m.x, m.y); }, { passive: true });
+  addEventListener("scroll", () => check(m.x, m.y), { passive: true });
   document.addEventListener("pointerleave", () => root.classList.add("hidden"));
   document.addEventListener("pointerenter", () => root.classList.remove("hidden"));
 
@@ -50,12 +54,17 @@ export function mountRingCursor({ accent = "#6f8faf" } = {}) {
     requestAnimationFrame(tick);
     const vx = m.x - prev.x, vy = m.y - prev.y;
     prev.x = m.x; prev.y = m.y;
-    const k = root.classList.contains("big") ? 0.32 : 0.22;
-    r.x = lerp(r.x, m.x, k); r.y = lerp(r.y, m.y, k);
-    const big = root.classList.contains("big");
-    const s = big ? 1 : Math.min(1.55, 1 + Math.hypot(vx, vy) / 45);
-    const a = Math.atan2(vy, vx) * 57.3;
-    ring.style.transform = `translate(${r.x}px, ${r.y}px) rotate(${big ? 0 : a}deg) scale(${s}, ${1 / s})`;
+    // The big disc sits right on the pointer; the small ring trails a little.
+    const follow = big ? 0.55 : 0.3;
+    r.x = lerp(r.x, m.x, follow); r.y = lerp(r.y, m.y, follow);
+    size = lerp(size, big ? 1 : SMALL, 0.28);
+    const speed = Math.hypot(vx, vy);
+    stretch = lerp(stretch, big ? 1 : Math.min(1.5, 1 + speed / 50), 0.25);
+    if (speed > 0.5) angle = Math.atan2(vy, vx) * 57.3;
+    const bw = (1.5 / size).toFixed(1);
+    if (ring._bw !== bw) { ring.style.setProperty("--rc-bw", `${bw}px`); ring._bw = bw; }
+    ring.style.transform = `translate(${r.x}px, ${r.y}px) rotate(${big ? 0 : angle}deg) scale(${size * stretch}, ${size / stretch})`;
+    label.style.transform = `rotate(${big ? 0 : -angle}deg) scale(${1 / Math.max(size, 0.01)})`;
     dot.style.transform = `translate(${m.x}px, ${m.y}px)`;
   })();
 }

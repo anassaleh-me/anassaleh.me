@@ -62,6 +62,39 @@ section.block { padding-block: clamp(70px, 10vw, 130px); }
 .hero .name { position: absolute; left: 0; right: 0; top: 11%; text-align: center; font-size: min(11.2vw, 160px); color: var(--cream); white-space: nowrap; z-index: 0; }
 .hero .stage { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); height: 86%; aspect-ratio: 1600 / 1321; z-index: 1; }
 .hero .stage canvas, .hero .stage img { width: 100%; height: 100%; }
+/* full-bleed hero with the opening animation */
+.hero--full { height: 100vh; height: 100svh; min-height: 620px; border-radius: 0; }
+.hero--full .name { top: 15vh; font-size: min(12vw, 200px); }
+.hero .name .ln { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .04em; }
+.hero .name .w { display: inline-block; will-change: transform; }
+.hero--full .stage { height: 84vh; }
+.hero .stage { --glow: 0px; --glow-a: 0; }
+.hero .stage canvas { filter: drop-shadow(0 0 var(--glow) rgba(255, 255, 255, var(--glow-a))); }
+.spot { position: absolute; left: 0; top: 0; width: 760px; height: 760px; margin: -380px 0 0 -380px; border-radius: 50%; pointer-events: none; z-index: 0;
+  background: radial-gradient(circle, rgba(241,236,226,.14), rgba(241,236,226,.05) 38%, transparent 68%); opacity: 0; transition: opacity .8s; will-change: transform; }
+.hero:hover .spot { opacity: 1; }
+.intro-curtain { position: absolute; inset: 0; z-index: 20; background: #0f0f0e; pointer-events: none; }
+@media (max-width: 760px) { .hero--full .name { font-size: 22vw; } .hero--full .stage { height: 62vh; bottom: 100px; } }
+
+/* 5 works wheel */
+.ww { position: relative; }
+.ww-pin { position: sticky; top: 0; height: 100vh; overflow: hidden; color: var(--cream); }
+.ww-stage { position: absolute; inset: 0; }
+.ww-wheel { position: absolute; left: 50%; top: 50%; transform-style: preserve-3d; }
+.ww-card { position: absolute; backface-visibility: hidden; text-decoration: none; will-change: transform, opacity; }
+.ww-card .face { display: block; width: 100%; height: 100%; border-radius: 10px; overflow: hidden; box-shadow: 0 24px 50px -18px rgba(0,0,0,.6); background: var(--char-2); transform-origin: 50% 50%; }
+.ww-card img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.ww-label { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; font-size: clamp(30px, 4vw, 70px); white-space: nowrap; }
+.ww-title { position: absolute; left: 6%; top: 50%; transform: translateY(-50%); max-width: 22vw; pointer-events: none; opacity: 0; }
+.ww-title .n { display: block; color: var(--accent); font-weight: 700; letter-spacing: .14em; font-size: 14px; margin-bottom: 14px; }
+.ww-title .up { display: block; font-size: clamp(28px, 3.2vw, 56px); }
+.ww-title .cat { display: block; margin-top: 12px; color: #a9a49a; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; font-size: 13px; }
+.ww-index { position: absolute; top: 9vh; right: 2.5%; list-style: none; margin: 0; padding: 0; text-align: right; line-height: 1.8; }
+.ww-index button { color: rgba(241,236,226,.38); font-weight: 600; font-size: 14px; letter-spacing: .04em; transition: color .3s, transform .4s var(--ease); }
+.ww-index button:hover { color: var(--cream); }
+.ww-index button.on { color: var(--accent); transform: translateX(-8px); }
+@media (max-width: 760px) { .ww-title { left: 5%; top: auto; bottom: 10vh; transform: none; max-width: 70vw; } .ww-index { display: none; } }
+
 /* halftone on every charcoal surface */
 [data-dark], .ht { background-color: var(--char); background-image: radial-gradient(circle, rgba(241,236,226,.13) 1.3px, transparent 1.6px); background-size: 22px 22px; }
 
@@ -179,19 +212,23 @@ section.block { padding-block: clamp(70px, 10vw, 130px); }
 </head>
 <body>
 <main>
-  <section class="block wrap" id="hero" style="padding-top:110px">
+  <section class="hero hero--full" id="hero" data-hero data-dark>
+    <div class="spot" data-spot></div>
+    <div class="vignette"></div>
+    <h1 class="name up" data-name><span class="ln"><span class="w">Anas</span></span> <span class="ln"><span class="w"><em>Saleh</em></span></span></h1>
+    <div class="stage" data-stage></div>
+    <div class="meta" data-meta><p><span class="up">Visual <em>artist</em></span>Design, 3D, motion, film and drawing.</p><span class="scroll"><i></i>SCROLL</span></div>
+    <div class="intro-curtain" data-curtain></div>
+  </section>
+
+  <section class="block wrap" style="padding-top:60px">
     <div class="head">
       <span class="num">01</span>
-      <h2>الهيرو</h2>
-      <p>شلت الـ noise عن صورتك، والحواف صارت مغبّشة وناعمة أكتر. الخلفية الفحمية صار عليها halftone بنقاط متباعدة. والماوس صار حلقة زرقا بدون أي عكس ألوان.</p>
+      <h2>الهيرو: أنيميشن الافتتاح</h2>
+      <p>أول ما تنفتح الصفحة: ستارة سودا بتنسحب، صورتك بتبلش كبيرة ومغبّشة وبتصغر وبتوضح، واسمك بيطلع من تحت حرف حرف، وفي ضو أبيض ناعم بيلحق الماوس فوق الخلفية (فكرة الـ Spotlight من البرومت يلي بعتو). جرّب التوهج حوالين صورتك واعمل إعادة للأنيميشن من الأزرار.</p>
     </div>
-    <div class="hero" data-hero data-dark>
-      <div class="half"></div>
-      <div class="vignette"></div>
-      <h1 class="name up">Anas <em>Saleh</em></h1>
-      <div class="stage" data-stage></div>
-      <div class="meta"><p><span class="up">Visual <em>artist</em></span>Design, 3D, motion, film and drawing.</p><span class="scroll"><i></i>SCROLL</span></div>
-    </div>
+    <div class="opt-row" data-glows><b>توهج حوالين الصورة:</b></div>
+    <div class="opt-row"><b>الأنيميشن:</b><button type="button" data-replay>إعادة أنيميشن الافتتاح ↺</button></div>
   </section>
 
   <section class="block wrap" id="textures">
@@ -208,6 +245,13 @@ section.block { padding-block: clamp(70px, 10vw, 130px); }
       <span class="num">03</span>
       <h2>عرض المشاريع: المفضّلين التلاتة، والخيار الرابع يلي بنصحك فيه</h2>
       <p>بحثت بالمكتبات يلي عندي (React Bits وSkiper UI وVengeance UI) وقارنت أحسن معارض الصور فيهن. الأنسب إلك هو الـ Dome gallery، والسبب مكتوب تحت. وبعدو المفضّلين التلاتة متل ما هنن، لحتى تبعتلي ملاحظاتك عليهن.</p>
+    </div>
+
+    <div class="demo">
+      <div class="wrap"><span class="tag">YOUR PICK</span> <span class="tag dark">5</span>
+      <h3 class="up demo-title">Works <em>wheel</em></h3>
+      <p class="demo-note">الخيار يلي بعتلي ياه، كتبتو من جديد بكود بسيط (بدون React) ومع مشاريعك. بالبداية المشاريع حلقة حوالين عنوان. أول ما تنزل بالسكرول بتنفتح الحلقة وبتصير دولاب عمودي: المشروع يلي قدّام مسطّح وكبير، ويلي فوقو وتحتو بيلفّوا لورا. وع اليمين في لائحة بالأسماء، بتكبس على أي اسم وبيلف الدولاب لعندو.</p></div>
+      <div class="ww" data-ww><div class="ww-pin" data-dark><div class="ww-stage" data-ww-stage><div class="ww-wheel" data-ww-wheel></div></div><div class="ww-label up" data-ww-label>Works <em>'26</em></div><div class="ww-title" data-ww-title><span class="n" data-ww-n></span><span class="up" data-ww-name></span><span class="cat" data-ww-cat></span></div><ol class="ww-index" data-ww-index></ol><div class="bar-progress light"><i data-ww-bar></i></div></div></div>
     </div>
 
     <div class="demo">

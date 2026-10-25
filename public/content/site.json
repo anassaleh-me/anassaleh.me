@@ -54,26 +54,6 @@
     "poster": "/images/covers/mechanical-spider.webp",
     "link": "/work/mechanical-spider"
   },
-  "studio": [
-    {
-      "title": "My short film",
-      "status": "in-production",
-      "text": "Writing and producing my own short film: the script, the character design and the 3D animation.",
-      "image": "/images/drawings/drawing-4.webp"
-    },
-    {
-      "title": "Showreel 2026",
-      "status": "coming-soon",
-      "text": "A new cut of my design, 3D, motion and film work from the last two years.",
-      "image": "/images/covers/mangobot-production.webp"
-    },
-    {
-      "title": "Interactive spider",
-      "status": "in-production",
-      "text": "Turning the Mechanical Spider into a real-time 3D model you can play with on this site.",
-      "image": "/images/covers/mechanical-spider.webp"
-    }
-  ],
   "drawings": {
     "title": "I also draw",
     "text": "Pencil on paper is where most of my ideas start. Faces, expressions, characters, before any of them become 3D.",

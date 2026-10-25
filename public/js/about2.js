@@ -15,11 +15,7 @@ const stage = $("[data-ab-stage]");
 mountHero(stage, { image: a.portrait || site.home?.heroImage || "/images/portrait-v2.webp", depth: site.home?.heroDepth || "/images/portrait-v2-depth.png", alt: `Portrait of ${site.fullName}`, mode: 0, reduceMotion: matchMedia("(prefers-reduced-motion: reduce)").matches, fit: [0.07, 0.1, 0.86, 0.9] })
   .then(() => stage.animate([{ opacity: 0, transform: "scale(1.2)", filter: "blur(18px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }], { duration: 1800, delay: 200, easing: E, fill: "backwards" }));
 
-// opening: the title words rise one after another, then the rest comes into focus
-$$(".ab-title .w").forEach((w, i) => w.animate([{ transform: "translateY(110%) rotate(4deg)" }, { transform: "none" }], { duration: 1200, delay: 250 + i * 110, easing: E, fill: "backwards" }));
-$$("[data-intro]").forEach((el, i) => el.animate([{ opacity: 0, transform: "translateY(20px)", filter: "blur(8px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }], { duration: 1100, delay: 700 + i * 140, easing: E, fill: "backwards" }));
-stage.animate([{ opacity: 0 }, { opacity: 0 }], { duration: 400, fill: "backwards" });
-document.documentElement.classList.remove("intro");
+// (the title and intro lines animate from a small script in the page itself, so they don't wait for content)
 
 // story: every word is its own span so it can brighten as the paragraph moves up the screen
 const story = $("[data-story]");

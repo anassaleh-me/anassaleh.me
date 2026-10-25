@@ -3,7 +3,6 @@
 import { shell, $, $$, esc, pad } from "/js/shell2.js";
 
 const { site, reveal } = await shell({ current: "progress" });
-const E = "cubic-bezier(.16,1,.3,1)";
 const STATUS = { "in-production": ["In production", true], "coming-soon": ["Coming soon", false], idea: ["Idea", false] };
 const ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -29,8 +28,6 @@ $("[data-progress]").innerHTML = (site.studio || []).map((s, i) => {
   </article>`;
 }).join("") || `<p class="pr-empty">Nothing to show right now. Check back soon.</p>`;
 
-$$(".ph__title .w").forEach((w, i) => w.animate([{ transform: "translateY(110%) rotate(3deg)" }, { transform: "none" }], { duration: 1300, delay: 150 + i * 140, easing: E, fill: "backwards" }));
-document.documentElement.classList.remove("intro");
 reveal();
 
 // the pictures drift a little inside their frames as you scroll

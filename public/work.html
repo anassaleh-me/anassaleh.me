@@ -18,6 +18,11 @@
 <link rel="preload" href="/content/site.json" as="fetch" crossorigin>
 <link rel="preload" href="/content/projects.json" as="fetch" crossorigin>
 <link rel="stylesheet" href="/vendor/lenis-1.3.4.css">
+<link rel="modulepreload" href="/js/work2.js">
+<link rel="modulepreload" href="/js/shell2.js">
+<link rel="modulepreload" href="/js/nav.js">
+<link rel="modulepreload" href="/js/cursors.js">
+<link rel="modulepreload" href="/js/data.js">
 <link rel="stylesheet" href="/css/nav.css">
 <link rel="stylesheet" href="/css/v2.css">
 <link rel="stylesheet" href="/css/pages2.css">
@@ -53,5 +58,18 @@
   </section>
 </main>
 <footer data-footer></footer>
+<script>
+  // Title words rise and the intro lines come into focus as soon as the page is drawn (no waiting for content).
+  (function () {
+    var E = "cubic-bezier(.16,1,.3,1)";
+    document.querySelectorAll(".ph__title .w, .ab-title .w").forEach(function (w, i) {
+      w.animate([{ transform: "translateY(110%) rotate(3deg)" }, { transform: "none" }], { duration: 1200, delay: 80 + i * 110, easing: E, fill: "backwards" });
+    });
+    document.querySelectorAll("[data-intro]").forEach(function (el, i) {
+      el.animate([{ opacity: 0, transform: "translateY(20px)", filter: "blur(8px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }], { duration: 1000, delay: 450 + i * 120, easing: E, fill: "backwards" });
+    });
+    document.documentElement.classList.remove("intro");
+  })();
+</script>
 </body>
 </html>

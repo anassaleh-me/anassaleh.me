@@ -2,34 +2,115 @@
   "name": "Anas Saleh",
   "fullName": "Anas Al Shikh Saleh",
   "location": "Dubai, UAE",
+  "theme": {
+    "palette": "paper"
+  },
   "home": {
-    "headline": "Multimedia designer in Dubai.",
-    "intro": "Design, 3D, motion and video, from the first frame to the final export.",
-    "heroType": "video",
+    "headline": "Visual artist and art director",
+    "intro": "Art direction, design, 3D, motion, film and drawing.",
+    "statement": "I direct, design, model, animate, film and [draw].",
+    "statementSub": "Artist and art director. I shape the idea and see it through, from the first pencil line to the final frame. Based in Dubai.",
+    "heroType": "portrait",
     "heroVideo": "",
-    "heroImage": "",
+    "heroImage": "/images/portrait-v2.webp",
+    "heroDepth": "/images/portrait-v2-depth.png",
+    "heroGlow": "light",
     "heroModel": "",
-    "showreelUrl": ""
+    "showreelUrl": "",
+    "worksLabel": "Works '26",
+    "disciplines": [
+      {
+        "title": "Art direction",
+        "filter": "direction",
+        "image": "/images/covers/mangobot-production.webp"
+      },
+      {
+        "title": "Design",
+        "filter": "design",
+        "image": "/images/covers/mangobot-brand-identity.webp"
+      },
+      {
+        "title": "3D",
+        "filter": "3d",
+        "image": "/images/covers/g2-humanoid-robot.webp"
+      },
+      {
+        "title": "Motion",
+        "filter": "motion",
+        "image": "/images/covers/intro-video.webp"
+      },
+      {
+        "title": "Film",
+        "filter": "video",
+        "image": "/images/covers/exoskeleton-film.webp"
+      },
+      {
+        "title": "Drawing",
+        "filter": "drawing",
+        "image": "/images/drawings/drawing-3.webp"
+      }
+    ]
+  },
+  "spider": {
+    "title": "Mechanical Spider",
+    "text": "A creature I designed, modeled, rigged and animated in Blender. Soon you'll be able to turn it around right here.",
+    "model": "",
+    "poster": "/images/covers/mechanical-spider.webp",
+    "link": "/work/mechanical-spider"
+  },
+  "studio": [
+    {
+      "title": "My short film",
+      "status": "in-production",
+      "text": "Writing and producing my own short film: the script, the character design and the 3D animation.",
+      "image": "/images/drawings/drawing-4.webp",
+      "link": ""
+    },
+    {
+      "title": "Showreel 2026",
+      "status": "coming-soon",
+      "text": "A new cut of my design, 3D, motion and film work from the last two years.",
+      "image": "/images/covers/mangobot-production.webp",
+      "link": ""
+    },
+    {
+      "title": "Interactive spider",
+      "status": "in-production",
+      "text": "Turning the Mechanical Spider into a real-time 3D model you can play with on this site.",
+      "image": "/images/covers/mechanical-spider.webp",
+      "link": ""
+    }
+  ],
+  "drawings": {
+    "title": "I also draw",
+    "text": "Pencil on paper is where most of my ideas start. Faces, expressions, characters, before any of them become 3D.",
+    "images": [
+      "/images/drawings/drawing-1.webp",
+      "/images/drawings/drawing-2.webp",
+      "/images/drawings/drawing-3.webp",
+      "/images/drawings/drawing-4.webp",
+      "/images/drawings/drawing-5.webp"
+    ]
   },
   "about": {
-    "portrait": "/images/anas.jpg",
+    "portrait": "/images/portrait-v2.webp",
     "bio": [
-      "I'm Anas, a multimedia designer based in Dubai. I work across graphic design, 3D, motion and video, and I like owning a piece of work from the idea to the final file.",
-      "Today I lead creative and video production at MangoBot, a company building AI and humanoid robots. When I joined, the company had a logo and nothing else. I built the brand identity, the first website and the in-house video production, and I now direct, film and edit the company's videos.",
-      "Before that I spent two years at Promate Technologies, where I taught myself Blender and turned it into a core part of how I work. Outside of client work, I'm writing and building my own short film."
+      "I'm Anas, a visual artist and art director based in Dubai. I direct, design, model in 3D, animate, film and draw, and I like owning a piece of work from the first idea to the final file.",
+      "Today I lead creative content at MangoBot, a company building AI and humanoid robots. I built the brand identity and the in-house video production from the ground up, and I direct, film and edit the company's films.",
+      "Before that I was a senior graphic designer at Promate Technologies, where I taught myself Blender and made 3D a core part of my work. It all started with a pencil, and I still draw. Right now I'm writing and producing my own short film."
     ],
     "experience": [
       {
         "period": "2026 to now",
         "role": "Creative Content Manager",
         "company": "MangoBot",
-        "note": "Promoted from Senior Multimedia Designer after six months"
+        "note": "Joined as Senior Multimedia Designer, then promoted. Brand, films and art direction"
       },
       {
         "period": "2024 to 2026",
         "role": "Senior Graphic Designer",
         "company": "Promate Technologies",
-        "note": "E-commerce, 3D product visuals, GITEX Global"
+        "note": "E-commerce visuals, 3D product renders, GITEX Global"
       },
       {
         "period": "2019 to 2024",
@@ -46,9 +127,48 @@
       "After Effects",
       "Blender",
       "Figma",
-      "Notion"
+      "Framer",
+      "Camera and lighting"
     ],
     "cv": "/Anas_Al_Shikh_Saleh_CV.pdf"
+  },
+  "services": [
+    "Design",
+    "Video editing",
+    "Filming",
+    "Website design",
+    "3D",
+    "Animation",
+    "Other"
+  ],
+  "contactPage": {
+    "headline": "Let's make something.",
+    "intro": "Tell me about your project. I read every message and reply with next steps and a quote.",
+    "replyNote": "I usually reply within two working days.",
+    "budgets": [
+      "Not sure yet",
+      "Under 2,000 AED",
+      "2,000 to 5,000 AED",
+      "5,000 to 15,000 AED",
+      "15,000 AED and up"
+    ],
+    "sources": [
+      "Instagram",
+      "Behance",
+      "LinkedIn",
+      "Referral",
+      "Google",
+      "Other"
+    ]
+  },
+  "inProduction": {
+    "show": false,
+    "title": "Untitled short film",
+    "logline": "A short animated film, written, designed and animated in 3D.",
+    "poster": "",
+    "stage": "development",
+    "about": "I'm writing and producing my own short film: the script, the character design and the 3D animation. This page follows it from the first draft to release.",
+    "diary": []
   },
   "contact": {
     "email": "anassors.200@gmail.com",
@@ -56,5 +176,9 @@
     "behance": "https://www.behance.net/anassaleh2-/",
     "instagram": "https://www.instagram.com/anas_saleh_designs/",
     "whatsapp": "https://wa.me/971567061214"
+  },
+  "journal": {
+    "show": false,
+    "intro": "Notes, stories and things I love. Process, drawings, films, ideas and the odd tip."
   }
 }

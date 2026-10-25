@@ -3,96 +3,147 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Anas Al Shikh Saleh</title>
-<meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Anas Al Shikh Saleh, multimedia designer in Dubai. Design, 3D, motion and video.">
-<meta property="og:title" content="Anas Al Shikh Saleh">
-<meta property="og:description" content="Multimedia designer in Dubai. Design, 3D, motion and video.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231F1E1B'/%3E%3Ctext x='16' y='23' font-family='Arial Black,Arial' font-weight='900' font-size='19' text-anchor='middle' fill='%23F6F2E7'%3EA%3C/text%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Semi+Condensed:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400&display=swap">
-<style>
-/* Layout: one calm screen in the CV's language. Dark rail on the left, the name set large, contact underneath. */
-:root{
-  --paper:#F6F2E7; --ink:#1F1E1B; --muted:#6C685F; --line:#D8D3C5; --rail:#2A2A28;
-  --display:"Archivo Black","Arial Black",Impact,sans-serif;
-  --body:"Barlow Semi Condensed","Arial Narrow",Arial,sans-serif;
-  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
-}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#161513;--ink:#ECE7DA;--muted:#9C978B;--line:#2F2D29;--rail:#0B0B0A;color-scheme:dark}}
-:root[data-theme="dark"]{--paper:#161513;--ink:#ECE7DA;--muted:#9C978B;--line:#2F2D29;--rail:#0B0B0A;color-scheme:dark}
-*{box-sizing:border-box}
-html,body{min-height:100%}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-weight:500;font-size:18px;line-height:1.5;-webkit-font-smoothing:antialiased}
-.rail{position:fixed;left:0;top:0;bottom:0;width:12px;background:var(--rail)}
-main{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;gap:48px;max-width:1100px;margin:0 auto;padding-block:40px 32px;padding-left:max(28px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
-@media (min-width:760px){main{padding-left:max(64px,env(safe-area-inset-left,0px));padding-right:max(40px,env(safe-area-inset-right,0px));padding-block:56px 40px}}
-.top{display:flex;justify-content:space-between;gap:16px;font-family:var(--mono);font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted)}
-.status{display:inline-flex;align-items:center;gap:8px}
-.status i{width:8px;height:8px;border-radius:50%;background:#3E8E5A}
-h1{margin:0;font-family:var(--display);font-weight:400;font-size:clamp(48px,10.5vw,132px);line-height:.9;letter-spacing:-1px;text-wrap:balance}
-.role{margin:20px 0 0;font-size:clamp(20px,2.4vw,26px);font-weight:500;max-width:36ch}
-.role b{font-weight:700}
-.disc{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
-.disc span{font-family:var(--mono);font-size:12px;letter-spacing:1px;text-transform:uppercase;border:1px solid var(--line);padding:4px 10px;color:var(--muted)}
-.bottom{display:grid;gap:28px;border-top:1px solid var(--line);padding-top:28px}
-@media (min-width:760px){.bottom{grid-template-columns:1fr auto;align-items:end}}
-.contact{display:grid;gap:14px}
-.label{font-family:var(--mono);font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted)}
-.mail{display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-width:0}
-.mail a{font-size:clamp(20px,2.4vw,26px);font-weight:600;color:var(--ink);text-decoration:none;border-bottom:2px solid var(--line);word-break:break-all;transition:border-color .25s}
-.mail a:hover{border-color:var(--ink)}
-.copy{font-family:var(--body);font-weight:700;font-size:13px;letter-spacing:.8px;text-transform:uppercase;border:1px solid var(--ink);background:transparent;color:var(--ink);padding:6px 11px;cursor:pointer}
-.icons{display:flex;gap:10px;flex-wrap:wrap}
-.icons a{width:46px;height:46px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);color:var(--ink);transition:background .25s,color .25s,border-color .25s}
-.icons a:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-.icons svg{width:20px;height:20px}
-.btn{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:var(--paper);padding:15px 24px;text-decoration:none;font-weight:700;text-transform:uppercase;letter-spacing:.8px;font-size:15px;justify-self:start;transition:transform .3s}
-.btn:hover{transform:translateY(-2px)}
-.btn svg{width:16px;height:16px}
-a:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
-.foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:var(--muted)}
-.fade{animation:fade .9s ease both}.fade.d2{animation-delay:.12s}.fade.d3{animation-delay:.24s}
-@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.fade{animation:none}}
-</style>
-
+<title>Anas Saleh, visual artist and art director in Dubai</title>
+<meta name="description" content="Anas Al Shikh Saleh, visual artist and art director in Dubai. Art direction, design, 3D, motion, film and drawing.">
+<meta property="og:title" content="Anas Saleh, visual artist and art director">
+<meta property="og:description" content="Art direction, design, 3D, motion, film and drawing. Based in Dubai.">
+<meta property="og:image" content="https://anassaleh.me/images/og-v2.jpg">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#1d1d1b">
+<link rel="icon" href="/images/icon.svg" type="image/svg+xml">
+<link rel="icon" href="/images/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/images/icon-180.png">
+<link rel="preload" href="/fonts/archivo-black-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/barlow-semi-condensed-500-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/barlow-semi-condensed-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/fonts.css">
+<link rel="preload" href="/content/site.json" as="fetch" crossorigin>
+<link rel="preload" href="/content/projects.json" as="fetch" crossorigin>
+<link rel="stylesheet" href="/vendor/lenis-1.3.4.css">
+<link rel="modulepreload" href="/js/home2.js">
+<link rel="modulepreload" href="/js/hero2.js">
+<link rel="modulepreload" href="/js/nav.js">
+<link rel="modulepreload" href="/js/cursors.js">
+<link rel="modulepreload" href="/js/works-wheel.js">
+<link rel="modulepreload" href="/js/data.js">
+<link rel="stylesheet" href="/css/nav.css">
+<link rel="stylesheet" href="/css/v2.css">
+<link rel="preload" href="/images/portrait-v2.webp" as="image" fetchpriority="high">
+<script defer src="/vendor/lenis-1.3.4.min.js"></script>
+<script type="module" src="/js/home2.js"></script>
 </head>
 <body>
-<div class="rail" aria-hidden="true"></div>
-<main>
-  <div class="top"><span>Dubai, UAE</span><span class="status"><i></i>Portfolio coming soon</span></div>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main">
 
-  <section>
-    <h1 class="fade">Anas Al Shikh Saleh</h1>
-    <p class="role fade d2"><b>Multimedia designer.</b> Design, 3D, motion and video, from the first idea to the final frame.</p>
-    <div class="disc fade d3"><span>Graphic design</span><span>3D</span><span>Motion</span><span>Video</span></div>
+  <!-- Hero: opening animation, then a pinned scroll scene -->
+  <div class="hero-scene" data-hero-scene>
+    <section class="hero dark" data-hero data-dark aria-label="Introduction">
+      <div class="spot" data-spot></div>
+      <div class="vignette"></div>
+      <h1 class="name up" data-name><span class="ln" data-ln="l"><span class="w">Anas</span></span><span class="ln" data-ln="r"><span class="w acc">Saleh</span></span></h1>
+      <div class="stage" data-stage></div>
+      <div class="meta" data-meta>
+        <p><span class="up" data-headline>Visual artist and <span class="acc">art director</span></span><span data-intro>Art direction, design, 3D, motion, film and drawing.</span></p>
+        <span class="scroll"><i></i>SCROLL</span>
+      </div>
+      <div class="statement" data-statement>
+        <div>
+          <h2 class="up" data-statement-text></h2>
+          <p data-statement-sub></p>
+        </div>
+      </div>
+      <div class="curtain" data-curtain></div>
+    </section>
+  </div>
+
+  <!-- What I do -->
+  <section class="disc wrap" aria-labelledby="disc-title">
+    <div class="disc__head">
+      <span class="label" id="disc-title" data-reveal>What I do</span>
+      <p data-reveal>Hover a word to flip through the work behind it. Click it to see all of it.</p>
+    </div>
+    <ul class="disc__words up" data-disc></ul>
+    <div class="float-img" data-float aria-hidden="true"></div>
   </section>
 
-  <section class="bottom">
-    <div class="contact">
-      <span class="label">Get in touch</span>
-      <div class="mail"><a href="mailto:anassors.200@gmail.com" id="mail">anassors.200@gmail.com</a><button class="copy" id="copy" type="button">Copy</button></div>
-      <div class="icons">
-        <a href="https://www.linkedin.com/in/anas-al-sheikh-saleh/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 110 5 2.5 2.5 0 010-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05C20.6 8.65 21 11.2 21 14.5V21h-4v-5.8c0-1.4 0-3.2-1.95-3.2S13 13.5 13 15.1V21H9z"/></svg></a>
-        <a href="https://www.behance.net/anassaleh2-/" target="_blank" rel="noopener" aria-label="Behance" title="Behance"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.2 11.3c.9-.4 1.5-1.1 1.5-2.2C9.7 7 8.2 6 6.2 6H1v12h5.4c2.1 0 4-1 4-3.4 0-1.5-.8-2.6-2.2-3.3zM3.6 8.1h2.3c.9 0 1.6.3 1.6 1.2 0 .9-.6 1.3-1.5 1.3H3.6zm2.5 7.8H3.6v-3.1h2.6c1 0 1.7.4 1.7 1.6s-.8 1.5-1.8 1.5zM15 7h5v1.4h-5zm2.6 2.3c-2.6 0-4.3 1.9-4.3 4.4 0 2.6 1.6 4.4 4.3 4.4 2 0 3.3-.9 4-2.8h-2.2c-.2.7-1.1 1-1.7 1-1.3 0-2-.7-2-2h6c.2-2.6-1.3-5-4.1-5zm-1.9 3.4c.1-1 .8-1.7 1.9-1.7 1 0 1.6.6 1.7 1.7z"/></svg></a>
-        <a href="https://www.instagram.com/anas_saleh_designs/" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
-        <a href="https://wa.me/971567061214" target="_blank" rel="noopener" aria-label="WhatsApp" title="WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2zm0 18.2c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1112 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 01-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 00-.7.3 2.9 2.9 0 00-.9 2.2c0 1.3.9 2.5 1 2.7.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.6-.3z"/></svg></a>
+  <!-- Selected work: works wheel -->
+  <section class="works dark" data-works data-dark aria-label="Selected work">
+    <div class="works__pin">
+      <span class="label works__head">Selected work</span>
+      <div class="ww-stage" data-ww-stage><div class="ww-wheel" data-ww-wheel></div></div>
+      <div class="ww-label up" data-ww-label>Works <span class="acc">'26</span></div>
+      <div class="ww-title" data-ww-title><span class="n" data-ww-n></span><span class="up" data-ww-name></span><span class="cat" data-ww-cat></span></div>
+      <ol class="ww-index" data-ww-index></ol>
+      <a class="arrow works__all" href="/work">All projects</a>
+      <div class="progress"><i data-ww-bar></i></div>
+    </div>
+  </section>
+
+  <!-- Mechanical Spider: slot for the interactive 3D model -->
+  <section class="spider wrap" aria-labelledby="spider-title">
+    <div class="spider__grid">
+      <div class="spider__text">
+        <span class="label" data-reveal>3D</span>
+        <h2 class="up" id="spider-title" data-reveal data-spider-title>Mechanical <span class="acc">spider</span></h2>
+        <p data-reveal data-spider-text></p>
+        <a class="arrow" href="/work/mechanical-spider" data-reveal data-spider-link>See the project</a>
+      </div>
+      <div class="spider__stage dark" data-spider-stage data-reveal>
+        <i class="spider__corner tl"></i><i class="spider__corner tr"></i><i class="spider__corner bl"></i><i class="spider__corner br"></i>
+        <div class="spider__floor"></div>
+        <div class="spider__hint" data-spider-hint><span class="up">Interactive 3D model</span><span>Coming soon</span></div>
       </div>
     </div>
-    <a class="btn" href="Anas_Al_Shikh_Saleh_CV.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"/></svg>Download CV</a>
   </section>
 
-  <div class="foot"><span>anassaleh.me</span><span>&copy; <span id="yr">2026</span> Anas Al Shikh Saleh</span></div>
+  <!-- In progress: a teaser of the In progress page -->
+  <section class="studio wrap" id="in-progress" aria-labelledby="studio-title">
+    <div class="studio__head">
+      <div><span class="label" data-reveal>Now making</span><h2 class="up" id="studio-title" data-reveal>In <span class="acc">progress</span></h2></div>
+      <div class="studio__side"><p data-reveal>What I'm making right now, and what's coming next.</p><a class="arrow" href="/in-progress" data-reveal>Everything in progress</a></div>
+    </div>
+    <div class="studio__grid" data-studio></div>
+  </section>
+
+  <!-- Drawings -->
+  <section class="draw" id="drawings" aria-labelledby="draw-title">
+    <div class="wrap draw__head">
+      <div><span class="label" data-reveal>Drawing</span><h2 class="up" id="draw-title" data-reveal data-draw-title>I also <span class="acc">draw</span></h2></div>
+      <p data-reveal data-draw-text></p>
+    </div>
+    <div class="draw__row" data-draw-row></div>
+  </section>
+
+  <!-- Contact -->
+  <section class="contact dark" data-dark aria-labelledby="contact-title">
+    <div class="wrap">
+      <span class="label" data-reveal>Contact</span>
+      <h2 class="up" id="contact-title" data-reveal style="margin-top:26px">Let's <span class="acc">talk</span></h2>
+      <p class="lead" data-reveal>A brand to shape, a film to direct, an idea to bring to life? Tell me about it and I'll get back to you.</p>
+      <div class="contact__actions" data-reveal>
+        <a class="btn btn--accent" href="/contact">Start a project <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn btn--line" data-wa href="#" target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+      <div class="contact__mail" data-reveal><a data-mail href="#"></a><button class="copy" type="button" data-copy>Copy</button><a class="copy copy--accent" data-mailto href="#">Send email</a></div>
+    </div>
+  </section>
 </main>
-<script>
-document.getElementById("yr").textContent=new Date().getFullYear();
-document.getElementById("copy").addEventListener("click",function(){
-  var b=this,t=document.getElementById("mail").textContent;
-  var sel=function(){var r=document.createRange();r.selectNodeContents(document.getElementById("mail"));var s=getSelection();s.removeAllRanges();s.addRange(r)};
-  try{navigator.clipboard.writeText(t).then(function(){b.textContent="Copied";setTimeout(function(){b.textContent="Copy"},1600)},sel)}catch(e){sel()}
-});
-</script>
+
+<footer class="foot dark" data-dark>
+  <div class="wrap">
+    <div class="foot__top">
+      <div>
+        <span class="foot__logo" data-logo></span>
+        <p>Visual artist and art director in Dubai. Art direction, design, 3D, motion, film and drawing.</p>
+      </div>
+      <div><h3>Pages</h3><ul><li><a href="/work">Work</a></li><li><a href="/about">About</a></li><li><a href="/in-progress">In progress</a></li><li><a href="/contact">Contact</a></li></ul></div>
+      <div><h3>Follow</h3><ul data-socials></ul></div>
+      <div><h3>CV</h3><ul><li><a href="/Anas_Al_Shikh_Saleh_CV.pdf" target="_blank" rel="noopener">Download CV</a></li></ul></div>
+    </div>
+    <p class="foot__big up" aria-hidden="true">Anas <span class="acc">Saleh</span></p>
+    <div class="foot__bottom"><span data-year></span><span>anassaleh.me</span></div>
+  </div>
+</footer>
 </body>
 </html>

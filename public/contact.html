@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>document.documentElement.classList.add("intro")</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contact, Anas Saleh</title>
+<meta name="description" content="Start a project with Anas Al Shikh Saleh, visual artist and art director in Dubai. Email, WhatsApp or the project form.">
+<meta property="og:title" content="Contact, Anas Saleh">
+<meta property="og:image" content="https://anassaleh.me/images/og-v2.jpg">
+<meta name="theme-color" content="#f1ece2">
+<link rel="icon" href="/images/icon.svg" type="image/svg+xml">
+<link rel="icon" href="/images/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/images/icon-180.png">
+<link rel="preload" href="/fonts/archivo-black-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/barlow-semi-condensed-500-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/barlow-semi-condensed-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/fonts.css">
+<link rel="preload" href="/content/site.json" as="fetch" crossorigin>
+<link rel="preload" href="/content/projects.json" as="fetch" crossorigin>
+<link rel="stylesheet" href="/vendor/lenis-1.3.4.css">
+<link rel="modulepreload" href="/js/contact2.js">
+<link rel="modulepreload" href="/js/shell2.js">
+<link rel="modulepreload" href="/js/nav.js">
+<link rel="modulepreload" href="/js/cursors.js">
+<link rel="modulepreload" href="/js/data.js">
+<link rel="stylesheet" href="/css/nav.css">
+<link rel="stylesheet" href="/css/v2.css">
+<link rel="stylesheet" href="/css/pages2.css">
+<script defer src="/vendor/lenis-1.3.4.min.js"></script>
+<script type="module" src="/js/contact2.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main">
+
+  <header class="ph wrap">
+    <span class="label" data-reveal>Contact</span>
+    <h1 class="ph__title up"><span class="ln"><span class="w">Let's</span></span> <span class="ln"><span class="w acc">talk</span></span></h1>
+    <div class="ph__foot"><p data-reveal data-c-intro>Tell me about your project. I read every message and reply with next steps and a quote.</p></div>
+  </header>
+
+  <!-- The quick ways: email, WhatsApp, socials -->
+  <section class="ct-direct wrap" aria-label="Direct contact">
+    <div class="ct-card ct-card--mail" data-reveal>
+      <span class="label">Email</span>
+      <a class="ct-mail" data-mail href="#"></a>
+      <div class="ct-card__actions"><button class="chip" type="button" data-copy>Copy</button><a class="chip chip--ink" data-mailto href="#">Send email</a></div>
+    </div>
+    <a class="ct-card ct-card--wa" data-wa href="#" target="_blank" rel="noopener" data-reveal>
+      <span class="label">WhatsApp</span>
+      <span class="ct-big up">Chat <span class="acc">now</span></span>
+      <span class="ct-card__hint">Quick questions, quick answers</span>
+    </a>
+    <div class="ct-card" data-reveal>
+      <span class="label">Follow</span>
+      <ul class="ct-socials" data-socials></ul>
+    </div>
+  </section>
+
+  <!-- The project form -->
+  <section class="ct-form dark" data-dark aria-labelledby="form-title">
+    <div class="wrap">
+      <div class="ab-head">
+        <span class="label" data-reveal>Project form</span>
+        <h2 class="up" id="form-title" data-reveal>Tell me about <span class="acc">your project</span></h2>
+        <p class="ct-reply" data-reveal data-c-reply></p>
+      </div>
+      <div data-form-wrap>
+        <form class="ff" novalidate data-form>
+          <div class="ff__grid">
+            <div class="field" data-reveal><label for="f-name">Your name <span class="req">*</span></label><input id="f-name" name="name" type="text" autocomplete="name" required maxlength="120"><span class="error" aria-live="polite"></span></div>
+            <div class="field" data-reveal><label for="f-company">Company or brand</label><input id="f-company" name="company" type="text" autocomplete="organization" maxlength="120"><span class="error"></span></div>
+            <div class="field" data-reveal><label for="f-email">Email <span class="req">*</span></label><input id="f-email" name="email" type="email" autocomplete="email" required maxlength="200"><span class="error" aria-live="polite"></span></div>
+            <div class="field" data-reveal><label for="f-phone">Phone or WhatsApp <span class="req">*</span></label><input id="f-phone" name="phone" type="tel" autocomplete="tel" required maxlength="40" placeholder="+971 50 000 0000"><span class="error" aria-live="polite"></span></div>
+            <div class="field field--full" data-reveal>
+              <fieldset><legend>What do you need? <span class="req">*</span> <span class="hint">Pick one or more</span></legend><div class="ff__choices" data-services></div></fieldset>
+              <span class="error" aria-live="polite" data-services-error></span>
+            </div>
+            <div class="field field--full" data-reveal><label for="f-brief">Project brief <span class="req">*</span></label><textarea id="f-brief" name="brief" required maxlength="5000" rows="6" placeholder="What are we making, who is it for, and what should it achieve? Links to references are welcome."></textarea><span class="error" aria-live="polite"></span></div>
+            <div class="field" data-reveal><label for="f-budget">Budget</label><select id="f-budget" name="budget" data-budgets></select><span class="error"></span></div>
+            <div class="field" data-reveal><label for="f-date">Deadline or event date</label><input id="f-date" name="date" type="date"><span class="error"></span></div>
+            <div class="field" data-reveal><label for="f-source">How did you find me?</label><select id="f-source" name="source" data-sources></select><span class="error"></span></div>
+            <div class="field" data-reveal><label for="f-links">Links (references, files, your website)</label><input id="f-links" name="links" type="text" maxlength="500" placeholder="https://"><span class="error"></span></div>
+            <div class="hp" aria-hidden="true"><label for="f-website">Leave this empty</label><input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+            <div class="field field--full" data-reveal>
+              <div class="ff__consent"><input id="f-consent" name="consent" type="checkbox" required><label for="f-consent">You can contact me by email, phone or WhatsApp about this request. My details are only used to reply.</label></div>
+              <span class="error" aria-live="polite"></span>
+            </div>
+          </div>
+          <div class="ff__foot" data-reveal>
+            <p class="ff__status" role="status" aria-live="polite"></p>
+            <button class="btn btn--accent" type="submit">Send request <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+<footer data-footer></footer>
+<script>
+  // Title words rise and the intro lines come into focus as soon as the page is drawn (no waiting for content).
+  (function () {
+    var E = "cubic-bezier(.16,1,.3,1)";
+    document.querySelectorAll(".ph__title .w, .ab-title .w").forEach(function (w, i) {
+      w.animate([{ transform: "translateY(110%) rotate(3deg)" }, { transform: "none" }], { duration: 1200, delay: 80 + i * 110, easing: E, fill: "backwards" });
+    });
+    document.querySelectorAll("[data-intro]").forEach(function (el, i) {
+      el.animate([{ opacity: 0, transform: "translateY(20px)", filter: "blur(8px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }], { duration: 1000, delay: 450 + i * 120, easing: E, fill: "backwards" });
+    });
+    document.documentElement.classList.remove("intro");
+  })();
+</script>
+</body>
+</html>

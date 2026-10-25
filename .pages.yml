@@ -4,7 +4,7 @@ media:
     label: Images
     input: public/images
     output: /images
-    categories: [image]
+    extensions: [webp, jpg, jpeg, png, gif, svg, avif, mp4, webm]
   - name: files
     label: Files
     input: public/files
@@ -18,27 +18,99 @@ content:
     path: public/content/site.json
     format: json
     fields:
-      - { name: name, label: Short name, type: string, required: true }
+      - { name: name, label: Short name (shown on the site), type: string, required: true }
       - { name: fullName, label: Full name, type: string, required: true }
       - { name: location, label: Location, type: string }
+      - name: theme
+        label: Look
+        type: object
+        fields:
+          - name: palette
+            label: Colour palette
+            type: select
+            options:
+              values:
+                - { name: paper, label: "Paper: warm off-white and charcoal" }
+                - { name: stone, label: "Stone: cool grey and graphite" }
+                - { name: sand, label: "Sand: beige and dark brown-grey" }
       - name: home
         label: Homepage
         type: object
         fields:
-          - { name: headline, label: Headline, type: string }
+          - { name: headline, label: Headline under the name, type: string }
           - { name: intro, label: Intro line, type: text }
+          - { name: statement, label: "Big statement (put a word in [brackets] to colour it blue)", type: text }
+          - { name: statementSub, label: Line under the statement, type: text }
+          - name: heroGlow
+            label: Glow around the portrait
+            type: select
+            options:
+              values:
+                - { name: none, label: None }
+                - { name: very-light, label: Very light }
+                - { name: light, label: Light }
+                - { name: strong, label: Stronger }
+          - { name: worksLabel, label: Title in the middle of the works wheel, type: string }
           - name: heroType
             label: Hero type
             type: select
             options:
               values:
+                - { name: portrait, label: Portrait with 3D depth }
                 - { name: video, label: Full-screen video }
                 - { name: image, label: Image }
-                - { name: model, label: 3D model }
+          - { name: heroImage, label: Hero image (portrait with transparent background), type: image, options: { media: images } }
+          - { name: heroDepth, label: Hero depth map (grayscale, white is near), type: image, options: { media: images } }
           - { name: heroVideo, label: Hero video (muted loop file), type: file, options: { media: files } }
-          - { name: heroImage, label: Hero image, type: image, options: { media: images } }
-          - { name: heroModel, label: Hero 3D model (.glb, under 10 MB), type: file, options: { media: files } }
+          - { name: heroModel, label: 3D model (.glb, under 10 MB, for later), type: file, options: { media: files } }
           - { name: showreelUrl, label: Showreel link (YouTube or Vimeo), type: string }
+          - name: disciplines
+            label: What I do (words with a picture on hover)
+            type: object
+            list: true
+            fields:
+              - { name: title, label: Title, type: string }
+              - name: filter
+                label: "Shows these projects on hover (direction = projects where you directed, drawing = your drawings)"
+                type: select
+                options:
+                  values: [direction, design, 3d, motion, video, drawing]
+              - { name: image, label: Image, type: image, options: { media: images } }
+      - name: spider
+        label: Mechanical Spider 3D section
+        type: object
+        fields:
+          - { name: title, label: Title, type: string }
+          - { name: text, label: Text, type: text }
+          - { name: model, label: "3D model (.glb, under 10 MB). Empty = placeholder", type: file, options: { media: files } }
+          - { name: poster, label: Still image, type: image, options: { media: images } }
+          - { name: link, label: Link, type: string }
+      - name: studio
+        label: "In progress (what you're making now and what's coming; shown on the In progress page and on the home page)"
+        type: object
+        list: true
+        fields:
+          - { name: title, label: Title, type: string }
+          - name: status
+            label: Status
+            type: select
+            options:
+              values:
+                - { name: in-production, label: In production }
+                - { name: coming-soon, label: Coming soon }
+                - { name: idea, label: Idea }
+          - { name: text, label: Text, type: text }
+          - { name: image, label: Image, type: image, options: { media: images } }
+          - { name: details, label: "Longer note (optional, In progress page only)", type: text }
+          - { name: gallery, label: "Extra images (optional, In progress page only)", type: image, options: { media: images, multiple: { max: 6 } } }
+          - { name: link, label: "Link (optional, for example /in-production)", type: string }
+      - name: drawings
+        label: Drawings
+        type: object
+        fields:
+          - { name: title, label: Title, type: string }
+          - { name: text, label: Text, type: text }
+          - { name: images, label: Drawings, type: image, options: { media: images, multiple: true } }
       - name: about
         label: About
         type: object
@@ -56,6 +128,50 @@ content:
               - { name: note, label: Note, type: string }
           - { name: tools, label: Tools, type: string, list: true }
           - { name: cv, label: CV (PDF), type: file, options: { media: files } }
+      - { name: services, label: Services (shown in the contact form), type: string, list: true }
+      - name: contactPage
+        label: Contact page
+        type: object
+        fields:
+          - { name: headline, label: Headline, type: string }
+          - { name: intro, label: Intro, type: text }
+          - { name: replyNote, label: Reply time note, type: string }
+          - { name: budgets, label: Budget options, type: string, list: true }
+          - { name: sources, label: "How did you find me? options", type: string, list: true }
+      - name: journal
+        label: Journal
+        type: object
+        fields:
+          - { name: show, label: "Show the journal on the site (adds it to the menu)", type: boolean }
+          - { name: intro, label: Intro line, type: text }
+      - name: inProduction
+        label: In Production (short film page)
+        type: object
+        fields:
+          - { name: show, label: Show this page on the site, type: boolean }
+          - { name: title, label: Film title, type: string }
+          - { name: logline, label: Logline (one sentence), type: text }
+          - { name: poster, label: Poster or key still, type: image, options: { media: images } }
+          - name: stage
+            label: Current stage
+            type: select
+            options:
+              values:
+                - { name: development, label: Development }
+                - { name: pre-production, label: Pre-production }
+                - { name: production, label: Production }
+                - { name: post-production, label: Post-production }
+                - { name: release, label: Release }
+          - { name: about, label: About the film, type: text }
+          - name: diary
+            label: Production diary
+            type: object
+            list: true
+            fields:
+              - { name: date, label: Date, type: date }
+              - { name: title, label: Title, type: string }
+              - { name: text, label: Text, type: text }
+              - { name: image, label: Image, type: image, options: { media: images } }
       - name: contact
         label: Contact
         type: object
@@ -87,32 +203,56 @@ content:
           multiple: true
           values:
             - { name: design, label: Design }
+            - { name: 3d, label: 3D }
             - { name: motion, label: Motion }
             - { name: video, label: Video }
-            - { name: 3d, label: 3D }
       - { name: client, label: Client, type: string }
       - { name: year, label: Year, type: string }
       - { name: role, label: My role, type: string }
       - { name: format, label: Format, type: string }
+      - { name: tools, label: Tools and gear, type: string }
       - { name: featured, label: Show on homepage, type: boolean }
       - { name: draft, label: Hide from site (draft), type: boolean }
-      - { name: cover, label: Cover image, type: image, options: { media: images } }
-      - { name: images, label: Gallery images, type: image, options: { media: images, multiple: true } }
-      - { name: video, label: Video link (YouTube or Vimeo), type: string }
+      - { name: cover, label: "Cover image (about 1600 x 1250, used on the cards, the project page and link previews)", type: image, options: { media: images } }
       - { name: description, label: Description, type: text }
+      - { name: video, label: "Film link (Vimeo, or YouTube). Shown with a play button", type: string }
+      - name: blocks
+        label: "Layout: rows from top to bottom"
+        description: "Works like Behance modules. Each row can have a short text and up to 8 images side by side (same height, never cropped). Drag rows to reorder. Short animations: upload an .mp4 loop instead of a GIF."
+        type: object
+        list: true
+        fields:
+          - { name: text, label: "Text above the images (optional)", type: text }
+          - { name: images, label: "Images or .mp4 loops side by side (1 = full width, up to 8)", type: file, options: { media: images, multiple: { max: 8 } } }
+          - { name: caption, label: "Caption under the row (optional)", type: string }
 
   - name: blog
-    label: Blog (hidden on the site until the first post)
+    label: "Journal entries (the page is switched on in Site > Journal)"
     type: file
     path: public/content/blog.json
     format: json
     list: true
     fields:
       - { name: title, label: Title, type: string, required: true }
-      - { name: slug, label: Page address (lowercase-with-dashes), type: string, required: true }
+      - name: slug
+        label: Page address (lowercase-with-dashes)
+        type: string
+        required: true
+        pattern: { regex: "^[a-z0-9]+(-[a-z0-9]+)*$", message: "Use lowercase letters, numbers and dashes only" }
       - { name: date, label: Date, type: date }
+      - { name: tag, label: "Tag (for example Story, Process, Things I love, Tips)", type: string }
+      - { name: excerpt, label: "Short intro (shown on the list and in link previews)", type: text }
       - { name: cover, label: Cover image, type: image, options: { media: images } }
-      - { name: body, label: Body, type: rich-text }
+      - { name: draft, label: "Draft (only visible with ?preview)", type: boolean }
+      - name: blocks
+        label: "Entry: rows from top to bottom"
+        description: "Each row can have formatted text and up to 8 images or .mp4 loops side by side, plus a caption."
+        type: object
+        list: true
+        fields:
+          - { name: text, label: Text, type: rich-text }
+          - { name: images, label: "Images or .mp4 loops side by side (optional, up to 8)", type: file, options: { media: images, multiple: { max: 8 } } }
+          - { name: caption, label: "Caption under the images (optional)", type: string }
 
   - name: offers
     label: Offers (hidden on the site until used)

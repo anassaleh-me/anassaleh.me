@@ -52,6 +52,12 @@ async function playIntro() {
     [{ opacity: 0, transform: "translateY(24px)", filter: "blur(8px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }],
     { duration: 1200, delay: 1600 + i * 120, easing: EASE_OUT, fill: "backwards" },
   ));
+  // Safety net: if the browser never advances the animations (hidden tab, power saving), jump to the end
+  // so the hero is never left covered or blurred.
+  setTimeout(() => {
+    [curtain, portrait, ...words, ...meta.children].forEach((el) => el.getAnimations().forEach((a) => { if ((a.currentTime ?? 0) < 50) a.finish(); }));
+    curtain.style.display = "none";
+  }, 4200);
 }
 playIntro();
 $("[data-replay]").addEventListener("click", () => { scrollTo({ top: 0 }); lenisRef?.scrollTo(0, { immediate: true }); setTimeout(playIntro, 80); });

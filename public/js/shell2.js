@@ -28,7 +28,7 @@ export async function shell({ current = "" } = {}) {
     logo: LOGO,
     name: site.name,
     current,
-    links: [{ href: "/work", label: "Work", key: "work" }, { href: "/about", label: "About", key: "about" }, { href: "/#studio", label: "Studio", key: "studio" }],
+    links: [{ href: "/work", label: "Work", key: "work" }, { href: "/about", label: "About", key: "about" }, { href: "/in-progress", label: "In progress", key: "progress" }],
     cta: { href: "/contact", label: "Let's talk" },
   });
   mountRingCursor({ accent: "#6f8faf" });
@@ -60,7 +60,7 @@ function footerHTML(site) {
     <div class="wrap">
       <div class="foot__top">
         <div><span class="foot__logo">${LOGO}</span><p>Visual artist and art director in Dubai. Art direction, design, 3D, motion, film and drawing.</p></div>
-        <div><h3>Pages</h3><ul><li><a href="/">Home</a></li><li><a href="/work">Work</a></li><li><a href="/about">About</a></li><li><a href="/contact">Contact</a></li></ul></div>
+        <div><h3>Pages</h3><ul><li><a href="/">Home</a></li><li><a href="/work">Work</a></li><li><a href="/about">About</a></li><li><a href="/in-progress">In progress</a></li><li><a href="/contact">Contact</a></li></ul></div>
         <div><h3>Follow</h3><ul>${socials.map(([n, u]) => `<li><a href="${esc(u)}" target="_blank" rel="noopener">${n}</a></li>`).join("")}</ul></div>
         <div><h3>Say hi</h3><ul><li><a href="mailto:${esc(c.email)}">${esc(c.email)}</a></li><li><a href="${esc(site.about?.cv || "/Anas_Al_Shikh_Saleh_CV.pdf")}" target="_blank" rel="noopener">Download CV</a></li></ul></div>
       </div>

@@ -47,7 +47,7 @@ function render() {
   </section>
 
   <section class="pr-diary wrap" aria-labelledby="pd-title">
-    <div class="ab-head"><span class="label" data-reveal>Diary</span><h2 class="up" id="pd-title" data-reveal>From the <span class="acc">studio</span></h2></div>
+    <div class="ab-head"><span class="label" data-reveal>Diary</span><h2 class="up" id="pd-title" data-reveal>Production <span class="acc">diary</span></h2></div>
     ${diary.length ? `<ol class="pr-diary__list">${diary.map((d) => `<li data-reveal>
         <time datetime="${esc(d.date)}">${esc(fmt(d.date))}</time>
         <div><h3 class="up">${esc(d.title)}</h3><p>${esc(d.text || "")}</p>${d.image ? `<img src="${esc(d.image)}" alt="${esc(d.title)}" loading="lazy">` : ""}</div>

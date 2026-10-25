@@ -1,5 +1,5 @@
 // Home page (stage 2): opening animation, hero scroll scene, what-I-do words, works wheel, spider slot,
-// studio, drawings and contact. Content comes from /content/site.json and /content/projects.json.
+// in progress, drawings and contact. Content comes from /content/site.json and /content/projects.json.
 import { mountHero } from "/js/hero2.js";
 import { mountPillNav } from "/js/nav.js";
 import { mountRingCursor } from "/js/cursors.js";
@@ -38,7 +38,7 @@ const c = site.contact || {};
 mountPillNav({
   logo: LOGO,
   name: site.name,
-  links: [{ href: "/work", label: "Work" }, { href: "/about", label: "About" }, { href: "#studio", label: "Studio" }],
+  links: [{ href: "/work", label: "Work" }, { href: "/about", label: "About" }, { href: "/in-progress", label: "In progress" }],
   cta: { href: "/contact", label: "Let's talk" },
 });
 mountRingCursor({ accent: "#6f8faf" });
@@ -187,12 +187,13 @@ const sh = { x: 0, y: 0, tx: 0, ty: 0 };
 spStage.addEventListener("pointermove", (e) => { const r = spStage.getBoundingClientRect(); sh.tx = (e.clientX - r.left) / r.width - 0.5; sh.ty = (e.clientY - r.top) / r.height - 0.5; });
 spStage.addEventListener("pointerleave", () => { sh.tx = 0; sh.ty = 0; });
 
-/* ---------- studio ---------- */
+/* ---------- in progress (teaser of the In progress page) ---------- */
 const STATUS = { "in-production": ["In production", true], "coming-soon": ["Coming soon", false], idea: ["Idea", false] };
 $("[data-studio]").innerHTML = (site.studio || []).map((s) => {
   const [label, live] = STATUS[s.status] || ["In progress", true];
-  const tag = s.link ? "a" : "article";
-  return `<${tag} class="sc" data-reveal${s.link ? ` href="${esc(s.link)}"` : ""}>
+  const href = `/in-progress#${String(s.title).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`;
+  const tag = "a";
+  return `<${tag} class="sc" data-reveal href="${href}" data-cursor="Open">
     <div class="sc__img"><img src="${esc(s.image)}" alt="" loading="lazy"><span class="sc__status${live ? " live" : ""}"><i></i>${label}</span></div>
     <div class="sc__body"><h3 class="up">${esc(s.title)}</h3><p>${esc(s.text)}</p></div>
   </${tag}>`;

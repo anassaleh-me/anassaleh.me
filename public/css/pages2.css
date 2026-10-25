@@ -2,7 +2,7 @@
 
 /* ---------- page header ---------- */
 .ph { padding-top: clamp(130px, 17vw, 220px); padding-bottom: clamp(50px, 7vw, 100px); }
-.ph__title { font-size: clamp(64px, 13.5vw, 250px); line-height: 0.84; margin: 22px 0 clamp(28px, 4vw, 54px); }
+.ph__title { font-size: clamp(40px, 13.5vw, 250px); line-height: 0.84; margin: 22px 0 clamp(28px, 4vw, 54px); }
 .ph__title .ln { display: inline-block; overflow: hidden; padding-bottom: 0.05em; vertical-align: top; }
 .ph__title .w { display: inline-block; }
 .ph__foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 28px; flex-wrap: wrap; }
@@ -295,3 +295,20 @@
 .nf h1 { font-size: clamp(40px, 5.6vw, 96px); margin-bottom: 20px; }
 .nf__text { color: var(--cream-soft); font-size: clamp(18px, 1.5vw, 23px); margin-bottom: 34px; }
 .nf .contact__actions { justify-content: flex-start; }
+
+/* ---------- in progress ---------- */
+.studio__side { display: grid; gap: 18px; justify-items: start; }
+.ip { display: grid; gap: clamp(70px, 9vw, 140px); padding-bottom: clamp(90px, 12vw, 170px); }
+.ip-item { display: grid; grid-template-columns: 1.25fr 1fr; gap: clamp(28px, 4.5vw, 80px); align-items: center; scroll-margin-top: 100px; }
+.ip-item:nth-child(even) .ip-item__media { order: 2; }
+.ip-item__media { position: relative; aspect-ratio: 4 / 3; border-radius: 18px; overflow: hidden; background: var(--cream-2); }
+.ip-item__media img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.1); will-change: transform; }
+.ip-item__media .sc__status { left: 18px; top: 18px; }
+.ip-item__n { display: block; font-weight: 700; font-size: 14px; letter-spacing: 0.14em; color: var(--acc-t); margin-bottom: 16px; }
+.ip-item h2 { font-size: clamp(36px, 4.6vw, 80px); margin-bottom: 20px; }
+.ip-item__text { font-size: clamp(19px, 1.6vw, 25px); line-height: 1.4; max-width: 34ch; }
+.ip-item__details { margin-top: 16px; color: var(--ink-soft); max-width: 50ch; }
+.ip-item__gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 24px; }
+.ip-item__gallery img { aspect-ratio: 1; object-fit: cover; border-radius: 8px; width: 100%; }
+.ip-item .arrow { margin-top: 26px; }
+@media (max-width: 860px) { .ip-item { grid-template-columns: 1fr; } .ip-item:nth-child(even) .ip-item__media { order: 0; } }

@@ -86,7 +86,7 @@ content:
           - { name: poster, label: Still image, type: image, options: { media: images } }
           - { name: link, label: Link, type: string }
       - name: studio
-        label: In the studio (work in progress and coming soon)
+        label: "In progress (what you're making now and what's coming; shown on the In progress page and on the home page)"
         type: object
         list: true
         fields:
@@ -101,7 +101,9 @@ content:
                 - { name: idea, label: Idea }
           - { name: text, label: Text, type: text }
           - { name: image, label: Image, type: image, options: { media: images } }
-          - { name: link, label: Link (optional), type: string }
+          - { name: details, label: "Longer note (optional, In progress page only)", type: text }
+          - { name: gallery, label: "Extra images (optional, In progress page only)", type: image, options: { media: images, multiple: { max: 6 } } }
+          - { name: link, label: "Link (optional, for example /in-production)", type: string }
       - name: drawings
         label: Drawings
         type: object

@@ -1,247 +1,207 @@
-// Stage 1 options board: live hero sample, accent colours, cream textures and five project layouts.
+// Stage 1b options board: hero sample, floating glass nav, and project layouts VI to X plus IV and V.
 import { mountHero } from "/js/hero2.js";
+import { mountPillNav } from "/js/nav.js";
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-const picked = { color: "A", texture: "1" };
-const showPicked = () => ($("[data-picked]").innerHTML = `اختيارك: لون <b>${picked.color}</b> · تكستشر <b>${picked.texture}</b>`);
+const lerp = (a, b, t) => a + (b - a) * t;
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const ACCENT = [0x6f / 255, 0x8f / 255, 0xaf / 255];
 
-/* ---------- accent colours ---------- */
-const PALETTES = [
-  { id: "A", name: "Brass", hex: "#b08d57", ar: "نحاسي ذهبي هادي. فخم، وبيرجع للذهبي يلي بتحبو بلوغوهاتك (PHILOSOPHY وDubai Sports)." },
-  { id: "B", name: "Sage", hex: "#8e9b7a", ar: "أخضر رمادي (ساج). هادي وطبيعي وبريميوم، قريب من الزيتي يلي عند Lando بس أنعم." },
-  { id: "C", name: "Ember", hex: "#d4622a", ar: "برتقالي محروق. فيه طاقة وحركة، بيذكّر بسباقات الفورمولا ومكلارين." },
-  { id: "D", name: "Signal", hex: "#c6e03a", ar: "ليموني قوي متل Lando. بيشد العين كتير، بس بينحط بس على الفحمي وبكميات صغيرة." },
-  { id: "E", name: "Mist blue", hex: "#6f8faf", ar: "أزرق ضبابي. بارد وسينمائي، بيعطي إحساس تقني وهادي." },
-];
-const hexToRgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
-let hero;
-function setAccent(p) {
-  document.documentElement.style.setProperty("--accent", p.hex);
-  picked.color = p.id;
-  $$("[data-pal]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.pal === p.id)));
-  hero?.set({ accent: hexToRgb(p.hex) });
-  showPicked();
-}
-$("[data-palettes]").innerHTML = PALETTES.map((p) => `
-  <button class="pal" type="button" data-pal="${p.id}" aria-pressed="false">
-    <div class="ratio"><i style="flex:6;background:#f1ece2"></i><i style="flex:3;background:#1d1d1b"></i><i style="flex:1;background:${p.hex}"></i></div>
-    <div class="mock"><span class="up">Visual <span style="color:${p.hex}">artist</span></span><br><span class="btn" style="background:${p.hex};color:#1d1d1b">Start a project</span></div>
-    <div class="dark"><span class="up">Selected work</span><span class="chip" style="background:${p.hex};width:22px;height:22px"></span></div>
-    <div class="info"><b>${p.id} · ${p.name.toUpperCase()} <span style="color:var(--muted)">${p.hex}</span></b><p>${p.ar}</p></div>
-  </button>`).join("");
-$$("[data-pal]").forEach((b) => b.addEventListener("click", () => setAccent(PALETTES.find((p) => p.id === b.dataset.pal))));
+const LOGO = `<svg viewBox="0 0 226.08 342.55" aria-hidden="true"><defs><mask id="nlm"><rect width="226.08" height="342.55" fill="#fff"/><path transform="matrix(1,0,0,-1,113.045,265.925)" d="M0 0V65.23H43.11ZM-31.28 94.65H-62.55L-31.28 142.04ZM62.55 142.04H31.27V189.43L0 236.81-31.28 189.42-62.55 142.04-93.83 94.65-62.56 47.27V65.19H-31.28V-.12L0-47.51 93.82 94.65Z" fill="#000"/></mask></defs><g mask="url(#nlm)"><path transform="matrix(1,0,0,-1,113.04,.000091552738)" d="M0 0-17.83-27.01-26.26-39.79-49.1-74.4-57.53-87.169-80.37-121.78-88.81-134.57-111.65-169.17-113.04-171.28-88.81-207.99-83.16-216.55-57.53-255.38-51.88-263.94-26.26-302.76-20.61-311.33 0-342.55 5.02-334.94 20.61-311.33 36.29-287.57 51.88-263.94 67.57-240.169 83.16-216.55 98.84-192.79 113.04-171.28 111.65-169.17 98.84-149.76 80.37-121.78 67.57-102.38 49.1-74.4 36.29-54.99 17.83-27.01Z" fill="currentColor"/></g></svg>`;
+mountPillNav({
+  logo: LOGO,
+  links: [{ href: "#layouts", label: "Work", key: "work" }, { href: "#hero", label: "About" }, { href: "#layouts", label: "In production" }],
+  cta: { href: "#hero", label: "Let's talk" },
+});
 
-/* ---------- textures (drawn procedurally) ---------- */
-function noise2D(seed = 1) {
-  const p = new Uint8Array(512);
-  let s = seed;
-  const r = () => ((s = (s * 16807) % 2147483647) / 2147483647);
-  const perm = [...Array(256).keys()].sort(() => r() - 0.5);
-  for (let i = 0; i < 512; i++) p[i] = perm[i & 255];
-  const fade = (t) => t * t * t * (t * (t * 6 - 15) + 10);
-  const grad = (h, x, y) => ((h & 1) ? -x : x) + ((h & 2) ? -y : y);
-  return (x, y) => {
-    const X = Math.floor(x) & 255, Y = Math.floor(y) & 255;
-    x -= Math.floor(x); y -= Math.floor(y);
-    const u = fade(x), v = fade(y), a = p[X] + Y, b = p[X + 1] + Y;
-    const l = (t, a1, b1) => a1 + t * (b1 - a1);
-    return l(v, l(u, grad(p[a], x, y), grad(p[b], x - 1, y)), l(u, grad(p[a + 1], x, y - 1), grad(p[b + 1], x - 1, y - 1)));
-  };
-}
-const canvasURL = (w, h, draw) => { const c = document.createElement("canvas"); c.width = w; c.height = h; draw(c.getContext("2d"), w, h); return c.toDataURL("image/png"); };
+/* reveal: blurred, then into focus */
+const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && (e.target.classList.add("in"), io.unobserve(e.target))), { threshold: 0.12 });
+$$(".head, .demo-title, .demo-note, .tag, .chosen, .controls").forEach((el) => { el.classList.add("reveal"); io.observe(el); });
 
-const TEX = {
-  grain: () => canvasURL(256, 256, (g, w, h) => {
-    const d = g.createImageData(w, h);
-    for (let i = 0; i < d.data.length; i += 4) { const v = 150 + Math.random() * 105; d.data[i] = v; d.data[i + 1] = v * 0.97; d.data[i + 2] = v * 0.92; d.data[i + 3] = 46; }
-    g.putImageData(d, 0, 0);
-  }),
-  topo: () => canvasURL(900, 900, (g, w, h) => {
-    const n = noise2D(7), step = 6, cols = w / step + 1, rows = h / step + 1, f = [];
-    for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) f.push(n(x * step / 260, y * step / 260) + 0.5 * n(x * step / 120 + 9, y * step / 120 + 3));
-    g.strokeStyle = "rgba(60,55,48,.32)"; g.lineWidth = 1;
-    for (let lvl = -1; lvl <= 1; lvl += 0.11) {
-      g.beginPath();
-      for (let y = 0; y < rows - 1; y++) for (let x = 0; x < cols - 1; x++) {
-        const a = f[y * cols + x], b = f[y * cols + x + 1], c = f[(y + 1) * cols + x + 1], d = f[(y + 1) * cols + x];
-        const pts = [];
-        const e = (v1, v2, x1, y1, x2, y2) => { if ((v1 < lvl) !== (v2 < lvl)) { const t = (lvl - v1) / (v2 - v1); pts.push([(x1 + t * (x2 - x1)) * step, (y1 + t * (y2 - y1)) * step]); } };
-        e(a, b, x, y, x + 1, y); e(b, c, x + 1, y, x + 1, y + 1); e(c, d, x + 1, y + 1, x, y + 1); e(d, a, x, y + 1, x, y);
-        if (pts.length >= 2) { g.moveTo(...pts[0]); g.lineTo(...pts[1]); }
-        if (pts.length === 4) { g.moveTo(...pts[2]); g.lineTo(...pts[3]); }
-      }
-      g.stroke();
-    }
-  }),
-  fibers: () => canvasURL(512, 512, (g, w, h) => {
-    const d = g.createImageData(w, h);
-    for (let i = 0; i < d.data.length; i += 4) { const v = 170 + Math.random() * 85; d.data[i] = v; d.data[i + 1] = v * 0.96; d.data[i + 2] = v * 0.9; d.data[i + 3] = 30; }
-    g.putImageData(d, 0, 0);
-    for (let i = 0; i < 260; i++) {
-      g.strokeStyle = `rgba(${90 + Math.random() * 60},${80 + Math.random() * 50},${60 + Math.random() * 40},${0.08 + Math.random() * 0.14})`;
-      g.lineWidth = Math.random() * 1.1 + 0.3;
-      const x = Math.random() * w, y = Math.random() * h, a = Math.random() * Math.PI * 2, l = 6 + Math.random() * 22;
-      g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + Math.cos(a + 1) * l * 0.6, y + Math.sin(a + 1) * l * 0.6, x + Math.cos(a) * l, y + Math.sin(a) * l); g.stroke();
-    }
-    for (let i = 0; i < 90; i++) { g.fillStyle = `rgba(70,60,50,${Math.random() * 0.25})`; g.beginPath(); g.arc(Math.random() * w, Math.random() * h, Math.random() * 1.4, 0, 7); g.fill(); }
-  }),
-  dots: () => canvasURL(28, 28, (g) => { g.fillStyle = "rgba(60,55,48,.28)"; g.beginPath(); g.arc(14, 14, 1.1, 0, 7); g.fill(); }),
-  graphite: () => canvasURL(400, 400, (g, w, h) => {
-    const n = noise2D(3);
-    for (let i = -h; i < w; i += 3) {
-      for (let s = 0; s < h; s += 8) {
-        const x = i + s, y = s, a = Math.max(0, n(x / 90, y / 90) + 0.15) * 0.22;
-        if (a <= 0.01) continue;
-        g.strokeStyle = `rgba(50,48,44,${a})`; g.lineWidth = 0.7;
-        g.beginPath(); g.moveTo(x, y); g.lineTo(x + 8, y + 8); g.stroke();
-      }
-    }
-  }),
-};
-const TEXTURES = [
-  { id: "1", key: "grain", name: "Fine grain", size: "256px", ar: "حبيبات ناعمة متل الورق المطبوع. خفيفة وما بتتعب العين." },
-  { id: "2", key: "topo", name: "Topographic", size: "900px", ar: "خطوط طبوغرافية متل خريطة. هي يلي بيستعملها Lando، وبتعطي عمق وحركة." },
-  { id: "3", key: "fibers", name: "Paper fibers", size: "512px", ar: "ألياف ورق ونقط صغيرة متل ورق الرسم. طبيعي وبيحكي عن إنك بترسم." },
-  { id: "4", key: "dots", name: "Sketchbook dots", size: "28px", ar: "شبكة نقط متل دفتر سكتش. مرتبة وفيها إحساس تصميم." },
-  { id: "5", key: "graphite", name: "Graphite hatch", size: "400px", ar: "تظليل رصاص مايل وخفيف. بيوصل فكرة الرسم اليدوي بشكل مباشر." },
-];
-const texURLs = {};
-TEXTURES.forEach((t) => (texURLs[t.key] = TEX[t.key]()));
-document.documentElement.style.setProperty("--topo", `url(${texURLs.topo})`);
-function setTexture(t) {
-  document.documentElement.style.setProperty("--tex", `url(${texURLs[t.key]})`);
-  document.documentElement.style.setProperty("--tex-size", t.size);
-  picked.texture = t.id;
-  $$("[data-tex]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.tex === t.id)));
-  showPicked();
-}
-$("[data-textures]").innerHTML = TEXTURES.map((t) => `
-  <button class="tex" type="button" data-tex="${t.id}" aria-pressed="false">
-    <div class="layer" style="background-image:url(${texURLs[t.key]});background-size:${t.size}"></div>
-    <div class="lbl"><span class="up">${t.id} · ${t.name}</span><p>${t.ar}</p></div>
-  </button>`).join("");
-$$("[data-tex]").forEach((b) => b.addEventListener("click", () => setTexture(TEXTURES.find((t) => t.id === b.dataset.tex))));
-
-setAccent(PALETTES[0]);
-setTexture(TEXTURES[0]);
-
-/* ---------- hero sample ---------- */
+/* hero */
 (async () => {
-  hero = await mountHero($("[data-stage]"), {
-    image: "/images/portrait-v2.webp",
-    depth: "/images/portrait-v2-depth.png",
-    sketch: "/images/portrait-v2-sketch.webp",
-    alt: "Portrait of Anas Saleh",
-    mode: 1,
-    accent: hexToRgb(PALETTES[0].hex),
-    reduceMotion: reduce,
+  const hero = await mountHero($("[data-stage]"), {
+    image: "/images/portrait-v2.webp", depth: "/images/portrait-v2-depth.png", sketch: "/images/portrait-v2-sketch.webp",
+    alt: "Portrait of Anas Saleh", mode: 1, accent: ACCENT, reduceMotion: reduce,
   });
-  $$("[data-lens]").forEach((b) => b.addEventListener("click", () => {
-    hero.set({ mode: Number(b.dataset.lens) });
-    $$("[data-lens]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
-  }));
+  $$("[data-lens]").forEach((b) => b.addEventListener("click", () => { hero.set({ mode: Number(b.dataset.lens) }); $$("[data-lens]").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); }));
   $$("[data-bg]").forEach((b) => b.addEventListener("click", () => {
-    $("[data-hero]").classList.toggle("light", b.dataset.bg === "light");
+    const light = b.dataset.bg === "light";
+    $("[data-hero]").classList.toggle("light", light);
+    light ? $("[data-hero]").removeAttribute("data-dark") : $("[data-hero]").setAttribute("data-dark", "");
     $$("[data-bg]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
   }));
 })();
 
-/* ---------- projects ---------- */
+/* data */
 const projects = (await fetch("/content/projects.json").then((r) => r.json())).filter((p) => !p.draft);
 const cover = (p) => `/images/covers/${p.slug}.webp`;
 const CAT = { design: "Design", "3d": "3D", motion: "Motion", video: "Video" };
 const cats = (p) => (p.categories || []).map((c) => CAT[c]).join(" · ");
+const pad = (n) => String(n).padStart(2, "0");
+const list = projects.slice(0, 9);
 
-/* I hover list */
-const float = $("[data-hl-float]");
-$("[data-hl]").innerHTML = projects.slice(0, 8).map((p) => `<a href="/work/${p.slug}" data-img="${cover(p)}"><span class="up">${p.title}</span><span>${cats(p)}</span><span>${p.year}</span></a>`).join("");
-projects.slice(0, 8).forEach((p) => { const i = new Image(); i.src = cover(p); });
-let fx = 0, fy = 0, tx = 0, ty = 0, prevX = 0;
-addEventListener("pointermove", (e) => { tx = e.clientX; ty = e.clientY; });
-$$("[data-hl] a").forEach((a) => a.addEventListener("pointerenter", () => {
-  const img = document.createElement("img");
-  img.src = a.dataset.img; img.alt = "";
-  img.style.opacity = "0";
-  float.prepend(img);
-  requestAnimationFrame(() => (img.style.opacity = "1"));
-  $$("img", float).slice(2).forEach((o) => o.remove());
-  float.classList.add("on");
-}));
-$("[data-hl]").addEventListener("pointerleave", () => float.classList.remove("on"));
+/* VI curved reel */
+const cv = $("[data-cv]");
+cv.style.height = `${list.length * 70}vh`;
+$("[data-cv-track]").innerHTML = list.map((p) => `<a class="cv-card" href="/work/${p.slug}"><div class="img"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></div><span class="up">${p.title}</span><span>${cats(p)} · ${p.year}</span></a>`).join("");
+const cvCards = $$(".cv-card");
 
-/* II collage */
-const cl = $("[data-cl]");
-const spots = [[4, 6, 22, 0.25], [62, 2, 26, 0.6], [34, 22, 18, 0.15], [74, 30, 20, 0.45], [8, 44, 24, 0.55], [46, 52, 22, 0.3], [70, 64, 17, 0.7], [18, 74, 19, 0.2], [52, 82, 25, 0.5]];
-projects.slice(0, spots.length).forEach((p, i) => {
-  const [x, y, w, sp] = spots[i];
-  const f = document.createElement("figure");
-  f.style.cssText = `left:${x}%;top:${y}%;width:${w}vw;`;
-  f.dataset.speed = sp;
-  f.innerHTML = `<img src="${cover(p)}" alt="${p.title}" loading="lazy"><figcaption>${p.title} · ${p.year}</figcaption>`;
-  cl.append(f);
+/* VII into the frame */
+const zt = $("[data-zt]");
+const GAP = 1100;
+const zPos = [[-0.22, -0.1], [0.24, 0.08], [-0.18, 0.12], [0.2, -0.12], [-0.26, 0.02], [0.22, 0.1], [-0.12, -0.14], [0.26, -0.02], [0, 0.12]];
+$("[data-zt-items]").innerHTML = list.map((p, i) => `<div class="zt-item" data-i="${i}"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></div>`).join("");
+const ztItems = $$(".zt-item");
+let ztCur = -1;
+
+/* VIII drag canvas */
+const dc = $("[data-dc]");
+const COLS = 4, ROWS = 3;
+const dcItems = [];
+const sizes = [[300, 230], [240, 300], [340, 250], [260, 200], [280, 340], [320, 240], [250, 250], [300, 220], [240, 320], [340, 260], [270, 210], [300, 300]];
+for (let i = 0; i < COLS * ROWS; i++) {
+  const p = projects[i % projects.length];
+  const [w, h] = sizes[i];
+  const el = document.createElement("a");
+  el.className = "dc-item";
+  el.href = `/work/${p.slug}`;
+  el.draggable = false;
+  el.innerHTML = `<div class="img" style="width:${w}px;height:${h}px"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></div><span>${p.title}</span>`;
+  dc.append(el);
+  const col = i % COLS, row = Math.floor(i / COLS);
+  dcItems.push({ el, bx: col * 420 + (row % 2) * 140 + (i * 37) % 60, by: row * 420 + (i * 53) % 90 });
+}
+const TW = COLS * 420, TH = ROWS * 420;
+const drag = { x: 0, y: 0, tx: -200, ty: -120, down: false, sx: 0, sy: 0, vx: 0, vy: 0, lx: 0, ly: 0, moved: false };
+dc.addEventListener("pointerdown", (e) => { drag.down = true; drag.moved = false; drag.sx = e.clientX - drag.tx; drag.sy = e.clientY - drag.ty; drag.lx = e.clientX; drag.ly = e.clientY; dc.classList.add("drag", "used"); dc.setPointerCapture(e.pointerId); });
+dc.addEventListener("pointermove", (e) => {
+  if (!drag.down) return;
+  drag.vx = e.clientX - drag.lx; drag.vy = e.clientY - drag.ly; drag.lx = e.clientX; drag.ly = e.clientY;
+  if (Math.abs(drag.vx) + Math.abs(drag.vy) > 2) drag.moved = true;
+  drag.tx = e.clientX - drag.sx; drag.ty = e.clientY - drag.sy;
 });
+const endDrag = () => { if (!drag.down) return; drag.down = false; drag.tx += drag.vx * 12; drag.ty += drag.vy * 12; dc.classList.remove("drag"); };
+dc.addEventListener("pointerup", endDrag);
+dc.addEventListener("pointercancel", endDrag);
+dc.addEventListener("click", (e) => { if (drag.moved) e.preventDefault(); }, true);
 
-/* III stage */
-const st = $("[data-st]");
-const stList = projects.slice(0, 6);
-st.style.height = `${stList.length * 100}vh`;
-$("[data-st-card]").innerHTML = stList.map((p, i) => `<img src="${cover(p)}" alt="${p.title}" style="opacity:${i ? 0 : 1}">`).join("");
-let stIndex = -1;
-const setStage = (i) => {
-  if (i === stIndex) return;
-  stIndex = i;
-  const w = $("[data-st-word]");
-  w.classList.add("out");
-  setTimeout(() => { w.textContent = stList[i].title; w.classList.remove("out"); }, stIndex === 0 && !w.textContent ? 0 : 260);
-  $$("[data-st-card] img").forEach((im, j) => { im.style.opacity = j === i ? "1" : "0"; im.style.transform = j === i ? "scale(1)" : "scale(1.12)"; });
-  $("[data-st-sub]").textContent = `${stList[i].subtitle} · ${cats(stList[i])}`;
-  $("[data-st-count]").textContent = `${String(i + 1).padStart(2, "0")} / ${String(stList.length).padStart(2, "0")}`;
-};
-setStage(0);
+/* IX deck */
+const dk = $("[data-dk]");
+const deck = list.slice(0, 6);
+dk.style.height = `${deck.length * 80}vh`;
+$("[data-dk-stack]").innerHTML = deck.map((p, i) => `<div class="dk-card" style="z-index:${deck.length - i}"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></div>`).join("");
+const dkCards = $$(".dk-card");
+let dkCur = -1;
+const tilt = { x: 0, y: 0, tx: 0, ty: 0 };
+addEventListener("pointermove", (e) => { tilt.tx = (e.clientX / innerWidth - 0.5) * 2; tilt.ty = (e.clientY / innerHeight - 0.5) * 2; }, { passive: true });
 
-/* IV reel */
+/* X film strips */
+$("[data-fs]").innerHTML = list.slice(0, 7).map((p, i) => `<a href="/work/${p.slug}"${i === 0 ? ' class="on"' : ""}><img src="${cover(p)}" alt="${p.title}" loading="lazy"><span class="vert up">${p.title}</span><div class="lbl full"><span style="font-weight:700;letter-spacing:.12em;font-size:13px;color:#cfd9e3">${pad(i + 1)} · ${cats(p)}</span><h4 class="up" style="margin:8px 0 0">${p.title}</h4></div></a>`).join("");
+$("[data-fs]").addEventListener("pointerover", (e) => { const a = e.target.closest("a"); if (!a) return; $$("[data-fs] a").forEach((x) => x.classList.toggle("on", x === a)); });
+
+/* IV reel and V stack */
 const rl = $("[data-rl]");
-const rlList = projects.slice(0, 8);
-$("[data-rl-track]").innerHTML = rlList.map((p) => `<a class="rl-card" href="/work/${p.slug}"><div class="img"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></div><div class="row"><span class="up">${p.title}</span><span>${p.year}</span></div></a>`).join("");
+$("[data-rl-track]").innerHTML = list.map((p) => `<a class="rl-card" href="/work/${p.slug}"><div class="img"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></div><div class="row"><span class="up">${p.title}</span><span>${p.year}</span></div></a>`).join("");
+$("[data-sk]").innerHTML = list.slice(0, 5).map((p, i) => `<article class="sk-card" data-sk-card style="top:${12 + i * 1.5}vh"><img src="${cover(p)}" alt="${p.title}" loading="lazy"><div class="txt"><div><span class="n">${pad(i + 1)}</span><h4 class="up" style="margin:14px 0 0">${p.title}</h4><p>${p.subtitle}. ${p.role}.</p></div><span style="font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:14px">${cats(p)} · ${p.year}</span></div></article>`).join("");
+const sizeRl = () => (rl.style.height = `${Math.max(200, ($("[data-rl-track]").scrollWidth / innerWidth) * 100)}vh`);
+sizeRl();
+addEventListener("resize", sizeRl);
 
-/* V stack */
-$("[data-sk]").innerHTML = projects.slice(0, 5).map((p, i) => `<article class="sk-card" data-sk-card style="top:${10 + i * 1.5}vh"><img src="${cover(p)}" alt="${p.title}" loading="lazy"><div class="txt"><div><span class="n">${String(i + 1).padStart(2, "0")}</span><h4 class="up" style="margin:14px 0 0">${p.title}</h4><p>${p.subtitle}. ${p.role}.</p></div><span style="font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:14px">${cats(p)} · ${p.year}</span></div></article>`).join("");
-
-/* ---------- one loop for everything that follows scroll or the pointer ---------- */
-const lenis = !reduce && window.Lenis ? new Lenis({ lerp: 0.1 }) : null;
-const progress = (el) => { const r = el.getBoundingClientRect(); return Math.min(1, Math.max(0, -r.top / (r.height - innerHeight))); };
+/* ---------- one smooth loop ---------- */
+const lenis = window.Lenis ? new Lenis({ lerp: 0.08, wheelMultiplier: 0.9 }) : null;
+const prog = (el) => { const r = el.getBoundingClientRect(); return clamp(-r.top / (r.height - innerHeight), 0, 1); };
+const sm = { cv: 0, zt: 0, dk: 0, rl: 0, vel: 0 };
+let lastScroll = scrollY;
 function loop(t) {
   lenis?.raf(t);
-  // I
-  fx += (tx - fx) * 0.14; fy += (ty - fy) * 0.14;
-  const vx = fx - prevX; prevX = fx;
-  float.style.transform = `translate(${fx}px, ${fy}px) translate(-50%, -50%) rotate(${Math.max(-12, Math.min(12, vx * 0.6))}deg) scale(${float.classList.contains("on") ? 1 : 0.7})`;
-  // II
-  const cr = cl.getBoundingClientRect();
-  if (cr.bottom > 0 && cr.top < innerHeight) $$("figure", cl).forEach((f) => (f.style.transform = `translateY(${(cr.top - innerHeight / 2) * Number(f.dataset.speed) * -0.6}px)`));
-  // III
-  const sp = progress(st);
-  setStage(Math.min(stList.length - 1, Math.floor(sp * stList.length * 0.999)));
+  const v = scrollY - lastScroll; lastScroll = scrollY;
+  sm.vel = lerp(sm.vel, v, 0.1);
+
+  // VI
+  sm.cv = lerp(sm.cv, prog(cv), 0.09);
+  const off = sm.cv * (cvCards.length - 1);
+  const cw = cvCards[0].offsetWidth * 1.08;
+  cvCards.forEach((c, i) => {
+    const rel = i - off;
+    const a = clamp(rel * -24 + sm.vel * -0.4, -70, 70);
+    c.style.transform = `translateX(${rel * cw}px) translateZ(${-Math.abs(rel) * 160}px) rotateY(${a}deg)`;
+    c.style.opacity = String(clamp(1.4 - Math.abs(rel) * 0.35, 0, 1));
+  });
+  const cvi = clamp(Math.round(off), 0, cvCards.length - 1);
+  const big = $("[data-cv-big]");
+  if (big.dataset.i !== String(cvi)) { big.dataset.i = cvi; big.textContent = list[cvi].title; }
+  $("[data-cv-bar]").style.width = `${sm.cv * 100}%`;
+
+  // VII
+  sm.zt = lerp(sm.zt, prog(zt), 0.07);
+  const cam = sm.zt * (ztItems.length - 1) * GAP;
+  const vw = innerWidth, vh = innerHeight;
+  ztItems.forEach((el, i) => {
+    const z = -i * GAP + cam;
+    const [px, py] = zPos[i % zPos.length];
+    const near = clamp(1 - Math.abs(z) / GAP, 0, 1);
+    el.style.transform = `translate3d(${px * vw * (1 - near * 0.9)}px, ${py * vh * (1 - near * 0.9)}px, ${z}px)`;
+    el.style.opacity = String(z > 350 ? clamp(1 - (z - 350) / 300, 0, 1) : clamp(1 + (z + 4200) / 1200, 0, 1));
+  });
+  const zi = clamp(Math.round(sm.zt * (ztItems.length - 1)), 0, ztItems.length - 1);
+  if (zi !== ztCur) {
+    ztCur = zi;
+    const n = $("[data-zt-name]");
+    n.style.opacity = "0"; n.style.transform = "translateY(20px)";
+    setTimeout(() => { n.textContent = list[zi].title; n.style.opacity = "1"; n.style.transform = "none"; }, 220);
+    $("[data-zt-count]").textContent = `${pad(zi + 1)} / ${pad(ztItems.length)}`;
+  }
+
+  // VIII
+  if (!drag.down) { drag.vx *= 0.9; drag.vy *= 0.9; }
+  drag.x = lerp(drag.x, drag.tx, 0.08);
+  drag.y = lerp(drag.y, drag.ty, 0.08);
+  dcItems.forEach((it) => {
+    const x = ((((it.bx + drag.x) % TW) + TW) % TW) - 360;
+    const y = ((((it.by + drag.y) % TH) + TH) % TH) - 360;
+    it.el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+  });
+
+  // IX
+  sm.dk = lerp(sm.dk, prog(dk), 0.08);
+  tilt.x = lerp(tilt.x, tilt.tx, 0.06); tilt.y = lerp(tilt.y, tilt.ty, 0.06);
+  const k = sm.dk * (dkCards.length - 1);
+  dkCards.forEach((c, i) => {
+    const d = i - k;
+    if (d < 0) {
+      const f = clamp(-d, 0, 1.2);
+      c.style.transform = `translate3d(${-f * 70}vw, ${-f * 18}vh, ${f * 200}px) rotate(${-f * 28}deg)`;
+      c.style.opacity = String(clamp(1 - f, 0, 1));
+    } else {
+      c.style.transform = `translate3d(${d * 26}px, ${-d * 22}px, ${-d * 90}px) rotateX(${tilt.y * -6}deg) rotateY(${tilt.x * 8}deg) rotate(${d * 2.5}deg)`;
+      c.style.opacity = String(clamp(1 - d * 0.18, 0, 1));
+    }
+  });
+  const di = clamp(Math.round(k), 0, dkCards.length - 1);
+  if (di !== dkCur) {
+    dkCur = di;
+    const name = $("[data-dk-name]");
+    name.style.opacity = "0"; name.style.transform = "translateY(24px)";
+    setTimeout(() => { name.textContent = deck[di].title; $("[data-dk-sub]").textContent = `${deck[di].subtitle}. ${deck[di].role}.`; $("[data-dk-n]").textContent = `${pad(di + 1)} / ${pad(deck.length)} · ${cats(deck[di])}`; name.style.opacity = "1"; name.style.transform = "none"; }, 220);
+  }
+
   // IV
-  const rp = progress(rl);
+  sm.rl = lerp(sm.rl, prog(rl), 0.08);
   const track = $("[data-rl-track]");
-  const max = track.scrollWidth - innerWidth;
-  track.style.transform = `translateX(${-rp * max}px)`;
-  $("[data-rl-bar]").style.width = `${rp * 100}%`;
+  track.style.transform = `translateX(${-sm.rl * (track.scrollWidth - innerWidth)}px) skewX(${clamp(sm.vel * -0.08, -6, 6)}deg)`;
+  $("[data-rl-bar]").style.width = `${sm.rl * 100}%`;
+
   // V
   $$("[data-sk-card]").forEach((c, i, all) => {
     const next = all[i + 1];
     if (!next) return;
-    const nr = next.getBoundingClientRect(), cr2 = c.getBoundingClientRect();
-    const k = Math.min(1, Math.max(0, 1 - (nr.top - cr2.top) / innerHeight));
-    c.style.transform = `scale(${1 - k * 0.06})`;
-    c.style.filter = `brightness(${1 - k * 0.35})`;
+    const kk = clamp(1 - (next.getBoundingClientRect().top - c.getBoundingClientRect().top) / innerHeight, 0, 1);
+    c.style.transform = `scale(${1 - kk * 0.07})`;
+    c.style.filter = `brightness(${1 - kk * 0.4})`;
   });
   requestAnimationFrame(loop);
 }
-const rlSize = () => (rl.style.height = `${Math.max(200, ($("[data-rl-track]").scrollWidth / innerWidth) * 100)}vh`);
-rlSize();
-addEventListener("resize", rlSize);
 requestAnimationFrame(loop);

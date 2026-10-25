@@ -87,7 +87,7 @@ export async function mountHero(stage, opts) {
     stage.innerHTML = `<img src="${image}" alt="${alt}">`;
     return { el: stage.firstElementChild, set() {}, pointer: null };
   };
-  if (reduceMotion) return fallback();
+  // Reduced motion only stops the idle drift; the pointer-driven effect stays, since the visitor controls it.
   const canvas = document.createElement("canvas");
   canvas.setAttribute("role", "img");
   canvas.setAttribute("aria-label", alt);
@@ -163,15 +163,17 @@ export async function mountHero(stage, opts) {
     requestAnimationFrame(tick);
     if (!visible || document.hidden) return;
     if (t - last > 3000) {
-      target.x = Math.sin(t / 2600) * 0.5;
-      target.y = Math.cos(t / 3400) * 0.22;
+      if (!reduceMotion) {
+        target.x = Math.sin(t / 2600) * 0.5;
+        target.y = Math.cos(t / 3400) * 0.22;
+      }
       lens.tr = 0;
     }
-    cur.x += (target.x - cur.x) * 0.06;
-    cur.y += (target.y - cur.y) * 0.06;
-    lens.x += (lens.tx - lens.x) * 0.14;
-    lens.y += (lens.ty - lens.y) * 0.14;
-    lens.r += ((state.mode ? lens.tr : 0) - lens.r) * 0.1;
+    cur.x += (target.x - cur.x) * 0.045;
+    cur.y += (target.y - cur.y) * 0.045;
+    lens.x += (lens.tx - lens.x) * 0.1;
+    lens.y += (lens.ty - lens.y) * 0.1;
+    lens.r += ((state.mode ? lens.tr : 0) - lens.r) * 0.07;
     gl.uniform2f(uP, cur.x, cur.y);
     gl.uniform2f(uL, lens.x, lens.y);
     gl.uniform1f(uR, lens.r);

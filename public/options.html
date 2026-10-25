@@ -9,171 +9,161 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Semi+Condensed:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.css">
+<link rel="stylesheet" href="/css/nav.css">
 <style>
 :root {
   --cream: #f1ece2; --cream-2: #e6dfd2; --char: #1d1d1b; --char-2: #2a2a27; --muted: #5d594f;
-  --accent: #b08d57; --tex: none; --tex-size: auto; --tex-blend: multiply;
+  --accent: #6f8faf;
   --display: "Archivo Black", "Arial Black", sans-serif;
   --body: "Barlow Semi Condensed", "Arial Narrow", sans-serif;
   --ar: "IBM Plex Sans Arabic", system-ui, sans-serif;
   --g: clamp(16px, 4vw, 56px);
-  color-scheme: light;
+  --ease: cubic-bezier(.16, 1, .3, 1);
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: auto; }
 body { margin: 0; background: var(--cream); color: var(--char); font-family: var(--body); font-size: 18px; line-height: 1.5; overflow-x: clip; }
-body::before { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 1; background-image: var(--tex); background-size: var(--tex-size); mix-blend-mode: var(--tex-blend); }
-main, header { position: relative; z-index: 2; }
+/* fine grain over everything (choice 1) */
+body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 95; opacity: .5; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .42 0 0 0 0 .38 0 0 0 .42 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 img { display: block; max-width: 100%; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; padding: 0; }
-.ar { font-family: var(--ar); direction: rtl; text-align: right; }
+a { color: inherit; }
 .up { font-family: var(--display); text-transform: uppercase; line-height: .9; letter-spacing: -.01em; font-weight: 400; }
 .wrap { max-width: 1440px; margin: 0 auto; padding-inline: var(--g); }
-.bar { position: sticky; top: 0; z-index: 50; padding: 12px var(--g); display: flex; justify-content: space-between; align-items: center; gap: 16px;
-  background: color-mix(in srgb, var(--cream) 62%, transparent); backdrop-filter: blur(14px) saturate(1.3); -webkit-backdrop-filter: blur(14px) saturate(1.3); border-bottom: 1px solid rgba(29,29,27,.08); }
-.bar nav { display: flex; gap: 6px; flex-wrap: wrap; direction: rtl; }
-.bar nav a { font-family: var(--ar); font-size: 14px; padding: 6px 12px; border-radius: 99px; border: 1px solid rgba(29,29,27,.15); color: inherit; text-decoration: none; }
-.bar nav a:hover { background: var(--char); color: var(--cream); }
-.picked { font-family: var(--ar); font-size: 14px; direction: rtl; }
-.picked b { font-family: var(--body); }
-section.block { padding-block: clamp(64px, 9vw, 120px); border-bottom: 1px solid rgba(29,29,27,.1); }
-.head { margin-bottom: 36px; }
+.ar { font-family: var(--ar); direction: rtl; text-align: right; }
+section.block { padding-block: clamp(70px, 10vw, 130px); }
+.head { margin-bottom: 34px; }
 .head .num { font-family: var(--body); font-weight: 700; letter-spacing: .14em; font-size: 14px; color: var(--muted); }
-.head h2 { font-family: var(--ar); font-size: clamp(28px, 3.4vw, 44px); margin: 8px 0 10px; line-height: 1.2; }
-.head p { font-family: var(--ar); color: var(--muted); max-width: 70ch; margin: 0; margin-inline-start: auto; }
-.tag { display: inline-block; font-family: var(--body); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; font-size: 13px; padding: 4px 10px; border-radius: 99px; background: var(--char); color: var(--cream); }
+.head h2 { font-family: var(--ar); font-size: clamp(28px, 3.4vw, 44px); margin: 8px 0 10px; line-height: 1.2; font-weight: 600; }
+.head p { font-family: var(--ar); color: var(--muted); max-width: 72ch; margin: 0; margin-inline-start: auto; }
+.tag { display: inline-block; font-weight: 700; letter-spacing: .1em; font-size: 13px; padding: 4px 11px; border-radius: 99px; background: var(--char); color: var(--cream); }
+.tag.new { background: var(--accent); color: var(--char); }
+.demo-title { font-size: 34px; margin: 12px 0 6px; }
+.demo-note { font-family: var(--ar); direction: rtl; color: var(--muted); margin: 0 0 22px; max-width: 70ch; margin-inline-start: auto; }
+.demo + .demo { margin-top: 140px; }
+.reveal { opacity: 0; filter: blur(14px); transform: translateY(40px); transition: opacity 1.4s var(--ease), filter 1.4s var(--ease), transform 1.4s var(--ease); }
+.reveal.in { opacity: 1; filter: none; transform: none; }
 
-/* hero demo */
-.hero { position: relative; height: min(92vh, 900px); min-height: 560px; overflow: hidden; border-radius: 6px; background: var(--hero-bg, var(--char)); transition: background .5s; isolation: isolate; }
-.hero.light { --hero-bg: var(--cream); }
-.hero .topo { position: absolute; inset: 0; opacity: 0; transition: opacity .6s; background-image: var(--topo); background-size: 900px; z-index: -1; }
-.hero.light .topo { opacity: .55; }
-.hero .name { position: absolute; left: 0; right: 0; top: 11%; text-align: center; font-size: min(11.2vw, 160px); color: var(--cream); transition: color .5s; white-space: nowrap; z-index: 0; }
+/* hero */
+.hero { position: relative; height: min(92vh, 900px); min-height: 560px; overflow: hidden; border-radius: 8px; background: var(--hero-bg, var(--char)); transition: background .6s; isolation: isolate; }
+.hero.light { --hero-bg: var(--cream-2); }
+.hero .name { position: absolute; left: 0; right: 0; top: 11%; text-align: center; font-size: min(11.2vw, 160px); color: var(--cream); transition: color .6s; white-space: nowrap; z-index: 0; }
 .hero.light .name { color: var(--char); }
 .hero .name em { font-style: normal; color: var(--accent); }
 .hero .stage { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); height: 86%; aspect-ratio: 1600 / 1321; z-index: 1; }
 .hero .stage canvas, .hero .stage img { width: 100%; height: 100%; }
-.hero .meta { position: absolute; z-index: 2; left: var(--g); right: var(--g); bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; color: var(--cream); transition: color .5s; }
+.hero .meta { position: absolute; z-index: 2; left: var(--g); right: var(--g); bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; color: var(--cream); transition: color .6s; }
 .hero.light .meta { color: var(--char); }
 .hero .meta p { margin: 0; max-width: 32ch; }
 .hero .meta .up { font-size: 26px; display: block; margin-bottom: 6px; }
 .controls { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; direction: rtl; }
-.controls button { font-family: var(--ar); font-size: 15px; padding: 8px 16px; border-radius: 99px; border: 1px solid rgba(29,29,27,.2); }
+.controls button { font-family: var(--ar); font-size: 15px; padding: 9px 16px; border-radius: 99px; border: 1px solid rgba(29,29,27,.2); transition: background .3s, color .3s; }
 .controls button[aria-pressed="true"] { background: var(--char); color: var(--cream); border-color: var(--char); }
+.chosen { display: flex; gap: 14px; flex-wrap: wrap; direction: rtl; margin-top: 18px; }
+.chosen div { font-family: var(--ar); padding: 14px 18px; border-radius: 12px; background: var(--cream-2); display: flex; align-items: center; gap: 12px; }
+.chosen i { width: 22px; height: 22px; border-radius: 50%; display: inline-block; }
 
-/* palettes */
-.pal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
-.pal { text-align: left; border-radius: 8px; overflow: hidden; border: 2px solid transparent; background: var(--cream); box-shadow: 0 1px 0 rgba(0,0,0,.06), 0 10px 30px rgba(0,0,0,.06); transition: transform .25s, border-color .25s; }
-.pal:hover { transform: translateY(-4px); }
-.pal[aria-pressed="true"] { border-color: var(--char); }
-.pal .ratio { display: flex; height: 16px; }
-.pal .mock { padding: 22px; background: #f1ece2; color: #1d1d1b; }
-.pal .mock .up { font-size: 34px; }
-.pal .mock .btn { display: inline-block; margin-top: 14px; padding: 8px 16px; border-radius: 99px; font-weight: 700; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
-.pal .dark { padding: 18px 22px; background: #1d1d1b; color: #f1ece2; display: flex; justify-content: space-between; align-items: center; }
-.pal .dark .up { font-size: 22px; }
-.pal .info { padding: 14px 22px 18px; }
-.pal .info b { font-family: var(--body); font-size: 15px; letter-spacing: .06em; }
-.pal .info p { font-family: var(--ar); direction: rtl; margin: 4px 0 0; font-size: 15px; color: var(--muted); }
-.chip { width: 14px; height: 14px; border-radius: 50%; display: inline-block; vertical-align: middle; }
-
-/* textures */
-.tex-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
-.tex { position: relative; min-height: 260px; border-radius: 8px; overflow: hidden; background: #f1ece2; border: 2px solid transparent; text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,.06); }
-.tex[aria-pressed="true"] { border-color: var(--char); }
-.tex .layer { position: absolute; inset: 0; mix-blend-mode: multiply; }
-.tex .lbl { position: absolute; left: 18px; right: 18px; bottom: 16px; }
-.tex .lbl .up { font-size: 26px; }
-.tex .lbl p { font-family: var(--ar); direction: rtl; margin: 6px 0 0; font-size: 15px; color: var(--muted); }
-
-/* layouts */
-.demo { position: relative; }
-.demo-note { font-family: var(--ar); direction: rtl; color: var(--muted); margin: 0 0 20px; }
-
-/* I hover list */
-.hl { border-top: 1px solid rgba(29,29,27,.18); }
-.hl a { display: grid; grid-template-columns: 1fr auto auto; gap: 24px; align-items: center; padding: 26px 8px; border-bottom: 1px solid rgba(29,29,27,.18); color: inherit; text-decoration: none; transition: padding .35s cubic-bezier(.22,1,.36,1), color .3s; }
-.hl a .up { font-size: clamp(28px, 4.6vw, 64px); }
-.hl a span { font-weight: 600; letter-spacing: .08em; text-transform: uppercase; font-size: 14px; color: var(--muted); }
-.hl:hover a { color: rgba(29,29,27,.28); }
-.hl a:hover { color: var(--char); padding-left: 28px; }
-.hl a:hover .up { color: var(--char); }
-.hl-float { position: fixed; left: 0; top: 0; width: 360px; aspect-ratio: 4 / 3.1; pointer-events: none; z-index: 40; border-radius: 6px; overflow: hidden; opacity: 0; transform: translate(-50%, -50%) scale(.7); transition: opacity .3s, transform .45s cubic-bezier(.22,1,.36,1); }
-.hl-float.on { opacity: 1; }
-.hl-float img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity .35s; }
-.hl-float .pill { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: 76px; height: 76px; border-radius: 50%; background: var(--accent); color: var(--char); display: grid; place-items: center; font-weight: 700; letter-spacing: .08em; font-size: 13px; text-transform: uppercase; }
-
-/* II collage */
-.cl { position: relative; height: 210vh; }
-.cl figure { position: absolute; margin: 0; will-change: transform; }
-.cl figure img { width: 100%; border-radius: 4px; filter: grayscale(1) contrast(1.05); transition: filter .5s; }
-.cl figure:hover img { filter: none; }
-.cl figcaption { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; margin-top: 8px; color: var(--muted); }
-.cl .center { position: sticky; top: 38vh; text-align: center; z-index: 3; pointer-events: none; mix-blend-mode: difference; color: #fff; }
-.cl .center .up { font-size: clamp(48px, 9vw, 140px); }
-
-/* III stage */
-.st { position: relative; }
-.st-pin { position: sticky; top: 0; height: 100vh; overflow: hidden; display: grid; place-items: center; background: var(--char); color: var(--cream); }
-.st-word { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center; font-size: 15vw; white-space: nowrap; transition: opacity .5s, transform .8s cubic-bezier(.22,1,.36,1); }
-.st-word.out { opacity: 0; transform: translateY(-40%); }
-.st-card { position: relative; z-index: 2; width: min(46vw, 640px); aspect-ratio: 4 / 3.1; border-radius: 6px; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,.4); }
-.st-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity .6s, transform 1.2s cubic-bezier(.22,1,.36,1); }
-.st-meta { position: absolute; z-index: 3; left: var(--g); right: var(--g); bottom: 28px; display: flex; justify-content: space-between; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; font-size: 14px; }
-.st-meta .count { color: var(--accent); }
-
-/* IV reel */
+/* IV reel (kept) */
 .rl { position: relative; }
 .rl-pin { position: sticky; top: 0; height: 100vh; overflow: hidden; display: flex; align-items: center; }
 .rl-track { display: flex; gap: 3vw; padding-inline: var(--g); will-change: transform; }
-.rl-card { flex: none; width: min(52vw, 760px); color: inherit; text-decoration: none; }
-.rl-card .img { aspect-ratio: 4 / 3.1; border-radius: 6px; overflow: hidden; transition: transform .6s cubic-bezier(.22,1,.36,1); }
-.rl-card .img img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s cubic-bezier(.22,1,.36,1); }
-.rl-card:hover .img img { transform: scale(1.05); }
+.rl-card { flex: none; width: min(50vw, 740px); text-decoration: none; }
+.rl-card .img { aspect-ratio: 4 / 3.1; border-radius: 8px; overflow: hidden; }
+.rl-card .img img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
+.rl-card:hover .img img { transform: scale(1.06); }
 .rl-card .row { display: flex; justify-content: space-between; align-items: baseline; padding-top: 14px; }
 .rl-card .up { font-size: 30px; }
-.rl-card span { color: var(--muted); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; font-size: 14px; }
-.rl-progress { position: absolute; left: var(--g); right: var(--g); bottom: 30px; height: 2px; background: rgba(29,29,27,.12); }
-.rl-progress i { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--accent); }
+.rl-card span:not(.up) { color: var(--muted); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; font-size: 14px; }
+.bar-progress { position: absolute; left: var(--g); right: var(--g); bottom: 30px; height: 2px; background: rgba(29,29,27,.12); }
+.bar-progress i { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--accent); }
 
-/* V stack */
-.sk-card { position: sticky; top: 10vh; height: 78vh; margin-bottom: 6vh; border-radius: 10px; overflow: hidden; display: grid; grid-template-columns: 1.4fr 1fr; background: var(--char); color: var(--cream); transform-origin: 50% 0; box-shadow: 0 -20px 60px rgba(0,0,0,.15); }
+/* V stack (kept) */
+.sk-card { position: sticky; top: 12vh; height: 76vh; margin-bottom: 6vh; border-radius: 14px; overflow: hidden; display: grid; grid-template-columns: 1.4fr 1fr; background: var(--char); color: var(--cream); transform-origin: 50% 0; will-change: transform; }
 .sk-card img { width: 100%; height: 100%; object-fit: cover; }
 .sk-card .txt { padding: clamp(24px, 4vw, 56px); display: flex; flex-direction: column; justify-content: space-between; }
 .sk-card .up { font-size: clamp(34px, 4.4vw, 68px); }
 .sk-card .n { color: var(--accent); font-weight: 700; letter-spacing: .12em; }
 .sk-card p { color: #b9b4a9; max-width: 34ch; }
 
+/* VI curved reel */
+.cv { position: relative; }
+.cv-pin { position: sticky; top: 0; height: 100vh; overflow: hidden; display: flex; align-items: center; perspective: 1300px; background: var(--char); color: var(--cream); }
+.cv-track { position: relative; height: 62vh; width: 100%; transform-style: preserve-3d; }
+.cv-card { position: absolute; top: 0; left: 50%; width: min(38vw, 560px); height: 100%; margin-left: calc(min(38vw, 560px) / -2); transform-style: preserve-3d; will-change: transform; text-decoration: none; }
+.cv-card .img { height: 82%; border-radius: 10px; overflow: hidden; }
+.cv-card img { width: 100%; height: 100%; object-fit: cover; }
+.cv-card .up { font-size: 26px; margin-top: 16px; display: block; }
+.cv-card span:not(.up) { color: #9c978b; font-weight: 600; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; }
+.cv-big { position: absolute; left: 0; right: 0; bottom: 7vh; text-align: center; font-size: 8vw; color: rgba(241,236,226,.06); pointer-events: none; white-space: nowrap; }
+
+/* VII z tunnel */
+.zt { position: relative; height: 600vh; }
+.zt-pin { position: sticky; top: 0; height: 100vh; overflow: hidden; perspective: 900px; background: radial-gradient(70% 70% at 50% 50%, #2b2b28, #121211); color: var(--cream); }
+.zt-item { position: absolute; left: 50%; top: 50%; width: min(34vw, 520px); aspect-ratio: 4 / 3.1; margin: calc(min(34vw, 520px) * -0.3875) 0 0 calc(min(34vw, 520px) / -2); will-change: transform, opacity; border-radius: 8px; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,.5); }
+.zt-item img { width: 100%; height: 100%; object-fit: cover; }
+.zt-title { position: absolute; left: var(--g); right: var(--g); bottom: 6vh; display: flex; justify-content: space-between; align-items: flex-end; z-index: 5; }
+.zt-title .up { font-size: clamp(40px, 6vw, 96px); transition: opacity .5s var(--ease), transform .7s var(--ease); }
+.zt-title span:not(.up) { color: var(--accent); font-weight: 700; letter-spacing: .12em; }
+
+/* VIII drag canvas */
+.dc { position: relative; height: 92vh; overflow: hidden; border-radius: 10px; background: var(--cream-2); cursor: grab; touch-action: none; user-select: none; }
+.dc.drag { cursor: grabbing; }
+.dc-item { position: absolute; left: 0; top: 0; will-change: transform; }
+.dc-item .img { border-radius: 6px; overflow: hidden; transition: transform .9s var(--ease); }
+.dc-item img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.dc-item:hover .img { transform: scale(1.05); }
+.dc-item span { display: block; margin-top: 8px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: 12px; color: var(--muted); }
+.dc-hint { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 110px; height: 110px; border-radius: 50%; background: var(--accent); color: var(--char); display: grid; place-items: center; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; font-size: 14px; pointer-events: none; transition: opacity .6s, transform .6s var(--ease); z-index: 3; }
+.dc.used .dc-hint { opacity: 0; transform: translate(-50%, -50%) scale(.6); }
+
+/* IX 3D deck */
+.dk { position: relative; }
+.dk-pin { position: sticky; top: 0; height: 100vh; overflow: hidden; perspective: 1600px; display: grid; grid-template-columns: 1fr 1.2fr; align-items: center; gap: 4vw; padding-inline: var(--g); }
+.dk-info .up { font-size: clamp(44px, 6vw, 100px); transition: opacity .5s, transform .8s var(--ease); }
+.dk-info p { color: var(--muted); max-width: 34ch; }
+.dk-info .n { color: var(--accent); font-weight: 700; letter-spacing: .12em; }
+.dk-stack { position: relative; height: 66vh; transform-style: preserve-3d; }
+.dk-card { position: absolute; inset: 0; border-radius: 14px; overflow: hidden; box-shadow: 0 30px 70px rgba(20,20,18,.25); will-change: transform; background: var(--char); }
+.dk-card img { width: 100%; height: 100%; object-fit: cover; }
+
+/* X film strips */
+.fs { display: flex; gap: 8px; height: 78vh; }
+.fs a { position: relative; flex: 1; border-radius: 10px; overflow: hidden; text-decoration: none; color: var(--cream); transition: flex 1.1s var(--ease); min-width: 0; }
+.fs a img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1.4s var(--ease), filter .8s; filter: grayscale(1) brightness(.75); }
+.fs a:hover, .fs a.on { flex: 5; }
+.fs a:hover img, .fs a.on img { filter: none; transform: scale(1.04); }
+.fs a .lbl { position: absolute; left: 18px; bottom: 18px; right: 18px; z-index: 2; }
+.fs a .vert { position: absolute; left: 50%; bottom: 24px; writing-mode: vertical-rl; transform: translateX(-50%) rotate(180deg); font-size: 18px; white-space: nowrap; transition: opacity .5s; z-index: 2; }
+.fs a .full { opacity: 0; transform: translateY(20px); transition: opacity .6s .15s, transform .8s .15s var(--ease); }
+.fs a:hover .full, .fs a.on .full { opacity: 1; transform: none; }
+.fs a:hover .vert, .fs a.on .vert { opacity: 0; }
+.fs a .full .up { font-size: clamp(30px, 3.4vw, 54px); }
+.fs a::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.6), transparent 55%); }
+
 @media (max-width: 760px) {
-  .hl a { grid-template-columns: 1fr auto; } .hl a span:last-child { display: none; }
-  .hl-float { display: none; }
-  .st-card { width: 80vw; }
   .rl-card { width: 78vw; }
   .sk-card { grid-template-columns: 1fr; grid-template-rows: 1.2fr 1fr; }
-  .hero .name { font-size: 22vw; top: 9%; white-space: normal; line-height: .86; }
+  .hero .name { font-size: 22vw; top: 12%; white-space: normal; line-height: .86; }
   .hero .stage { height: 64%; bottom: 90px; }
+  .cv-card { width: 70vw; margin-left: -35vw; }
+  .zt-item { width: 70vw; margin: -27vw 0 0 -35vw; }
+  .dk-pin { grid-template-columns: 1fr; align-content: center; }
+  .dk-stack { height: 46vh; }
+  .fs { flex-direction: column; height: 120vh; }
+  .fs a .vert { writing-mode: horizontal-tb; transform: translateX(-50%); }
 }
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 </head>
 <body>
-<header class="bar">
-  <span class="up" style="font-size:15px">Anas Saleh · Stage 1</span>
-  <nav aria-label="Sections">
-    <a href="#hero">الهيرو</a><a href="#colors">الألوان</a><a href="#textures">التكستشر</a><a href="#layouts">عرض المشاريع</a>
-  </nav>
-  <span class="picked" data-picked></span>
-</header>
-
 <main>
-  <section class="block wrap" id="hero">
+  <section class="block wrap" id="hero" style="padding-top:110px">
     <div class="head ar">
       <span class="num">01</span>
-      <h2>الهيرو: صورتك الجديدة مع العمق 3D</h2>
-      <p>حرّك الماوس: الوجه بيلف والضو بيمشي معه. ولما يمرق الماوس فوق الوجه بتطلع "عدسة" بتكشف نسخة تانية من صورتك. جرّب الخيارين تحت. هيدا عينة بس، والحركة الكاملة متل موقع Lando (لما تفتح الصفحة وتنزل بالسكرول) هي المرحلة الجاية.</p>
+      <h2>الهيرو: صورتك مع العمق 3D</h2>
+      <p>حرّك الماوس بأي مكان على الصفحة: الوجه بيلف والضو بيمشي معه. حط الماوس فوق الوجه لتطلع العدسة. (صلّحت المشكلة: ويندوز عندك موقّف "تأثيرات الحركة"، وهلق الموقع بيشتغل حتى مع هالإعداد.)</p>
     </div>
-    <div class="hero" data-hero>
-      <div class="topo"></div>
+    <div class="hero" data-hero data-dark>
       <h1 class="name up">Anas <em>Saleh</em></h1>
       <div class="stage" data-stage></div>
       <div class="meta"><p><span class="up">Visual artist</span>Design, 3D, motion, film and drawing.</p><span class="up" style="font-size:14px;letter-spacing:.1em">Scroll</span></div>
@@ -182,70 +172,70 @@ section.block { padding-block: clamp(64px, 9vw, 120px); border-bottom: 1px solid
       <button type="button" data-lens="1" aria-pressed="true">العدسة: رسم بالرصاص</button>
       <button type="button" data-lens="2" aria-pressed="false">العدسة: خطوط العمق 3D</button>
       <button type="button" data-lens="0" aria-pressed="false">بدون عدسة</button>
-      <span style="width:16px"></span>
+      <span style="width:14px"></span>
       <button type="button" data-bg="dark" aria-pressed="true">خلفية فحمية</button>
-      <button type="button" data-bg="light" aria-pressed="false">خلفية كريمية مع خطوط طبوغرافية (متل Lando)</button>
+      <button type="button" data-bg="light" aria-pressed="false">خلفية كريمية</button>
     </div>
-  </section>
-
-  <section class="block wrap" id="colors">
-    <div class="head ar">
-      <span class="num">02</span>
-      <h2>اللون التالت (قاعدة 60 / 30 / 10)</h2>
-      <p>60% كريمي، 30% فحمي، 10% لون مميز للأزرار والكلمات المهمة والتفاعل. اكبس على أي خيار لتشوفو مطبّق على كل هالصفحة.</p>
+    <div class="chosen">
+      <div><i style="background:#6f8faf"></i>اللون التالت: E · Mist blue <b style="font-family:var(--body)">#6f8faf</b></div>
+      <div>التكستشر: 1 · Fine grain (مطبّق على هالصفحة)</div>
+      <div>البار: حبة زجاج بالنص فوق. نزّل بالسكرول ورجاع، وقرّب الماوس لفوق</div>
     </div>
-    <div class="pal-grid" data-palettes></div>
-  </section>
-
-  <section class="block wrap" id="textures">
-    <div class="head ar">
-      <span class="num">03</span>
-      <h2>تكستشر الخلفية الكريمية</h2>
-      <p>اكبس على أي واحد ليتطبّق على خلفية الصفحة كلها، وشوف كيف بيبين مع النص والصور.</p>
-    </div>
-    <div class="tex-grid" data-textures></div>
   </section>
 
   <section class="block" id="layouts">
     <div class="wrap head ar">
-      <span class="num">04</span>
-      <h2>طرق عرض المشاريع</h2>
-      <p>خمس طرق مأخوذة من مواقع حقيقية، كلها شغالة بمشاريعك وأغلفة Behance. جرّب كل وحدة بالماوس والسكرول.</p>
+      <span class="num">02</span>
+      <h2>عرض المشاريع: خيارات أكتر إبداع</h2>
+      <p>خلّيت التنتين يلي عجبوك (IV وV)، وزدت 5 أفكار جديدة (VI لـ X). كل وحدة فيها حركة ناعمة وتفاعل مع الماوس. جرّبهن كلهن واختار وحدة أو تنتين.</p>
     </div>
 
-    <div class="wrap demo">
-      <span class="tag">I</span>
-      <h3 class="up" style="font-size:34px;margin:12px 0 6px">Hover list</h3>
-      <p class="demo-note">متل Dennis Snellenberg: لائحة أسماء كبيرة، ولما تمرق الماوس على مشروع بتلحقك صورتو. نضيفة وسريعة وبتشد.</p>
-      <div class="hl" data-hl></div>
-      <div class="hl-float" data-hl-float><span class="pill">View</span></div>
+    <div class="demo">
+      <div class="wrap"><span class="tag new">VI</span> <span class="tag">NEW</span>
+      <h3 class="up demo-title">Curved reel</h3>
+      <p class="demo-note">نسخة متطوّرة من Horizontal reel: المشاريع بتمشي على قوس 3D متل شاشة سينما منحنية. الكرت يلي بالنص بيكون قدّامك، والباقيين بيلفّوا ع الجنب. كل ما تسرّع بالسكرول بينحنوا أكتر.</p></div>
+      <div class="cv" data-cv><div class="cv-pin" data-dark><div class="cv-big up" data-cv-big></div><div class="cv-track" data-cv-track></div><div class="bar-progress" style="background:rgba(241,236,226,.12)"><i data-cv-bar></i></div></div></div>
     </div>
 
-    <div class="wrap demo" style="margin-top:120px">
-      <span class="tag">II</span>
-      <h3 class="up" style="font-size:34px;margin:12px 0 6px">Scattered collage</h3>
-      <p class="demo-note">متل قسم "Off track" عند Lando: صور مبعثرة بأحجام مختلفة، كل وحدة بتتحرك بسرعة مختلفة مع السكرول، وبتتلوّن لما تمرق عليها.</p>
-      <div class="cl" data-cl><div class="center"><span class="up">Selected work</span></div></div>
+    <div class="demo">
+      <div class="wrap"><span class="tag new">VII</span> <span class="tag">NEW</span>
+      <h3 class="up demo-title">Into the frame</h3>
+      <p class="demo-note">رحلة لجوّا: لما تنزل بالسكرول بتطير الكاميرا لقدّام بين أغلفة المشاريع المعلّقة بالفضاء، وكل مشروع بيقرّب لعندك واسمو بيطلع تحت. بيحكي إنك فنان 3D.</p></div>
+      <div class="zt" data-zt><div class="zt-pin" data-dark><div data-zt-items></div><div class="zt-title"><span class="up" data-zt-name></span><span data-zt-count></span></div></div></div>
     </div>
 
-    <div class="demo" style="margin-top:120px">
-      <div class="wrap"><span class="tag">III</span>
-      <h3 class="up" style="font-size:34px;margin:12px 0 6px">Full-screen stage</h3>
-      <p class="demo-note">متل Noomo وEduard Bodak: كل مشروع بياخد الشاشة كلها، اسمو بخط عملاق، وصورتو بالنص. مع السكرول بيتبدّل المشروع. سينمائي كتير.</p></div>
-      <div class="st" data-st><div class="st-pin"><div class="st-word up" data-st-word></div><div class="st-card" data-st-card></div><div class="st-meta"><span data-st-sub></span><span class="count" data-st-count></span></div></div></div>
+    <div class="demo wrap">
+      <span class="tag new">VIII</span> <span class="tag">NEW</span>
+      <h3 class="up demo-title">Drag canvas</h3>
+      <p class="demo-note">لوحة لا نهائية: اسحب بالماوس بأي اتجاه وشغلك بيتحرك معك بنعومة وبيتكرر بلا نهاية، متل طاولة الرسم يلي عليها كل أعمالك.</p>
+      <div class="dc" data-dc><div class="dc-hint">Drag</div></div>
     </div>
 
-    <div class="demo" style="margin-top:120px">
+    <div class="demo">
+      <div class="wrap"><span class="tag new">IX</span> <span class="tag">NEW</span>
+      <h3 class="up demo-title">3D card deck</h3>
+      <p class="demo-note">نسخة متطوّرة من Stacking cards: الأغلفة متكدّسة متل رزمة كروت بـ 3D. مع السكرول، الكرت يلي فوق بيطير لبرّا وبيبيّن يلي تحتو، والاسم والتفاصيل بيتبدّلوا ع الجنب. والرزمة بتميل مع الماوس.</p></div>
+      <div class="dk" data-dk><div class="dk-pin"><div class="dk-info"><span class="n" data-dk-n></span><h4 class="up" data-dk-name style="margin:12px 0 0"></h4><p data-dk-sub></p></div><div class="dk-stack" data-dk-stack></div></div></div>
+    </div>
+
+    <div class="demo wrap">
+      <span class="tag new">X</span> <span class="tag">NEW</span>
+      <h3 class="up demo-title">Film strips</h3>
+      <p class="demo-note">شرايط أفلام عمودية بالأبيض والأسود. لما تمرق الماوس على وحدة بتنفتح بنعومة وبتتلوّن وبيطلع اسم المشروع.</p>
+      <div class="fs" data-fs></div>
+    </div>
+
+    <div class="demo">
       <div class="wrap"><span class="tag">IV</span>
-      <h3 class="up" style="font-size:34px;margin:12px 0 6px">Horizontal reel</h3>
-      <p class="demo-note">متل شريط أفلام: لما تنزل بالسكرول، المشاريع بتمشي بالعرض من اليمين لليسار. بيناسب شغل الفيديو والـ 3D.</p></div>
-      <div class="rl" data-rl><div class="rl-pin"><div class="rl-track" data-rl-track></div><div class="rl-progress"><i data-rl-bar></i></div></div></div>
+      <h3 class="up demo-title">Horizontal reel</h3>
+      <p class="demo-note">يلي عجبك: بس صار أنعم.</p></div>
+      <div class="rl" data-rl><div class="rl-pin"><div class="rl-track" data-rl-track></div><div class="bar-progress"><i data-rl-bar></i></div></div></div>
     </div>
 
-    <div class="wrap demo" style="margin-top:120px">
+    <div class="demo wrap">
       <span class="tag">V</span>
-      <h3 class="up" style="font-size:34px;margin:12px 0 6px">Stacking cards</h3>
-      <p class="demo-note">كروت كبيرة بتتكدّس فوق بعض مع السكرول. كل كرت فيه صورة واسم ودورك. واضحة وفيها قصة لكل مشروع.</p>
+      <h3 class="up demo-title">Stacking cards</h3>
+      <p class="demo-note">يلي عجبك: بس صار أنعم.</p>
       <div data-sk></div>
     </div>
   </section>

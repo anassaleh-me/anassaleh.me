@@ -71,10 +71,10 @@ content:
             fields:
               - { name: title, label: Title, type: string }
               - name: filter
-                label: Links to Work filtered by (empty = no link)
+                label: "Shows these projects on hover (direction = projects where you directed, drawing = your drawings)"
                 type: select
                 options:
-                  values: [design, 3d, motion, video]
+                  values: [direction, design, 3d, motion, video, drawing]
               - { name: image, label: Image, type: image, options: { media: images } }
       - name: spider
         label: Mechanical Spider 3D section

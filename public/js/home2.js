@@ -66,7 +66,7 @@ const stage = $("[data-stage]");
 const [glowSize, glowA] = GLOWS[h.heroGlow] || GLOWS.light;
 stage.style.setProperty("--glow", glowSize);
 stage.style.setProperty("--glow-a", glowA);
-$("[data-headline]").innerHTML = accent(h.headline ? h.headline.replace(/artist/i, "[artist]") : "Visual [artist]");
+$("[data-headline]").innerHTML = accent(h.headline ? h.headline.replace(/art director/i, "[art director]") : "Visual artist and [art director]");
 $("[data-intro]").textContent = h.intro || "";
 const heroReady = mountHero(stage, { image: h.heroImage || "/images/portrait-v2.webp", depth: h.heroDepth || "/images/portrait-v2-depth.png", alt: `Portrait of ${site.fullName}`, mode: 0, reduceMotion: reduce });
 
@@ -106,25 +106,41 @@ const sp = { x: innerWidth / 2, y: innerHeight / 2, tx: innerWidth / 2, ty: inne
 hero.addEventListener("pointermove", (e) => { sp.tx = e.clientX; sp.ty = e.clientY; });
 
 /* ---------- what I do ---------- */
+// Each word shows the work behind it: hovering cycles through that discipline's covers (or the drawings).
 const disc = $("[data-disc]");
-disc.innerHTML = (h.disciplines || []).map((d) => {
-  const inner = d.filter ? `<a href="/work?f=${esc(d.filter)}" data-img="${esc(d.image)}" data-cursor="See work">${esc(d.title)}</a>` : `<span class="word" data-img="${esc(d.image)}" data-cursor="Drawing">${esc(d.title)}</span>`;
-  return `<li data-reveal>${inner}</li>`;
-}).join("");
+const discImages = (f) => {
+  if (f === "drawing") return (site.drawings?.images || []).slice();
+  if (f === "direction") return projects.filter((p) => /direct/i.test(`${p.role} ${p.subtitle}`)).map(cover);
+  return projects.filter((p) => (p.categories || []).includes(f)).map(cover);
+};
+const discHref = (f) => (f === "drawing" ? "#drawings" : f ? `/work?f=${esc(f)}` : "/work");
+const discs = (h.disciplines || []).map((d) => ({ ...d, images: discImages(d.filter).length ? discImages(d.filter) : [d.image] }));
+disc.innerHTML = discs.map((d, i) => `<li data-reveal><a href="${discHref(d.filter)}" data-i="${i}" data-cursor="${d.filter === "drawing" ? "Drawings" : "See work"}">${esc(d.title)}</a></li>`).join("");
+discs.forEach((d) => d.images.forEach((src) => { const i = new Image(); i.src = src; }));
 const float = $("[data-float]");
-const fl = { x: 0, y: 0, tx: 0, ty: 0, vx: 0 };
+float.insertAdjacentHTML("beforeend", '<span class="float-count" data-float-count></span>');
+const fl = { x: 0, y: 0, tx: 0, ty: 0 };
+let cycle = 0, cycleI = 0;
 addEventListener("pointermove", (e) => { fl.tx = e.clientX; fl.ty = e.clientY; }, { passive: true });
-disc.addEventListener("pointerover", (e) => {
-  const t = e.target.closest("[data-img]");
-  if (!t) return;
+const showImg = (src) => {
   const img = new Image();
-  img.src = t.dataset.img; img.alt = ""; img.style.opacity = "0";
+  img.src = src; img.alt = ""; img.style.opacity = "0";
   float.prepend(img);
   requestAnimationFrame(() => (img.style.opacity = "1"));
   $$("img", float).slice(2).forEach((o) => o.remove());
+};
+disc.addEventListener("pointerover", (e) => {
+  const t = e.target.closest("[data-i]");
+  if (!t) return;
+  const d = discs[Number(t.dataset.i)];
+  clearInterval(cycle);
+  cycleI = 0;
+  showImg(d.images[0]);
+  $("[data-float-count]").textContent = `${d.images.length} ${d.filter === "drawing" ? (d.images.length === 1 ? "drawing" : "drawings") : d.images.length === 1 ? "project" : "projects"}`;
+  if (d.images.length > 1) cycle = setInterval(() => showImg(d.images[(++cycleI) % d.images.length]), 750);
   float.classList.add("on");
 });
-disc.addEventListener("pointerleave", () => float.classList.remove("on"));
+disc.addEventListener("pointerleave", () => { float.classList.remove("on"); clearInterval(cycle); });
 
 /* ---------- works wheel ---------- */
 mountWorksWheel($("[data-works]"), {
@@ -171,6 +187,7 @@ const drawSection = row.closest(".draw");
 /* ---------- contact and footer ---------- */
 $("[data-mail]").href = `mailto:${c.email}`;
 $("[data-mail]").textContent = c.email;
+$("[data-mailto]").href = `mailto:${c.email}?subject=${encodeURIComponent("Project enquiry")}`;
 const wa = $("[data-wa]");
 if (c.whatsapp) wa.href = c.whatsapp; else wa.remove();
 $("[data-copy]").addEventListener("click", async (e) => {
@@ -211,7 +228,7 @@ function loop(t) {
       meta.style.opacity = String(1 - sstep(0, 0.2, q));
     }
     const sink = sstep(0.05, 0.6, q);
-    stage.style.transform = `translateX(-50%) translateY(${sink * 6}vh) scale(${1 - sink * 0.22})`;
+    stage.style.transform = `translateX(-50%) scale(${1 - sink * 0.22})`;
     stage.style.opacity = String(1 - sink * 0.55);
     stWords.forEach((w, i) => {
       const k = sstep(0.32 + i * 0.045, 0.62 + i * 0.045, q);

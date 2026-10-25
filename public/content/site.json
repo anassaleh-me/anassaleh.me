@@ -6,10 +6,10 @@
     "palette": "paper"
   },
   "home": {
-    "headline": "Visual artist",
-    "intro": "Design, 3D, motion, film and drawing.",
-    "statement": "I design, model, animate, film and [draw].",
-    "statementSub": "One artist, from the first pencil line to the final frame. Based in Dubai.",
+    "headline": "Visual artist and art director",
+    "intro": "Art direction, design, 3D, motion, film and drawing.",
+    "statement": "I direct, design, model, animate, film and [draw].",
+    "statementSub": "Artist and art director. I shape the idea and see it through, from the first pencil line to the final frame. Based in Dubai.",
     "heroType": "portrait",
     "heroVideo": "",
     "heroImage": "/images/portrait-v2.webp",
@@ -19,11 +19,12 @@
     "showreelUrl": "",
     "worksLabel": "Works '26",
     "disciplines": [
+      { "title": "Art direction", "filter": "direction", "image": "/images/covers/mangobot-production.webp" },
       { "title": "Design", "filter": "design", "image": "/images/covers/mangobot-brand-identity.webp" },
       { "title": "3D", "filter": "3d", "image": "/images/covers/g2-humanoid-robot.webp" },
       { "title": "Motion", "filter": "motion", "image": "/images/covers/intro-video.webp" },
       { "title": "Film", "filter": "video", "image": "/images/covers/exoskeleton-film.webp" },
-      { "title": "Drawing", "filter": "", "image": "/images/drawings/drawing-3.webp" }
+      { "title": "Drawing", "filter": "drawing", "image": "/images/drawings/drawing-3.webp" }
     ]
   },
   "spider": {

@@ -191,34 +191,25 @@ function wwDraw() {
   // scroll progress -> target turn, eased
   const target = prog(ww) * (wwItems.length + 0.6);
   wwS.turn = lerp(wwS.turn, target, 0.12);
-  // Each item holds at the front for part of the scroll, so the wheel rests on a card, never between two.
-  const raw = Math.max(0, wwS.turn - 1), base = Math.floor(raw), f = raw - base;
-  const hold = f < 0.3 ? 0 : f > 0.7 ? 1 : ((x) => x * x * (3 - 2 * x))((f - 0.3) / 0.4);
-  const t = wwS.turn, m = clamp(t, 0, 1), pos = base + hold;
+  const t = wwS.turn, m = clamp(t, 0, 1), pos = Math.max(0, t - 1);
   const { ringR, drumR, bow, ringScale, lens } = wwM;
-  // The original morph: the ring blows open into the drum in one move.
-  // No overlaps: every card carries its own perspective (the wheel is flat, so 3D planes can't cut into each other),
-  // the cards that won't be on the drum fade out early in the move, and the front card always stacks on top.
-  const sstep = (a, b, x) => { const k = clamp((x - a) / (b - a), 0, 1); return k * k * (3 - 2 * k); };
+  // Same motion as the first version: the whole ring blows open into the drum, turning as it goes.
+  // The one change: each card carries its own perspective (the wheel container is flat), so the 3D card
+  // planes are drawn one over another by z-index and can never slice through each other.
+  const spin = (1 - m) * t * 30;
   wwCards.forEach((c, i) => {
-    const d = i - pos, ad = Math.abs(d), drumDeg = d * WW.STEP, ringDeg = i * (360 / wwItems.length);
+    const d = i - pos, drumDeg = d * WW.STEP, ringDeg = i * (360 / wwItems.length);
     c.style.transform =
-      `perspective(${lens}px) translateZ(${-m * drumR}px)` +
-      ` translateX(${m * -bow * (1 - Math.cos(rad(drumDeg)))}px)` +
-      ` rotateZ(${(1 - m) * ringDeg}deg) translateY(${-(1 - m) * ringR}px)` +
-      ` rotateX(${m * drumDeg}deg) translateZ(${m * drumR}px)`;
-    const onDrum = ad <= WW.CULL, front = ad < 0.5;
-    // Only the front card travels the whole way; its drum neighbours step aside mid-move and come back
-    // once the drum has formed, so nothing slides across the front card.
-    const op = front ? 1 : onDrum ? 1 - sstep(0.02, 0.2, m) + sstep(0.72, 1, m) : 1 - sstep(0.01, 0.16, m);
-    c.style.opacity = String(op);
-    c.style.visibility = op < 0.01 ? "hidden" : "visible";
-    c.style.zIndex = String(m > 0.02 ? Math.round(100 - ad * 10) : i);
+      `perspective(${lens}px) translateZ(${-m * drumR}px) rotateZ(${spin}deg)` +
+      ` translateX(${m * -bow * (1 - Math.cos(rad(drumDeg)))}px) rotateZ(${(1 - m) * ringDeg}deg)` +
+      ` translateY(${-(1 - m) * ringR}px) rotateX(${m * drumDeg}deg) translateZ(${m * drumR}px)`;
+    c.style.opacity = m > 0.5 && Math.abs(d) > WW.CULL ? "0" : "1";
+    c.style.zIndex = String(Math.round(100 - Math.abs(d) * 2));
     wwFaces[i].style.transform = `scale(${lerp(ringScale, 1, m)})`;
-    setBlur(wwFaces[i], m > 0.6 ? clamp((ad - 0.25) * 6, 0, 6) : 0);
+    setBlur(wwFaces[i], m > 0.5 ? clamp((Math.abs(d) - 0.25) * 6, 0, 6) : 0);
   });
-  $("[data-ww-label]").style.opacity = String(1 - sstep(0, 0.35, m));
-  $("[data-ww-title]").style.opacity = String(sstep(0.6, 1, m));
+  $("[data-ww-label]").style.opacity = String(1 - m);
+  $("[data-ww-title]").style.opacity = String(m);
   $("[data-ww-bar]").style.width = `${prog(ww) * 100}%`;
   const near = clamp(Math.round(pos), 0, wwItems.length - 1);
   if (near !== wwS.active) {

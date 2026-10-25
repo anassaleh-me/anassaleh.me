@@ -1,6 +1,7 @@
 // Shared shell for v2 inner pages: content, glass nav, ring cursor, smooth scroll, blur-to-focus reveals, footer.
 import { mountPillNav } from "/js/nav.js";
 import { mountRingCursor } from "/js/cursors.js";
+import { getJSON, prefetchOnHover } from "/js/data.js";
 
 export const $ = (s, r = document) => r.querySelector(s);
 export const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -83,8 +84,8 @@ export function cleanHTML(html = "") {
 
 export async function shell({ current = "" } = {}) {
   const [site, all] = await Promise.all([
-    fetch("/content/site.json").then((r) => r.json()),
-    fetch("/content/projects.json").then((r) => r.json()),
+    getJSON("/content/site.json"),
+    getJSON("/content/projects.json"),
   ]);
   const projects = all.filter((p) => !p.draft);
 
@@ -97,6 +98,7 @@ export async function shell({ current = "" } = {}) {
     cta: { href: "/contact", label: "Let's talk" },
   });
   mountRingCursor({ accent: "#6f8faf" });
+  prefetchOnHover();
   const lenis = window.Lenis ? new Lenis({ lerp: 0.11, wheelMultiplier: 1 }) : null;
   window.__lenis = lenis;
   const tick = (t) => { lenis?.raf(t); requestAnimationFrame(tick); };

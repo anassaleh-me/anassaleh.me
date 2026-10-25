@@ -56,6 +56,17 @@ h1, h2, h3, h4 { margin: 0; font-weight: 400; }
 /* charcoal surfaces always carry the halftone */
 .dark { --acc-t: var(--accent); --acc-l: var(--accent); background-color: var(--char); background-image: var(--halftone); background-size: 22px 22px; color: var(--cream); }
 
+/* moving between pages: the old page fades out while the new one fades in */
+@view-transition { navigation: auto; }
+::view-transition-old(root) { animation: vt-out 0.28s ease both; }
+::view-transition-new(root) { animation: vt-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+@keyframes vt-out { to { opacity: 0; } }
+@keyframes vt-in { from { opacity: 0; } }
+
+/* space held for content filled in from the CMS, so the page doesn't jump when it arrives */
+:is([data-project], [data-journal], [data-post], [data-production], [data-progress], [data-index]):empty { min-height: 100vh; min-height: 100svh; }
+footer[data-footer]:empty { display: block; min-height: 520px; background-color: var(--char); }
+
 /* blur-to-focus reveal */
 [data-reveal] { opacity: 0; filter: blur(10px); transform: translateY(32px); transition: opacity 0.95s var(--ease), filter 0.95s var(--ease), transform 0.95s var(--ease); }
 [data-reveal].in { opacity: 1; filter: none; transform: none; }

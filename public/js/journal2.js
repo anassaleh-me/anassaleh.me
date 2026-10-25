@@ -1,8 +1,9 @@
 // Journal (blog): notes, stories and things Anas loves. Posts come from /content/blog.json.
 // Hidden until "Show the journal" is ticked in Pages CMS; add ?preview to the address to see it (drafts included).
+import { getJSON } from "/js/data.js";
 import { shell, $, $$, esc } from "/js/shell2.js";
 
-const [{ site, reveal }, all] = await Promise.all([shell({ current: "journal" }), fetch("/content/blog.json").then((r) => r.json()).catch(() => [])]);
+const [{ site, reveal }, all] = await Promise.all([shell({ current: "journal" }), getJSON("/content/blog.json").catch(() => [])]);
 const j = site.journal || {};
 const main = $("[data-journal]");
 const E = "cubic-bezier(.16,1,.3,1)";

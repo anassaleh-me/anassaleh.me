@@ -1,8 +1,9 @@
 // Journal entry, served at /journal/<slug>: title, cover, then the same layout rows as projects
 // (formatted text, images side by side, captions), a share button and the previous and next entries.
+import { getJSON } from "/js/data.js";
 import { shell, $, $$, esc, rowsHTML, fitRows } from "/js/shell2.js";
 
-const [{ site, reveal }, all] = await Promise.all([shell({ current: "journal" }), fetch("/content/blog.json").then((r) => r.json()).catch(() => [])]);
+const [{ site, reveal }, all] = await Promise.all([shell({ current: "journal" }), getJSON("/content/blog.json").catch(() => [])]);
 const main = $("[data-post]");
 const E = "cubic-bezier(.16,1,.3,1)";
 const preview = new URLSearchParams(location.search).has("preview");

@@ -4,6 +4,7 @@ import { mountHero } from "/js/hero2.js";
 import { mountPillNav } from "/js/nav.js";
 import { mountRingCursor } from "/js/cursors.js";
 import { mountWorksWheel } from "/js/works-wheel.js";
+import { getJSON, prefetchOnHover } from "/js/data.js";
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -27,8 +28,8 @@ const ICONS = {
 };
 
 const [site, all] = await Promise.all([
-  fetch("/content/site.json").then((r) => r.json()),
-  fetch("/content/projects.json").then((r) => r.json()),
+  getJSON("/content/site.json"),
+  getJSON("/content/projects.json"),
 ]);
 const projects = all.filter((p) => !p.draft);
 const h = site.home || {};
@@ -42,6 +43,7 @@ mountPillNav({
   cta: { href: "/contact", label: "Let's talk" },
 });
 mountRingCursor({ accent: "#6f8faf" });
+prefetchOnHover();
 const lenis = window.Lenis ? new Lenis({ lerp: 0.11, wheelMultiplier: 1 }) : null;
 window.__lenis = lenis;
 document.addEventListener("click", (e) => {

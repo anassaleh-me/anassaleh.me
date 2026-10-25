@@ -19,7 +19,9 @@
   ],
   // Form requests also go to Notion: Work > Website > Project requests. The NOTION_TOKEN secret is added in the
   // Cloudflare dashboard (Worker > Settings > Variables and Secrets); without it this step is skipped.
-  "vars": { "NOTION_DB": "02a2162ee7bf4fbaaefec2e7690794c6" }
+  "vars": { "NOTION_DB": "02a2162ee7bf4fbaaefec2e7690794c6" },
+  // Keep variables added in the dashboard (such as NOTION_TOKEN) when deploying from here.
+  "keep_vars": true
   // Email alerts for the form: turned on once Email Routing is enabled for anassaleh.me
   // and the destination address is verified. Then add:
   // "send_email": [{ "name": "MAILER", "destination_address": "<verified address>" }],

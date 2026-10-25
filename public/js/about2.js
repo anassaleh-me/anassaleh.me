@@ -2,6 +2,7 @@
 // experience, tools and the CV. Content comes from site.json (about).
 import { shell, $, $$, esc, lerp, clamp } from "/js/shell2.js";
 import { mountHero } from "/js/hero2.js";
+import { toolIcon } from "/js/tool-icons.js";
 
 const { site, reveal } = await shell({ current: "about" });
 const a = site.about || {};
@@ -31,8 +32,8 @@ $("[data-exp]").innerHTML = (a.experience || []).map((x) => `<li data-reveal>
   <span class="ab-exp__note">${esc(x.note || "")}</span>
 </li>`).join("");
 
-// tools: tiles that tilt toward the pointer
-$("[data-tools]").innerHTML = (a.tools || []).map((t, i) => `<li data-reveal><span class="ab-tool__n">${String(i + 1).padStart(2, "0")}</span><span class="ab-tool__t">${esc(t)}</span></li>`).join("");
+// tools: each tile shows the app's mark in white with its name under it, and tilts toward the pointer
+$("[data-tools]").innerHTML = (a.tools || []).map((t) => `<li data-reveal><span class="ab-tool__i">${toolIcon(t)}</span><span class="ab-tool__t">${esc(t)}</span></li>`).join("");
 $$(".ab-tools__list li").forEach((li) => {
   li.addEventListener("pointermove", (e) => {
     const r = li.getBoundingClientRect();

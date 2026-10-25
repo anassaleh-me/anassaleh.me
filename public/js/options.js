@@ -83,9 +83,9 @@ const glowRow = $("[data-glows]");
 [["بدون", "0px", 0], ["خفيف جداً", "28px", 0.1], ["خفيف", "44px", 0.16], ["أوضح", "64px", 0.24]].forEach(([label, size, a], i) => {
   const b = document.createElement("button");
   b.type = "button"; b.textContent = label; b.setAttribute("aria-pressed", String(i === 2));
-  b.addEventListener("click", () => {
+  b.addEventListener("click", (e) => {
     glowNow.size = size; glowNow.a = a;
-    $("[data-stage]").classList.add("anim-glow");
+    if (e.isTrusted) $("[data-stage]").classList.add("anim-glow");
     $("[data-stage]").style.setProperty("--glow", size);
     $("[data-stage]").style.setProperty("--glow-a", a);
     $$("button", glowRow).forEach((x) => x.setAttribute("aria-pressed", String(x === b)));

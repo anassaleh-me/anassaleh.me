@@ -48,7 +48,7 @@ const valueNoise = (seed, P) => {
 const pixels = (w, h, fn) => (g) => { const d = g.createImageData(w, h); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const [v, a] = fn(x, y); const i = (y * w + x) * 4; d.data[i] = v; d.data[i + 1] = v * 0.96; d.data[i + 2] = v * 0.9; d.data[i + 3] = a; } g.putImageData(d, 0, 0); };
 const TEXTURES = [
   { name: "Paper grain", ar: "حبيبات ورق واضحة وناعمة. أقرب شي لورق طباعة فاخر.", size: "260px", op: 1,
-    url: canvasURL(260, 260, pixels(260, 260, () => [90 + Math.random() * 60, Math.random() * 70])) },
+    url: canvasURL(260, 260, pixels(260, 260, () => [90 + Math.random() * 60, Math.random() * 48])) },
   { name: "Linen", ar: "نسيج كتان متل قماش اللوحات. خطوط أفقية وعمودية ناعمة.", size: "180px", op: 1,
     url: canvasURL(180, 180, (g, w, h) => {
       pixels(w, h, () => [110, Math.random() * 30])(g);
@@ -91,19 +91,6 @@ const swapText = (el, text) => {
   el._t = setTimeout(() => { el.textContent = text; el.style.opacity = "1"; el.style.transform = "none"; }, 200);
 };
 
-/* D dock reel */
-const dk = $("[data-dk]");
-dk.style.height = "300vh";
-$("[data-dk-track]").innerHTML = projects.map((p) => `<a class="dk-card" href="/work/${p.slug}"><div class="img"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></div><span class="up">${p.title}</span></a>`).join("");
-const dkCards = $$(".dk-card");
-const dkTrack = $("[data-dk-track]");
-const dkPointer = { x: -9999, tx: -9999, inside: false };
-const dkRow = $(".dk-row");
-dkRow.addEventListener("pointermove", (e) => { dkPointer.tx = e.clientX; dkPointer.inside = true; });
-dkRow.addEventListener("pointerleave", () => (dkPointer.inside = false));
-const dkScale = dkCards.map(() => 1);
-let dkP = 0;
-
 /* A curved reel */
 const cv = $("[data-cv]");
 cv.style.height = `${list.length * 70}vh`;
@@ -120,13 +107,6 @@ $(".ob-pin").addEventListener("pointerdown", (e) => { obS.down = true; obS.sx = 
 addEventListener("pointermove", (e) => { if (obS.down) obS.tdrag = obS.base + (e.clientX - obS.sx) * 0.25; });
 addEventListener("pointerup", () => (obS.down = false));
 
-/* C wave reel */
-const wv = $("[data-wv]");
-wv.style.height = "320vh";
-$("[data-wv-track]").innerHTML = list.map((p) => `<a class="wv-card" href="/work/${p.slug}"><div class="img"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></div><span class="up">${p.title}</span></a>`).join("");
-const wvCards = $$(".wv-card");
-let wvP = 0;
-
 /* E split columns */
 const sc = $("[data-sc]");
 const half = Math.ceil(list.length / 2);
@@ -136,11 +116,60 @@ $("[data-sc-a]").innerHTML = colHTML(colA);
 $("[data-sc-b]").innerHTML = colHTML(colB);
 let scP = 0;
 
-/* F stacking cards */
-$("[data-sk]").innerHTML = list.slice(0, 5).map((p, i) => `<article class="sk-card" data-sk-card style="top:${12 + i * 1.6}vh"><div class="img"><img src="${cover(p)}" alt="${p.title}" loading="lazy"></div><div class="txt"><div><span class="n">${pad(i + 1)} / 05</span><h4 class="up" style="margin:14px 0 0">${p.title}</h4><p>${p.subtitle}. ${p.role}.</p></div><a class="go" href="/work/${p.slug}">View project</a></div></article>`).join("");
-const skCards = $$("[data-sk-card]");
-const tilt = { x: 0, y: 0, tx: 0, ty: 0 };
-addEventListener("pointermove", (e) => { tilt.tx = e.clientX / innerWidth - 0.5; tilt.ty = e.clientY / innerHeight - 0.5; }, { passive: true });
+/* 4 dome gallery: covers on a sphere, drag with inertia, click to open */
+const dm = $("[data-dm]");
+const sphere = $("[data-dm-sphere]");
+const SEG = 30, UNIT = 360 / SEG / 2;
+const dmR = clamp(Math.max(innerWidth, innerHeight) * 1.05, 700, 1700);
+dm.style.setProperty("--R", `${dmR}px`);
+const tile = (2 * Math.PI * dmR) / SEG;
+const tiles = [];
+let k = 0;
+for (let x = -SEG; x < SEG; x += 2) {
+  const ys = ((x / 2) & 1) ? [-3, -1, 1, 3] : [-4, -2, 0, 2, 4];
+  for (const y of ys) {
+    const p = projects[(k * 7 + (x & 3)) % projects.length];
+    k++;
+    tiles.push(`<div class="dm-item" style="width:${tile}px;height:${tile * 0.82}px;margin:${-tile * 0.41}px 0 0 ${-tile / 2}px;transform:rotateY(${UNIT * (x + 1)}deg) rotateX(${UNIT * y}deg) translateZ(${dmR}px)"><button type="button" data-cursor="Open" data-slug="${p.slug}" aria-label="${p.title}"><img src="${cover(p)}" alt="" loading="lazy"></button></div>`);
+  }
+}
+sphere.innerHTML = tiles.join("");
+const dmS = { rx: -4, ry: 0, vx: 0, vy: 0, down: false, lx: 0, ly: 0, moved: 0 };
+dm.addEventListener("pointerdown", (e) => { dmS.down = true; dmS.moved = 0; dmS.lx = e.clientX; dmS.ly = e.clientY; dmS.vx = dmS.vy = 0; dmS.pid = e.pointerId; });
+dm.addEventListener("pointermove", (e) => {
+  if (!dmS.down) return;
+  const dx = e.clientX - dmS.lx, dy = e.clientY - dmS.ly;
+  dmS.lx = e.clientX; dmS.ly = e.clientY;
+  dmS.moved += Math.abs(dx) + Math.abs(dy);
+  if (dmS.moved > 6 && !dm.hasPointerCapture(e.pointerId)) dm.setPointerCapture(e.pointerId);
+  dmS.vy = dx * 0.14; dmS.vx = -dy * 0.1;
+  dmS.ry += dmS.vy; dmS.rx = clamp(dmS.rx + dmS.vx, -12, 12);
+});
+const dmUp = () => (dmS.down = false);
+dm.addEventListener("pointerup", dmUp);
+dm.addEventListener("pointercancel", dmUp);
+const viewer = $("[data-dm-viewer]");
+const closeViewer = () => { viewer.classList.remove("show"); setTimeout(() => viewer.classList.remove("on"), 400); };
+dm.addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-slug]");
+  if (!b || dmS.moved > 6) return;
+  const p = projects.find((x) => x.slug === b.dataset.slug);
+  viewer.innerHTML = `<button class="x" type="button" aria-label="Close">&times;</button><div class="card"><img src="${cover(p)}" alt="${p.title}"><div class="row"><div><span class="up">${p.title}</span><span class="meta">${cats(p)} · ${p.year}</span></div><a href="/work/${p.slug}">View project</a></div></div>`;
+  viewer.classList.add("on");
+  requestAnimationFrame(() => viewer.classList.add("show"));
+});
+viewer.addEventListener("pointerdown", (e) => e.stopPropagation());
+viewer.addEventListener("click", (e) => { if (e.target === viewer || e.target.closest(".x")) closeViewer(); });
+addEventListener("keydown", (e) => e.key === "Escape" && closeViewer());
+(function dmLoop() {
+  requestAnimationFrame(dmLoop);
+  if (!dmS.down) {
+    dmS.vy *= 0.95; dmS.vx *= 0.9;
+    dmS.ry += dmS.vy + 0.03;
+    dmS.rx = clamp(dmS.rx + dmS.vx, -12, 12);
+  }
+  sphere.style.transform = `translateZ(${-dmR}px) rotateX(${dmS.rx}deg) rotateY(${dmS.ry}deg)`;
+})();
 
 /* ---------- one smooth loop ---------- */
 const lenis = window.Lenis ? new Lenis({ lerp: 0.08, wheelMultiplier: 0.9 }) : null;
@@ -152,29 +181,6 @@ function loop(t) {
   const v = scrollY - lastY; lastY = scrollY;
   sm.vel = lerp(sm.vel, v, 0.1);
   const W = innerWidth, H = innerHeight;
-  tilt.x = lerp(tilt.x, tilt.tx, 0.06); tilt.y = lerp(tilt.y, tilt.ty, 0.06);
-
-  // D dock reel: magnify around the pointer with a smooth falloff, lift, and ripple
-  dkP = lerp(dkP, prog(dk), 0.08);
-  const maxShift = Math.max(0, dkTrack.scrollWidth - W);
-  dkTrack.style.transform = `translate(${-dkP * maxShift}px, -50%)`;
-  dkPointer.x = lerp(dkPointer.x, dkPointer.inside ? dkPointer.tx : -9999, 0.12);
-  let best = -1, bestS = 1;
-  dkCards.forEach((c, i) => {
-    const r = c.getBoundingClientRect();
-    const cx = r.left + r.width / 2;
-    const d = (dkPointer.x - cx) / 210;
-    const target = 1 + 0.9 * Math.exp(-d * d * 2.2);
-    dkScale[i] = lerp(dkScale[i], target, 0.14);
-    const s = dkScale[i];
-    const ripple = Math.sin(t / 260 - i * 0.9) * 8 * (s - 1);
-    c.style.transform = `translateY(${-(s - 1) * 70 + ripple}px) scale(${s})`;
-    c.style.marginInline = `${(s - 1) * 46}px`;
-    c.classList.toggle("on", s > 1.5);
-    if (s > bestS) { bestS = s; best = i; }
-  });
-  swapText($("[data-dk-title]"), best >= 0 && bestS > 1.4 ? projects[best].title : "Hover the row");
-  $("[data-dk-bar]").style.width = `${dkP * 100}%`;
 
   // A curved reel
   sm.cv = lerp(sm.cv, prog(cv), 0.09);
@@ -206,24 +212,6 @@ function loop(t) {
   swapText($("[data-ob-title]"), list[front].title);
   $("[data-ob-sub]").textContent = `${pad(front + 1)} · ${cats(list[front])}`;
 
-  // C wave reel
-  wvP = lerp(wvP, prog(wv), 0.08);
-  const spread = W * 0.3, total = (wvCards.length - 1) * spread + W, now = t / 1000;
-  let wvBest = 0, wvD = 1e9;
-  wvCards.forEach((c, i) => {
-    const x = W * 0.9 + i * spread - wvP * total;
-    const ph = (x / W) * Math.PI * 2 + now * 0.6;
-    const center = x + c.offsetWidth / 2;
-    const dc = Math.abs(center - W / 2) / (W / 2);
-    const s = 1 + 0.35 * Math.max(0, 1 - dc * 1.6);
-    c.style.transform = `translate3d(${x}px, ${Math.sin(ph) * H * 0.11}px, 0) rotate(${Math.cos(ph) * 7}deg) scale(${s})`;
-    setBlur(c, clamp((dc - 0.25) * 9, 0, 8));
-    c.style.opacity = String(clamp(1.25 - dc * 0.7, 0.25, 1));
-    if (Math.abs(center - W / 2) < wvD) { wvD = Math.abs(center - W / 2); wvBest = i; }
-  });
-  wvCards.forEach((c, i) => c.classList.toggle("center", i === wvBest));
-  $("[data-wv-bar]").style.width = `${wvP * 100}%`;
-
   // E split columns: sharp in the middle band, blurred toward the edges
   scP = lerp(scP, prog(sc), 0.08);
   const ca = $("[data-sc-a]"), cb = $("[data-sc-b]");
@@ -241,15 +229,6 @@ function loop(t) {
   });
   if (scBest) { swapText($("[data-sc-name]"), scBest.dataset.title); $("[data-sc-sub]").textContent = scBest.dataset.sub; }
 
-  // F stacking cards
-  skCards.forEach((c, i) => {
-    const next = skCards[i + 1];
-    const k = next ? clamp(1 - (next.getBoundingClientRect().top - c.getBoundingClientRect().top) / H, 0, 1) : 0;
-    const r = c.getBoundingClientRect();
-    const active = k < 0.05 && r.top < H * 0.5 && r.bottom > H * 0.3;
-    c.style.transform = `perspective(1400px) scale(${1 - k * 0.08}) rotateX(${active ? tilt.y * -3 : 0}deg) rotateY(${active ? tilt.x * 4 : 0}deg)`;
-    setBlur(c, k * 6, `brightness(${1 - k * 0.45})`);
-  });
   requestAnimationFrame(loop);
 }
 requestAnimationFrame(loop);

@@ -43,13 +43,6 @@ void main() {
   uv = vUv - p * (d - 0.5);
   vec4 col = texture2D(uImage, uv);
 
-  // Soft edge: a wide average of the alpha around the pixel, eased, so the cut-out melts into the background.
-  vec2 e = uTexel * 9.0;
-  float a = 0.0;
-  for (int i = -3; i <= 3; i++) for (int j = -3; j <= 3; j++) a += texture2D(uImage, uv + vec2(float(i), float(j)) * e).a;
-  a /= 49.0;
-  a = smoothstep(0.35, 1.0, a);
-  col.a = min(col.a, a);
 
   // relight from the pointer side using the depth gradient
   float dx = texture2D(uDepth, uv + vec2(uTexel.x * 5.0, 0.0)).r - texture2D(uDepth, uv - vec2(uTexel.x * 5.0, 0.0)).r;

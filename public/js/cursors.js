@@ -16,8 +16,8 @@ export function mountRingCursor({ accent = "#6f8faf" } = {}) {
   .ring-cursor i { position: fixed; left: 0; top: 0; z-index: 9999; border-radius: 50%; will-change: transform; }
   .rc-dot { width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; background: var(--rc-dot); transition: background .3s, opacity .3s; }
   .rc-ring { width: 42px; height: 42px; margin: -21px 0 0 -21px; border: 1.5px solid var(--rc-accent); display: grid; place-items: center;
-    transition: width .55s cubic-bezier(.16,1,.3,1), height .55s cubic-bezier(.16,1,.3,1), margin .55s cubic-bezier(.16,1,.3,1), background .4s, border-color .4s; }
-  .rc-ring b { font: 700 11px/1 "Barlow Semi Condensed", sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #1d1d1b; opacity: 0; transition: opacity .3s .05s; }
+    transition: width .22s cubic-bezier(.2,.9,.3,1), height .22s cubic-bezier(.2,.9,.3,1), margin .22s cubic-bezier(.2,.9,.3,1), background .18s, border-color .18s; }
+  .rc-ring b { font: 700 11px/1 "Barlow Semi Condensed", sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #1d1d1b; opacity: 0; transition: opacity .15s; }
   .ring-cursor.big .rc-ring { width: 92px; height: 92px; margin: -46px 0 0 -46px; background: var(--rc-accent); }
   .ring-cursor.big .rc-ring b { opacity: 1; }
   .ring-cursor.big .rc-dot { opacity: 0; }
@@ -50,7 +50,8 @@ export function mountRingCursor({ accent = "#6f8faf" } = {}) {
     requestAnimationFrame(tick);
     const vx = m.x - prev.x, vy = m.y - prev.y;
     prev.x = m.x; prev.y = m.y;
-    r.x = lerp(r.x, m.x, 0.15); r.y = lerp(r.y, m.y, 0.15);
+    const k = root.classList.contains("big") ? 0.32 : 0.22;
+    r.x = lerp(r.x, m.x, k); r.y = lerp(r.y, m.y, k);
     const big = root.classList.contains("big");
     const s = big ? 1 : Math.min(1.55, 1 + Math.hypot(vx, vy) / 45);
     const a = Math.atan2(vy, vx) * 57.3;

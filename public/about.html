@@ -1,68 +1,76 @@
 <!doctype html>
-<html lang="en" data-palette="paper">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>About, Anas Saleh</title>
-<meta name="description" content="Anas Al Shikh Saleh is a multimedia designer in Dubai working across graphic design, 3D, motion and video.">
+<meta name="description" content="Anas Al Shikh Saleh, visual artist and art director in Dubai. Story, experience, tools and CV.">
 <meta property="og:title" content="About, Anas Saleh">
 <meta property="og:image" content="https://anassaleh.me/images/og.jpg">
-<meta name="theme-color" content="#151514">
+<meta name="theme-color" content="#1d1d1b">
 <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Semi+Condensed:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="/css/site.css">
-<script src="/js/palette.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.css">
+<link rel="stylesheet" href="/css/nav.css">
+<link rel="stylesheet" href="/css/v2.css">
+<link rel="stylesheet" href="/css/pages2.css">
+<link rel="preload" href="/images/portrait-v2.webp" as="image">
 <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js"></script>
-<script type="module" src="/js/site.js"></script>
+<script type="module" src="/js/about2.js"></script>
 </head>
-<body data-page="about">
+<body>
 <a class="skip" href="#main">Skip to content</a>
-<header id="nav"></header>
 <main id="main">
-  <section class="page-head wrap about-hero">
-    <div>
-      <p class="eyebrow" data-reveal>About</p>
-      <h1 class="display" data-reveal="1">I'm Anas.</h1>
-      <p class="lead" style="margin-top:22px" data-reveal="2" data-about-lead>Multimedia designer in Dubai.</p>
-    </div>
-    <div class="about-hero__img" data-reveal="2" data-about-img></div>
-  </section>
 
-  <section class="section section--tight">
-    <div class="wrap two-col">
-      <p class="eyebrow" data-reveal>My story</p>
-      <div class="bio" data-bio></div>
-    </div>
-  </section>
-
-  <section class="section section--tight">
-    <div class="wrap">
-      <div class="section-head"><h2 class="display" data-reveal>Experience</h2></div>
-      <ul class="xp" data-xp></ul>
-    </div>
-  </section>
-
-  <section class="section section--tight">
-    <div class="wrap two-col">
-      <div>
-        <h2 class="display" style="font-size:var(--step-2)" data-reveal>What I can do for you</h2>
-      </div>
-      <div>
-        <ul class="pill-list" data-services data-reveal="1"></ul>
-        <h3 class="eyebrow" style="margin:48px 0 16px" data-reveal>Tools</h3>
-        <ul class="pill-list" data-tools data-reveal="1"></ul>
-        <div class="cta__row" data-reveal="2">
-          <a class="btn" data-cv href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"/></svg>Download CV</a>
-          <a class="btn btn--ghost" href="/contact">Get in touch</a>
+  <!-- Opener: name of the role on the left, the portrait that turns toward the pointer on the right -->
+  <section class="ab-hero dark" data-dark aria-labelledby="ab-title">
+    <div class="wrap ab-hero__grid">
+      <div class="ab-hero__text">
+        <span class="label" data-intro>About</span>
+        <h1 class="ab-title up" id="ab-title"><span class="ln"><span class="w">Visual</span></span> <span class="ln"><span class="w">artist</span></span> <span class="ln"><span class="w">and</span></span> <span class="ln"><span class="w acc">art</span></span> <span class="ln"><span class="w acc">director</span></span></h1>
+        <p class="ab-hero__sub" data-intro>Based in Dubai. Art direction, design, 3D, motion, film and drawing.</p>
+        <div class="ab-hero__actions" data-intro>
+          <a class="btn btn--accent" data-cv href="/Anas_Al_Shikh_Saleh_CV.pdf" target="_blank" rel="noopener">Download CV <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 4v12M6 11l6 6 6-6M5 20h14"/></svg></a>
+          <a class="btn btn--line" href="/contact">Let's talk</a>
         </div>
+      </div>
+      <div class="ab-stage" data-ab-stage></div>
+    </div>
+  </section>
+
+  <!-- Story: the words light up as you read down -->
+  <section class="ab-story wrap" aria-labelledby="story-title">
+    <span class="label" id="story-title" data-reveal>Story</span>
+    <div class="ab-story__text" data-story></div>
+  </section>
+
+  <!-- Experience -->
+  <section class="ab-exp wrap" aria-labelledby="exp-title">
+    <div class="ab-head"><span class="label" id="exp-title" data-reveal>Experience</span><h2 class="up" data-reveal>Where I've <span class="acc">worked</span></h2></div>
+    <ol class="ab-exp__list" data-exp></ol>
+  </section>
+
+  <!-- Tools -->
+  <section class="ab-tools dark" data-dark aria-labelledby="tools-title">
+    <div class="wrap">
+      <div class="ab-head"><span class="label" id="tools-title" data-reveal>Tools</span><h2 class="up" data-reveal>What I work <span class="acc">with</span></h2></div>
+      <ul class="ab-tools__list" data-tools></ul>
+    </div>
+  </section>
+
+  <section class="cta-band" aria-labelledby="cta-title">
+    <div class="wrap">
+      <span class="label" data-reveal>Next</span>
+      <h2 class="up" id="cta-title" data-reveal>Let's make something <span class="acc">together</span></h2>
+      <div class="contact__actions" data-reveal>
+        <a class="btn btn--ink" href="/contact">Start a project <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn btn--ink-line" href="/work">See the work</a>
       </div>
     </div>
   </section>
 </main>
-<footer id="footer"></footer>
+<footer data-footer></footer>
 </body>
 </html>

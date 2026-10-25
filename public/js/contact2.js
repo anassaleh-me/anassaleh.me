@@ -1,5 +1,6 @@
 // Contact page (stage 4): email, WhatsApp and socials up front, then the project form (posts to /api/contact).
 import { shell, $, $$, esc } from "/js/shell2.js";
+import { mountMailMenu } from "/js/mailto.js";
 
 const { site, reveal } = await shell({ current: "contact" });
 const cp = site.contactPage || {};
@@ -13,7 +14,7 @@ $("[data-c-reply]").textContent = cp.replyNote || "";
 /* ---------- direct ---------- */
 $("[data-mail]").href = `mailto:${c.email}`;
 $("[data-mail]").textContent = c.email;
-$("[data-mailto]").href = `mailto:${c.email}?subject=${encodeURIComponent("Project enquiry")}`;
+mountMailMenu($("[data-mailto]"), c.email);
 $("[data-copy]").addEventListener("click", async (e) => {
   const b = e.currentTarget;
   try { await navigator.clipboard.writeText(c.email); b.textContent = "Copied"; } catch { b.textContent = "Ctrl+C"; }

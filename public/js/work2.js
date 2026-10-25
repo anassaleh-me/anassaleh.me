@@ -4,19 +4,20 @@ import { shell, $, $$, esc, lerp, clamp, pad, cats, cover } from "/js/shell2.js"
 
 const { projects, reveal } = await shell({ current: "work" });
 
+// [key, chip label, test, the short line shown under the chips]
 const FILTERS = [
-  ["all", "All", () => true],
-  ["direction", "Art direction", (p) => /direct/i.test(`${p.role} ${p.subtitle}`)],
-  ["design", "Design", (p) => p.categories?.includes("design")],
-  ["3d", "3D", (p) => p.categories?.includes("3d")],
-  ["motion", "Motion", (p) => p.categories?.includes("motion")],
-  ["video", "Video", (p) => p.categories?.includes("video")],
+  ["all", "All", () => true, "Every project, client work and personal."],
+  ["direction", "Art direction", (p) => /direct/i.test(`${p.role} ${p.subtitle}`), "Projects where I led the creative direction."],
+  ["design", "Design", (p) => p.categories?.includes("design"), "Brand identity, packaging, social and visual design."],
+  ["3d", "3D", (p) => p.categories?.includes("3d"), "Models, product renders and animation, made in Blender."],
+  ["motion", "Motion", (p) => p.categories?.includes("motion"), "Animation, motion graphics and type in motion."],
+  ["video", "Video", (p) => p.categories?.includes("video"), "Films I directed, shot and edited."],
 ].filter(([, , test]) => projects.some(test));
 
 const chips = $("[data-chips]");
 chips.innerHTML = FILTERS.map(([k, label]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="false">${label}</button>`).join("");
 
-const fword = $("[data-fword]");
+const fnote = $("[data-fnote]");
 const list = $("[data-index]");
 let current = "";
 
@@ -28,10 +29,9 @@ function apply(key, { first = false } = {}) {
   $$(".chip", chips).forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.f === current)));
   history.replaceState(null, "", current === "all" ? "/work" : `/work?f=${current}`);
 
-  // the title word rolls out and the new one rolls in
-  const swapWord = () => { fword.textContent = f[1]; fword.animate([{ transform: "translateY(105%)" }, { transform: "none" }], { duration: 900, easing: "cubic-bezier(.16,1,.3,1)" }); };
-  if (first) fword.textContent = f[1];
-  else fword.animate([{ transform: "none" }, { transform: "translateY(-105%)" }], { duration: 320, easing: "cubic-bezier(.7,0,.84,0)", fill: "forwards" }).finished.then(swapWord);
+  // the line under the chips says what this filter shows
+  fnote.textContent = f[3];
+  if (!first) fnote.animate([{ opacity: 0, transform: "translateY(8px)", filter: "blur(6px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }], { duration: 600, easing: "cubic-bezier(.16,1,.3,1)" });
 
   // index: the lines blur out, the new set comes into focus line by line
   const build = () => {
@@ -61,9 +61,9 @@ list.addEventListener("pointerover", (e) => {
   float.dataset.src = row.dataset.cover;
   const img = new Image();
   img.src = row.dataset.cover; img.alt = ""; img.style.opacity = "0";
-  float.prepend(img);
+  float.append(img);
   requestAnimationFrame(() => (img.style.opacity = "1"));
-  $$("img", float).slice(2).forEach((o) => o.remove());
+  $$("img", float).slice(0, -2).forEach((o) => o.remove());
   float.classList.add("on");
 });
 list.addEventListener("pointerleave", () => float.classList.remove("on"));

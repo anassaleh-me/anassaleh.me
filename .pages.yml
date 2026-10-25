@@ -4,7 +4,7 @@ media:
     label: Images
     input: public/images
     output: /images
-    categories: [image]
+    extensions: [webp, jpg, jpeg, png, gif, svg, avif, mp4, webm]
   - name: files
     label: Files
     input: public/files
@@ -206,9 +206,16 @@ content:
       - { name: featured, label: Show on homepage, type: boolean }
       - { name: draft, label: Hide from site (draft), type: boolean }
       - { name: cover, label: Cover image, type: image, options: { media: images } }
-      - { name: images, label: Gallery images, type: image, options: { media: images, multiple: true } }
-      - { name: video, label: Video link (YouTube, Vimeo or Behance video), type: string }
       - { name: description, label: Description, type: text }
+      - { name: video, label: "Film link (Vimeo, or YouTube). Shown with a play button", type: string }
+      - name: blocks
+        label: "Layout: rows from top to bottom"
+        description: "Each row shows 1 to 4 images side by side, at the same height and never cropped. Short animations: upload an .mp4 loop instead of a GIF."
+        type: object
+        list: true
+        fields:
+          - { name: images, label: "Images or .mp4 loops in this row (1 to 4)", type: file, options: { media: images, multiple: { max: 4 } } }
+          - { name: caption, label: "Caption under the row (optional)", type: string }
 
   - name: blog
     label: Blog (hidden on the site until the first post)

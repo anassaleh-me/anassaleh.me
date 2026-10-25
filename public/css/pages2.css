@@ -26,6 +26,8 @@
 /* ---------- work index ---------- */
 .ix { padding-block: 0 clamp(80px, 11vw, 160px); }
 .ix__img { display: none; }
+.ix__filter { margin-bottom: clamp(22px, 3vw, 36px); }
+.ix__note { margin-top: 14px; color: var(--ink-soft); font-size: 0.95em; }
 .ix__head { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; margin-bottom: clamp(24px, 3vw, 40px); }
 .ix__head p { color: var(--ink-soft); }
 .ix__list { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(29, 29, 27, 0.14); }
@@ -94,11 +96,16 @@
 .pj-player.tall { aspect-ratio: 9 / 16; max-height: 86vh; margin-inline: auto; }
 .pj-player iframe { width: 100%; height: 100%; border: 0; display: block; }
 
-.pj-gallery { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(12px, 1.6vw, 24px); align-items: start; padding-block: clamp(70px, 9vw, 130px); }
-.pj-gallery figure { margin: 0; border-radius: 12px; overflow: hidden; background: var(--cream-2); }
-.pj-gallery figure.wide { grid-column: 1 / -1; }
-.pj-gallery img { width: 100%; height: auto; }
-@media (max-width: 600px) { .pj-gallery { grid-template-columns: 1fr; } }
+.pj-gallery { display: grid; gap: clamp(12px, 1.6vw, 24px); padding-block: clamp(70px, 9vw, 130px); }
+.pj-row__items { display: flex; gap: clamp(8px, 1.2vw, 18px); justify-content: center; }
+.pj-row figure { flex: 1 1 0; min-width: 0; margin: 0; aspect-ratio: 1.6; border-radius: 10px; overflow: hidden; background: var(--cream-2); }
+.pj-row img, .pj-row video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.pj-row__cap { margin-top: 12px; color: var(--ink-soft); font-size: 0.92em; text-align: center; }
+/* on phones, rows of three or four become two per line */
+@media (max-width: 600px) {
+  .pj-row[data-n="3"] .pj-row__items, .pj-row[data-n="4"] .pj-row__items { flex-wrap: wrap; }
+  .pj-row[data-n="3"] figure, .pj-row[data-n="4"] figure { flex: 0 0 calc(50% - 5px) !important; }
+}
 
 /* previous and next project, side by side, the same way */
 .pj-nav { display: grid; grid-template-columns: 1fr 1fr; }

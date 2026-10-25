@@ -146,9 +146,9 @@ addEventListener("pointermove", (e) => { fl.tx = e.clientX; fl.ty = e.clientY; }
 const showImg = (src) => {
   const img = new Image();
   img.src = src; img.alt = ""; img.style.opacity = "0";
-  float.prepend(img);
+  float.append(img);
   requestAnimationFrame(() => (img.style.opacity = "1"));
-  $$("img", float).slice(2).forEach((o) => o.remove());
+  $$("img", float).slice(0, -2).forEach((o) => o.remove());
 };
 disc.addEventListener("pointerover", (e) => {
   const t = e.target.closest("[data-i]");

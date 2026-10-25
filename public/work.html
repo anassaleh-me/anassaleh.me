@@ -26,15 +26,16 @@
 
   <header class="ph wrap">
     <span class="label" data-reveal>Work</span>
-    <h1 class="ph__title up" aria-live="polite"><span class="ln"><span class="w" data-fword>All</span></span> <span class="ln"><span class="w acc">work</span></span></h1>
-    <div class="ph__foot">
-      <p data-reveal>Art direction, design, 3D, motion and film. Client work and personal projects.</p>
-      <div class="chips" role="group" aria-label="Filter projects" data-chips data-reveal></div>
-    </div>
+    <h1 class="ph__title up"><span class="ln"><span class="w">All</span></span> <span class="ln"><span class="w acc">work</span></span></h1>
+    <div class="ph__foot"><p data-reveal>Art direction, design, 3D, motion and film. Client work and personal projects.</p></div>
   </header>
 
   <!-- Every project as a line; the chips above filter it -->
   <section class="ix wrap" id="index" aria-label="Projects">
+    <div class="ix__filter" data-reveal>
+      <div class="chips" role="group" aria-label="Filter projects" data-chips></div>
+      <p class="ix__note" data-fnote aria-live="polite"></p>
+    </div>
     <ol class="ix__list" data-index></ol>
     <div class="float-img" data-float aria-hidden="true"></div>
   </section>

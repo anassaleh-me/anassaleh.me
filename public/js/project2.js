@@ -31,6 +31,22 @@ function render(p, prev, next) {
   const tall = /9:16/.test(p.format || "");
   const film = embed(p.video);
   const PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>';
+  // layout rows from the CMS: 1 to 4 pieces side by side, same height, never cropped.
+  // Older entries with a flat `images` list show one per row.
+  const rows = (p.blocks || (p.images || []).map((src) => ({ images: [src] }))).filter((r) => r.images?.length);
+  let count = 0;
+  const media = (src) => {
+    count++;
+    if (/\.(mp4|webm)$/i.test(src)) {
+      const poster = src.replace(/\.(mp4|webm)$/i, "-poster.webp");
+      return `<video src="${esc(src)}" poster="${esc(poster)}" muted loop playsinline preload="none" aria-label="${esc(p.title)}, animation ${count}"></video>`;
+    }
+    return `<img src="${esc(src)}" alt="${esc(p.title)}, image ${count}" loading="lazy" decoding="async">`;
+  };
+  const rowHTML = (r) => `<div class="pj-row" data-n="${r.images.length}" data-reveal>
+      <div class="pj-row__items">${r.images.map((src) => `<figure>${media(src)}</figure>`).join("")}</div>
+      ${r.caption ? `<p class="pj-row__cap">${esc(r.caption)}</p>` : ""}
+    </div>`;
   const side = (q, dir) => `<a class="pj-nav__item ${dir}" href="/work/${esc(q.slug)}" data-cursor="${dir === "prev" ? "Previous" : "Next"}">
       <span class="label">${dir === "prev" ? "Previous project" : "Next project"}</span>
       <span class="pj-nav__t up">${esc(q.title)}</span>
@@ -64,9 +80,7 @@ function render(p, prev, next) {
     </div>
   </section>` : ""}
 
-  ${(p.images || []).length ? `<section class="pj-gallery wrap" aria-label="Project images">
-    ${p.images.map((src, n) => `<figure class="wide" data-reveal><img src="${esc(src)}" alt="${esc(p.title)}, image ${n + 1}" loading="lazy" decoding="async"></figure>`).join("")}
-  </section>` : ""}
+  ${rows.length ? `<section class="pj-gallery wrap" aria-label="Project images">${rows.map(rowHTML).join("")}</section>` : ""}
 
   <nav class="pj-nav dark" data-dark aria-label="More projects">${side(prev, "prev")}${side(next, "next")}</nav>`;
 
@@ -84,16 +98,29 @@ function render(p, prev, next) {
   const coverEl = $("[data-cover]");
   coverEl.animate([{ opacity: 0, transform: "translateY(80px)", filter: "blur(18px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }], { duration: 1600, delay: 450, easing: E, fill: "backwards" });
 
-  // gallery: images that aren't wide sit side by side in pairs
-  const figs = $$(".pj-gallery figure");
-  Promise.all(figs.map((f) => {
-    const img = f.querySelector("img");
-    return (img.complete ? Promise.resolve() : new Promise((r) => { img.onload = img.onerror = r; })).then(() => (f.dataset.ratio = img.naturalWidth / (img.naturalHeight || 1)));
-  })).then(() => {
-    for (let n = 0; n < figs.length; n++) {
-      if (Number(figs[n].dataset.ratio) < 1.25 && Number(figs[n + 1]?.dataset.ratio) < 1.25) { figs[n].classList.remove("wide"); figs[n + 1].classList.remove("wide"); n++; }
-    }
+  // rows: each piece takes width in proportion to its shape, so a row lines up at one height.
+  // A piece smaller than the page is never blown up past its own size.
+  $$(".pj-row figure").forEach((f) => {
+    const el = f.firstElementChild;
+    const fit = (w, h) => {
+      if (!w || !h) return;
+      f.style.flex = `${w / h} 1 0`;
+      f.style.aspectRatio = `${w} / ${h}`;
+      if (f.parentElement.children.length === 1) f.style.maxWidth = `${w}px`;
+    };
+    if (el.tagName === "VIDEO") {
+      const still = new Image();
+      still.onload = () => fit(still.naturalWidth, still.naturalHeight);
+      still.src = el.poster;
+      el.addEventListener("loadedmetadata", () => fit(el.videoWidth, el.videoHeight));
+    } else if (el.complete) fit(el.naturalWidth, el.naturalHeight);
+    else el.addEventListener("load", () => fit(el.naturalWidth, el.naturalHeight));
   });
+  // loops play only while on screen
+  const loopIO = new IntersectionObserver((es) => es.forEach((e) => {
+    if (e.isIntersecting) { e.target.preload = "auto"; e.target.play().catch(() => {}); } else e.target.pause();
+  }), { rootMargin: "200px 0px" });
+  $$(".pj-row video").forEach((v) => loopIO.observe(v));
   reveal();
 
   // scroll: the cover grows to the full width; the previous and next covers follow the pointer

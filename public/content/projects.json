@@ -3,7 +3,10 @@
     "slug": "exoskeleton-film",
     "title": "Exoskeleton",
     "subtitle": "Product film",
-    "categories": ["video", "motion"],
+    "categories": [
+      "video",
+      "motion"
+    ],
     "client": "MangoBot",
     "year": "2026",
     "role": "Concept, direction, filming, edit, grade, motion type, sound",
@@ -12,21 +15,49 @@
     "featured": true,
     "draft": false,
     "cover": "/images/projects/exoskeleton-film/cover.webp",
-    "images": [
-      "/images/projects/exoskeleton-film/02.webp",
-      "/images/projects/exoskeleton-film/03.webp",
-      "/images/projects/exoskeleton-film/04.webp",
-      "/images/projects/exoskeleton-film/05.webp",
-      "/images/projects/exoskeleton-film/06.webp"
-    ],
     "video": "https://player.vimeo.com/video/1239052181",
-    "description": "A product film for MangoBot's wearable exoskeleton, from unboxing to a run on the grass. I took it from the first idea to the final file: concept, creative direction, filming, editing, colour grading, motion type and sound design. Shot in 4K on a Sony a6700 with a DJI Ronin, then cut and graded in Premiere Pro."
+    "description": "A product film for MangoBot's wearable exoskeleton, from unboxing to a run on the grass. I took it from the first idea to the final file: concept, creative direction, filming, editing, colour grading, motion type and sound design. Shot in 4K on a Sony a6700 with a DJI Ronin, then cut and graded in Premiere Pro.",
+    "blocks": [
+      {
+        "images": [
+          "/images/projects/exoskeleton-film/02.mp4"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/exoskeleton-film/03.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/exoskeleton-film/04.mp4"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/exoskeleton-film/05.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/exoskeleton-film/06.mp4"
+        ],
+        "caption": ""
+      }
+    ]
   },
   {
     "slug": "mangobot-production",
     "title": "MangoBot Robotics",
     "subtitle": "Post-production and art direction",
-    "categories": ["video", "motion"],
+    "categories": [
+      "video",
+      "motion"
+    ],
     "client": "MangoBot",
     "year": "2026",
     "role": "Storyboard, on-set art direction, edit, VFX, motion, grade, sound",
@@ -35,21 +66,43 @@
     "featured": true,
     "draft": false,
     "cover": "/images/projects/mangobot-production/cover.webp",
-    "images": [
-      "/images/projects/mangobot-production/01.webp",
-      "/images/projects/mangobot-production/02.webp",
-      "/images/projects/mangobot-production/03.webp",
-      "/images/projects/mangobot-production/04.webp",
-      "/images/projects/mangobot-production/05.webp"
-    ],
     "video": "https://www.youtube.com/watch?v=4fMmY7Bs0_g",
-    "description": "A brand film for MangoBot, from storyboard to final delivery. I planned the visual sequence, directed the look on set so every shot fit the edit, then cut the film, built the motion graphics and VFX, graded it and synced the sound."
+    "description": "A brand film for MangoBot, from storyboard to final delivery. I planned the visual sequence, directed the look on set so every shot fit the edit, then cut the film, built the motion graphics and VFX, graded it and synced the sound.",
+    "blocks": [
+      {
+        "images": [
+          "/images/projects/mangobot-production/01.webp",
+          "/images/projects/mangobot-production/02.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/mangobot-production/03.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/mangobot-production/04.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/mangobot-production/05.webp"
+        ],
+        "caption": ""
+      }
+    ]
   },
   {
     "slug": "g2-humanoid-robot",
     "title": "G2 Humanoid Robot",
     "subtitle": "Official 3D model",
-    "categories": ["3d"],
+    "categories": [
+      "3d"
+    ],
     "client": "MangoBot",
     "year": "2026",
     "role": "Hard-surface modeling, materials, lighting, render",
@@ -58,22 +111,61 @@
     "featured": true,
     "draft": false,
     "cover": "/images/projects/g2-humanoid-robot/cover.webp",
-    "images": [
-      "/images/projects/g2-humanoid-robot/01.webp",
-      "/images/projects/g2-humanoid-robot/03.webp",
-      "/images/projects/g2-humanoid-robot/05.webp",
-      "/images/projects/g2-humanoid-robot/07.webp",
-      "/images/projects/g2-humanoid-robot/08.webp",
-      "/images/projects/g2-humanoid-robot/02.webp"
-    ],
     "video": "",
-    "description": "G2 is MangoBot's humanoid robot, and this is its official 3D model, built end to end in Blender. I handled the whole pipeline: hard-surface modeling, materials and texturing, lighting and the final renders. The goal was a clean, premium look that holds up in close-ups, product films and the website."
+    "description": "G2 is MangoBot's humanoid robot, and this is its official 3D model, built end to end in Blender. I handled the whole pipeline: hard-surface modeling, materials and texturing, lighting and the final renders. The goal was a clean, premium look that holds up in close-ups, product films and the website.",
+    "blocks": [
+      {
+        "images": [
+          "/images/projects/g2-humanoid-robot/01.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/g2-humanoid-robot/03.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/g2-humanoid-robot/05.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/g2-humanoid-robot/07.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/g2-humanoid-robot/08.mp4"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/g2-humanoid-robot/02.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/g2-humanoid-robot/04.mp4"
+        ],
+        "caption": ""
+      }
+    ]
   },
   {
     "slug": "mechanical-spider",
     "title": "Mechanical Spider",
     "subtitle": "3D character and cinematic scene",
-    "categories": ["3d", "motion"],
+    "categories": [
+      "3d",
+      "motion"
+    ],
     "client": "Personal project",
     "year": "2025",
     "role": "Character design, modeling, rigging, animation, lighting, sound, edit",
@@ -82,21 +174,60 @@
     "featured": true,
     "draft": false,
     "cover": "/images/projects/mechanical-spider/cover.webp",
-    "images": [
-      "/images/projects/mechanical-spider/02.webp",
-      "/images/projects/mechanical-spider/07.webp",
-      "/images/projects/mechanical-spider/05.webp",
-      "/images/projects/mechanical-spider/08.webp",
-      "/images/projects/mechanical-spider/01.webp"
-    ],
     "video": "https://www-ccv.adobe.io/v1/player/ccv/QMIEnuLQmFf/embed",
-    "description": "An unknown mechanical spider wakes up inside a sterile white room. Captured after a mysterious arrival on Earth, it explores the space and itself while people watch from behind reinforced glass. The scene is about isolation, confusion and the feeling of being observed. I made everything myself: character design, modeling and texturing, rigging, animation, lighting, sound design and the final edit."
+    "description": "An unknown mechanical spider wakes up inside a sterile white room. Captured after a mysterious arrival on Earth, it explores the space and itself while people watch from behind reinforced glass. The scene is about isolation, confusion and the feeling of being observed. I made everything myself: character design, modeling and texturing, rigging, animation, lighting, sound design and the final edit.",
+    "blocks": [
+      {
+        "images": [
+          "/images/projects/mechanical-spider/01.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/mechanical-spider/02.mp4"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/mechanical-spider/03.mp4"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/mechanical-spider/05.mp4"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/mechanical-spider/07.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/mechanical-spider/08.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/mechanical-spider/09.mp4"
+        ],
+        "caption": ""
+      }
+    ]
   },
   {
     "slug": "mangobot-brand-identity",
     "title": "MangoBot Visual Identity",
     "subtitle": "Brand identity and guidelines",
-    "categories": ["design"],
+    "categories": [
+      "design"
+    ],
     "client": "MangoBot",
     "year": "2026",
     "role": "Brand identity, design system, guidelines",
@@ -105,23 +236,67 @@
     "featured": true,
     "draft": false,
     "cover": "/images/projects/mangobot-brand-identity/cover.webp",
-    "images": [
-      "/images/projects/mangobot-brand-identity/03.webp",
-      "/images/projects/mangobot-brand-identity/05.webp",
-      "/images/projects/mangobot-brand-identity/06.webp",
-      "/images/projects/mangobot-brand-identity/07.webp",
-      "/images/projects/mangobot-brand-identity/09.webp",
-      "/images/projects/mangobot-brand-identity/11.webp",
-      "/images/projects/mangobot-brand-identity/12.webp"
-    ],
     "video": "",
-    "description": "MangoBot builds humanoid robots for hospitality, events and lifestyle spaces in the Middle East. When I started, the only brand asset was the logo. I built everything around it: the colour system, typography, graphic elements, layouts and the rules that keep them consistent across digital, print, events and products."
+    "description": "MangoBot builds humanoid robots for hospitality, events and lifestyle spaces in the Middle East. When I started, the only brand asset was the logo. I built everything around it: the colour system, typography, graphic elements, layouts and the rules that keep them consistent across digital, print, events and products.",
+    "blocks": [
+      {
+        "images": [
+          "/images/projects/mangobot-brand-identity/03.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/mangobot-brand-identity/04.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/mangobot-brand-identity/05.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/mangobot-brand-identity/06.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/mangobot-brand-identity/07.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/mangobot-brand-identity/09.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/mangobot-brand-identity/11.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/mangobot-brand-identity/12.webp"
+        ],
+        "caption": ""
+      }
+    ]
   },
   {
     "slug": "promate-ecommerce",
     "title": "Promate Technologies",
     "subtitle": "E-commerce visuals and 3D renders",
-    "categories": ["design", "3d"],
+    "categories": [
+      "design",
+      "3d"
+    ],
     "client": "Promate Technologies",
     "year": "2024 to 2026",
     "role": "Visual design, 3D product renders",
@@ -130,23 +305,62 @@
     "featured": true,
     "draft": false,
     "cover": "/images/projects/promate-ecommerce/cover.webp",
-    "images": [
-      "/images/projects/promate-ecommerce/01.webp",
-      "/images/projects/promate-ecommerce/03.webp",
-      "/images/projects/promate-ecommerce/04.webp",
-      "/images/projects/promate-ecommerce/05.webp",
-      "/images/projects/promate-ecommerce/06.webp",
-      "/images/projects/promate-ecommerce/07.webp",
-      "/images/projects/promate-ecommerce/08.webp"
-    ],
     "video": "",
-    "description": "Product visuals for Promate's mobile and computer accessories. The job was to turn technical features into clear, engaging stories for online shoppers. Where real photography was missing or limited, I modeled the products in 3D and rendered them for listings, campaigns and launches."
+    "description": "Product visuals for Promate's mobile and computer accessories. The job was to turn technical features into clear, engaging stories for online shoppers. Where real photography was missing or limited, I modeled the products in 3D and rendered them for listings, campaigns and launches.",
+    "blocks": [
+      {
+        "images": [
+          "/images/projects/promate-ecommerce/01.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/promate-ecommerce/03.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/promate-ecommerce/04.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/promate-ecommerce/05.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/promate-ecommerce/06.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/promate-ecommerce/07.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/promate-ecommerce/08.webp"
+        ],
+        "caption": ""
+      }
+    ]
   },
   {
     "slug": "selected-work-2025",
     "title": "Selected Work",
     "subtitle": "3D, motion and brand design, 2024 to 2025",
-    "categories": ["3d", "design", "motion"],
+    "categories": [
+      "3d",
+      "design",
+      "motion"
+    ],
     "client": "Various",
     "year": "2024 to 2025",
     "role": "3D, motion, graphic design",
@@ -155,26 +369,78 @@
     "featured": false,
     "draft": false,
     "cover": "/images/projects/selected-work-2025/cover.webp",
-    "images": [
-      "/images/projects/selected-work-2025/05.webp",
-      "/images/projects/selected-work-2025/06.webp",
-      "/images/projects/selected-work-2025/07.webp",
-      "/images/projects/selected-work-2025/08.webp",
-      "/images/projects/selected-work-2025/09.webp",
-      "/images/projects/selected-work-2025/10.webp",
-      "/images/projects/selected-work-2025/13.webp",
-      "/images/projects/selected-work-2025/14.webp",
-      "/images/projects/selected-work-2025/15.webp",
-      "/images/projects/selected-work-2025/16.webp"
-    ],
     "video": "",
-    "description": "A collection of pieces from 2024 and 2025: product renders and conceptual scenes in Blender, motion work, illustration and marketing visuals for brands. Every piece started from the brand's core message and ended with a consistent look."
+    "description": "A collection of pieces from 2024 and 2025: product renders and conceptual scenes in Blender, motion work, illustration and marketing visuals for brands. Every piece started from the brand's core message and ended with a consistent look.",
+    "blocks": [
+      {
+        "images": [
+          "/images/projects/selected-work-2025/05.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/selected-work-2025/06.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/selected-work-2025/07.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/selected-work-2025/08.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/selected-work-2025/09.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/selected-work-2025/10.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/selected-work-2025/13.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/selected-work-2025/14.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/selected-work-2025/15.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/selected-work-2025/16.webp"
+        ],
+        "caption": ""
+      }
+    ]
   },
   {
     "slug": "mangobot-social",
     "title": "MangoBot Social Collection",
     "subtitle": "Social media design",
-    "categories": ["design"],
+    "categories": [
+      "design"
+    ],
     "client": "MangoBot",
     "year": "2026",
     "role": "Social design, art direction",
@@ -183,19 +449,36 @@
     "featured": false,
     "draft": false,
     "cover": "/images/projects/mangobot-social/cover.webp",
-    "images": [
-      "/images/projects/mangobot-social/02.webp",
-      "/images/projects/mangobot-social/03.webp",
-      "/images/projects/mangobot-social/04.webp"
-    ],
     "video": "",
-    "description": "Social content for MangoBot's robot rental service across the GCC, including a step by step carousel on renting a robot, robot introductions and a series of feed posts. Clear explanations, the brand system, and the robots front and centre."
+    "description": "Social content for MangoBot's robot rental service across the GCC, including a step by step carousel on renting a robot, robot introductions and a series of feed posts. Clear explanations, the brand system, and the robots front and centre.",
+    "blocks": [
+      {
+        "images": [
+          "/images/projects/mangobot-social/02.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/mangobot-social/03.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/mangobot-social/04.webp"
+        ],
+        "caption": ""
+      }
+    ]
   },
   {
     "slug": "promate-packaging",
     "title": "Promate Packaging",
     "subtitle": "Product packaging design",
-    "categories": ["design"],
+    "categories": [
+      "design"
+    ],
     "client": "Promate Technologies",
     "year": "2025",
     "role": "Packaging design",
@@ -204,18 +487,31 @@
     "featured": false,
     "draft": false,
     "cover": "/images/projects/promate-packaging/cover.webp",
-    "images": [
-      "/images/projects/promate-packaging/02.webp",
-      "/images/projects/promate-packaging/03.webp"
-    ],
     "video": "",
-    "description": "Retail packaging for a Promate product, built for clarity and shelf presence. The layout leads with the product's key features in a bold, minimal, retail-ready look."
+    "description": "Retail packaging for a Promate product, built for clarity and shelf presence. The layout leads with the product's key features in a bold, minimal, retail-ready look.",
+    "blocks": [
+      {
+        "images": [
+          "/images/projects/promate-packaging/02.mp4"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/promate-packaging/03.webp"
+        ],
+        "caption": ""
+      }
+    ]
   },
   {
     "slug": "intro-video",
     "title": "Personal Intro",
     "subtitle": "Creative intro video",
-    "categories": ["motion", "video"],
+    "categories": [
+      "motion",
+      "video"
+    ],
     "client": "Personal project",
     "year": "2025",
     "role": "Concept, illustration, animation, 3D, edit",
@@ -224,17 +520,27 @@
     "featured": false,
     "draft": false,
     "cover": "/images/projects/intro-video/cover.webp",
-    "images": [
-      "/images/projects/intro-video/03.webp"
-    ],
     "video": "https://www-ccv.adobe.io/v1/player/ccv/4EkPLDqBJA6/embed",
-    "description": "A short self-introduction that shows the range of what I do: illustration, graphic design, motion graphics, 3D and video editing, cut together in one piece."
+    "description": "A short self-introduction that shows the range of what I do: illustration, graphic design, motion graphics, 3D and video editing, cut together in one piece.",
+    "blocks": [
+      {
+        "images": [
+          "/images/projects/intro-video/01.mp4",
+          "/images/projects/intro-video/02.mp4",
+          "/images/projects/intro-video/03.mp4",
+          "/images/projects/intro-video/04.mp4"
+        ],
+        "caption": ""
+      }
+    ]
   },
   {
     "slug": "mangobot-website",
     "title": "MangoBot Website",
     "subtitle": "Website design",
-    "categories": ["design"],
+    "categories": [
+      "design"
+    ],
     "client": "MangoBot",
     "year": "2026",
     "role": "Web design",
@@ -243,20 +549,33 @@
     "featured": false,
     "draft": false,
     "cover": "/images/projects/mangobot-website/cover.webp",
-    "images": [
-      "/images/projects/mangobot-website/02.webp",
-      "/images/projects/mangobot-website/03.webp",
-      "/images/projects/mangobot-website/04.webp",
-      "/images/projects/mangobot-website/05.webp"
-    ],
     "video": "",
-    "description": "The company's first website, built around the new visual identity. Responsive layouts for desktop and mobile, in English and Arabic."
+    "description": "The company's first website, built around the new visual identity. Responsive layouts for desktop and mobile, in English and Arabic.",
+    "blocks": [
+      {
+        "images": [
+          "/images/projects/mangobot-website/02.webp",
+          "/images/projects/mangobot-website/03.webp"
+        ],
+        "caption": ""
+      },
+      {
+        "images": [
+          "/images/projects/mangobot-website/04.webp",
+          "/images/projects/mangobot-website/05.webp"
+        ],
+        "caption": ""
+      }
+    ]
   },
   {
     "slug": "ugreen-animation",
     "title": "UGREEN, A Reliable Little Friend",
     "subtitle": "3D product animation",
-    "categories": ["3d", "motion"],
+    "categories": [
+      "3d",
+      "motion"
+    ],
     "client": "UGREEN",
     "year": "2025",
     "role": "3D modeling, animation, render",
@@ -265,15 +584,17 @@
     "featured": false,
     "draft": true,
     "cover": "",
-    "images": [],
     "video": "",
-    "description": "A short product animation that gives a tech accessory a friendly character, built entirely in 3D."
+    "description": "A short product animation that gives a tech accessory a friendly character, built entirely in 3D.",
+    "blocks": []
   },
   {
     "slug": "phi-monogram",
     "title": "PHILOSOPHY",
     "subtitle": "The Phi monogram",
-    "categories": ["design"],
+    "categories": [
+      "design"
+    ],
     "client": "Concept",
     "year": "2025",
     "role": "Logo and identity design",
@@ -282,15 +603,18 @@
     "featured": false,
     "draft": true,
     "cover": "",
-    "images": [],
     "video": "",
-    "description": "A monogram built around the Greek letter Phi, drawn for a luxury brand and tested across print and digital applications."
+    "description": "A monogram built around the Greek letter Phi, drawn for a luxury brand and tested across print and digital applications.",
+    "blocks": []
   },
   {
     "slug": "dicm-theme",
     "title": "Dubai International Content Market",
     "subtitle": "Theme refresh",
-    "categories": ["design", "motion"],
+    "categories": [
+      "design",
+      "motion"
+    ],
     "client": "Dubai International Content Market",
     "year": "2025",
     "role": "Visual identity, motion",
@@ -299,15 +623,17 @@
     "featured": false,
     "draft": true,
     "cover": "",
-    "images": [],
     "video": "",
-    "description": "A refreshed visual theme for a content industry event, adapted across screens, print and social."
+    "description": "A refreshed visual theme for a content industry event, adapted across screens, print and social.",
+    "blocks": []
   },
   {
     "slug": "social-carousel",
     "title": "Social Media Carousel",
     "subtitle": "Carousel design concept",
-    "categories": ["design"],
+    "categories": [
+      "design"
+    ],
     "client": "Concept",
     "year": "2025",
     "role": "Social design",
@@ -316,8 +642,8 @@
     "featured": false,
     "draft": true,
     "cover": "",
-    "images": [],
     "video": "",
-    "description": "A carousel system for social media that keeps a single story moving across several frames."
+    "description": "A carousel system for social media that keeps a single story moving across several frames.",
+    "blocks": []
   }
 ]

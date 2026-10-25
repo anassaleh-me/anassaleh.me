@@ -40,24 +40,33 @@ async function playIntro() {
   curtain.style.display = "block";
   curtain.animate([{ transform: "translateY(0)" }, { transform: "translateY(-100%)" }], { duration: 1100, delay: 150, easing: "cubic-bezier(.76, 0, .24, 1)", fill: "forwards" })
     .finished.then(() => (curtain.style.display = "none"));
+  // The glow is part of the same filter chain, so it fades in at the end instead of switching on.
+  const st = getComputedStyle($("[data-stage]"));
+  const glow = `drop-shadow(0 0 ${st.getPropertyValue("--glow").trim() || "0px"} rgba(255, 255, 255, ${st.getPropertyValue("--glow-a").trim() || 0}))`;
+  const noGlow = "drop-shadow(0 0 0px rgba(255, 255, 255, 0))";
   portrait.animate(
-    [{ transform: "scale(1.45)", filter: "blur(24px)", opacity: 0 }, { transform: "scale(1)", filter: "blur(0px)", opacity: 1 }],
-    { duration: 2200, delay: 450, easing: EASE_OUT, fill: "backwards" },
+    [
+      { transform: "scale(1.45)", filter: `blur(24px) ${noGlow}`, opacity: 0, offset: 0 },
+      { transform: "scale(1)", filter: `blur(0px) ${noGlow}`, opacity: 1, offset: 0.72 },
+      { transform: "scale(1)", filter: `blur(0px) ${glow}`, opacity: 1, offset: 1 },
+    ],
+    { duration: 2800, delay: 400, easing: EASE_OUT, fill: "backwards" },
   );
+  // Text waits until the photo has settled, so it never shows through the photo while it fades in.
   words.forEach((w, i) => w.animate(
     [{ transform: "translateY(110%) rotate(4deg)" }, { transform: "translateY(0) rotate(0)" }],
-    { duration: 1300, delay: 950 + i * 140, easing: EASE_OUT, fill: "backwards" },
+    { duration: 1300, delay: 2100 + i * 150, easing: EASE_OUT, fill: "backwards" },
   ));
   [...meta.children].forEach((el, i) => el.animate(
     [{ opacity: 0, transform: "translateY(24px)", filter: "blur(8px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }],
-    { duration: 1200, delay: 1600 + i * 120, easing: EASE_OUT, fill: "backwards" },
+    { duration: 1200, delay: 2600 + i * 120, easing: EASE_OUT, fill: "backwards" },
   ));
   // Safety net: if the browser never advances the animations (hidden tab, power saving), jump to the end
   // so the hero is never left covered or blurred.
   setTimeout(() => {
     [curtain, portrait, ...words, ...meta.children].forEach((el) => el.getAnimations().forEach((a) => { if ((a.currentTime ?? 0) < 50) a.finish(); }));
     curtain.style.display = "none";
-  }, 4200);
+  }, 5600);
 }
 playIntro();
 $("[data-replay]").addEventListener("click", () => { scrollTo({ top: 0 }); lenisRef?.scrollTo(0, { immediate: true }); setTimeout(playIntro, 80); });
@@ -184,7 +193,7 @@ const wwMeasure = () => {
   const cardW = Math.min(h * WW.CARD_H * WW.RATIO, w * WW.CARD_MAX_W), cardH = cardW / WW.RATIO;
   Object.assign(wwM, { cardW, cardH, drumR: cardH * WW.DRUM, ringR: cardH * WW.RING_R, bow: cardH * WW.BOW });
   wwM.ringScale = clamp((((2 * Math.PI * wwM.ringR) / wwItems.length) * 0.82) / cardW, 0.16, 1);
-  wwStage.style.perspective = `${cardH * WW.LENS}px`;
+  wwM.lens = cardH * WW.LENS;
   wwCards.forEach((c) => { c.style.width = `${cardW}px`; c.style.height = `${cardH}px`; c.style.margin = `${-cardH / 2}px 0 0 ${-cardW / 2}px`; });
 };
 wwMeasure();
@@ -202,19 +211,34 @@ function wwDraw() {
   // scroll progress -> target turn, eased
   const target = prog(ww) * (wwItems.length + 0.6);
   wwS.turn = lerp(wwS.turn, target, 0.12);
-  const t = wwS.turn, m = clamp(t, 0, 1), pos = Math.max(0, t - 1);
-  const { ringR, drumR, bow, ringScale } = wwM;
-  wwWheel.style.transform = `translateZ(${-m * drumR}px) rotateZ(${(1 - m) * t * 30}deg)`;
+  // Each item holds at the front for part of the scroll, so the wheel rests on a card, never between two.
+  const raw = Math.max(0, wwS.turn - 1), base = Math.floor(raw), f = raw - base;
+  const hold = f < 0.3 ? 0 : f > 0.7 ? 1 : ((x) => x * x * (3 - 2 * x))((f - 0.3) / 0.4);
+  const t = wwS.turn, m = clamp(t, 0, 1), pos = base + hold;
+  const { ringR, drumR, bow, ringScale, lens } = wwM;
+  // Two clean phases instead of a morph, so cards never pass through each other:
+  // 0 to 0.5 the ring spins a little, shrinks and fades; 0.5 to 1 the drum fades and sharpens in.
+  // Each card carries its own perspective (the wheel is flat), so 3D planes can't cut into each other.
+  const out = clamp(m / 0.5, 0, 1), inn = clamp((m - 0.5) / 0.5, 0, 1);
+  const ease = (x) => 1 - Math.pow(1 - x, 3);
   wwCards.forEach((c, i) => {
-    const d = i - pos, drumDeg = d * WW.STEP, ringDeg = i * (360 / wwItems.length);
-    c.style.transform = `translateX(${m * -bow * (1 - Math.cos(rad(drumDeg)))}px) rotateZ(${(1 - m) * ringDeg}deg) translateY(${-(1 - m) * ringR}px) rotateX(${m * drumDeg}deg) translateZ(${m * drumR}px)`;
-    c.style.opacity = m > 0.5 && Math.abs(d) > WW.CULL ? "0" : "1";
-    c.style.zIndex = String(Math.round(100 - Math.abs(d) * 2));
-    wwFaces[i].style.transform = `scale(${lerp(ringScale, 1, m)})`;
-    setBlur(wwFaces[i], m > 0.5 ? clamp((Math.abs(d) - 0.25) * 6, 0, 6) : 0);
+    const d = i - pos, ad = Math.abs(d);
+    if (m < 0.5) {
+      const ringDeg = i * (360 / wwItems.length) + out * 40;
+      c.style.transform = `perspective(${lens}px) rotateZ(${ringDeg}deg) translateY(${-ringR * (1 - ease(out) * 0.35)}px) scale(${ringScale * (1 - ease(out) * 0.4)})`;
+      c.style.opacity = String(1 - ease(out));
+      c.style.zIndex = String(i);
+      setBlur(wwFaces[i], out * 6);
+    } else {
+      const drumDeg = d * WW.STEP;
+      c.style.transform = `perspective(${lens}px) translateZ(${-drumR}px) translateX(${-bow * (1 - Math.cos(rad(drumDeg)))}px) rotateX(${drumDeg}deg) translateZ(${drumR}px) scale(${0.92 + ease(inn) * 0.08})`;
+      c.style.opacity = ad > WW.CULL ? "0" : String(ease(inn) * clamp(1.5 - ad * 0.45, 0, 1));
+      c.style.zIndex = String(Math.round(100 - ad * 10));
+      setBlur(wwFaces[i], (1 - inn) * 8 + clamp((ad - 0.25) * 6, 0, 6));
+    }
   });
-  $("[data-ww-label]").style.opacity = String(1 - m);
-  $("[data-ww-title]").style.opacity = String(m);
+  $("[data-ww-label]").style.opacity = String(1 - ease(out));
+  $("[data-ww-title]").style.opacity = String(ease(inn));
   $("[data-ww-bar]").style.width = `${prog(ww) * 100}%`;
   const near = clamp(Math.round(pos), 0, wwItems.length - 1);
   if (near !== wwS.active) {
@@ -272,17 +296,23 @@ dm.addEventListener("click", (e) => {
 viewer.addEventListener("pointerdown", (e) => e.stopPropagation());
 viewer.addEventListener("click", (e) => { if (e.target === viewer || e.target.closest(".x")) closeViewer(); });
 addEventListener("keydown", (e) => e.key === "Escape" && closeViewer());
-(function dmLoop() {
+function dmLoop() {
   requestAnimationFrame(dmLoop);
+  if (!onScreen(dm)) return;
   if (!dmS.down) {
     dmS.vy *= 0.95; dmS.vx *= 0.9;
     dmS.ry += dmS.vy + 0.03;
     dmS.rx = clamp(dmS.rx + dmS.vx, -12, 12);
   }
   sphere.style.transform = `translateZ(${-dmR}px) rotateX(${dmS.rx}deg) rotateY(${dmS.ry}deg)`;
-})();
+}
+requestAnimationFrame(dmLoop);
 
 /* ---------- one smooth loop ---------- */
+// Only animate what's on screen; off-screen sections cost nothing, which keeps the cursor smooth.
+const vis = new Map();
+const visIO = new IntersectionObserver((es) => es.forEach((e) => vis.set(e.target, e.isIntersecting)), { rootMargin: "200px 0px" });
+const onScreen = (el) => vis.get(el) === true;
 const lenis = window.Lenis ? new Lenis({ lerp: 0.08, wheelMultiplier: 0.9 }) : null;
 lenisRef = lenis;
 const prog = (el) => { const r = el.getBoundingClientRect(); return clamp(-r.top / (r.height - innerHeight), 0, 1); };
@@ -293,9 +323,10 @@ function loop(t) {
   const v = scrollY - lastY; lastY = scrollY;
   sm.vel = lerp(sm.vel, v, 0.1);
   const W = innerWidth, H = innerHeight;
-  wwDraw();
+  if (onScreen(ww)) wwDraw();
 
   // A curved reel
+  if (onScreen(cv)) {
   sm.cv = lerp(sm.cv, prog(cv), 0.09);
   const off = sm.cv * (cvCards.length - 1);
   const cw = cvCards[0].offsetWidth * 1.08;
@@ -310,8 +341,10 @@ function loop(t) {
   $("[data-cv-big]").textContent = list[cvi].title;
   $("[data-cv-count]").textContent = `${pad(cvi + 1)} / ${pad(list.length)}`;
   $("[data-cv-bar]").style.width = `${sm.cv * 100}%`;
+  }
 
   // B orbit
+  if (onScreen(ob)) {
   obS.drag = lerp(obS.drag, obS.tdrag, 0.08);
   obS.rot = lerp(obS.rot, -prog(ob) * 360 * 1.5 + obS.drag, 0.08);
   $("[data-ob-ring]").style.transform = `translateZ(${-R}px) rotateX(-6deg) rotateY(${obS.rot}deg)`;
@@ -324,8 +357,10 @@ function loop(t) {
   });
   swapText($("[data-ob-title]"), list[front].title);
   $("[data-ob-sub]").textContent = `${pad(front + 1)} · ${cats(list[front])}`;
+  }
 
   // E split columns: sharp in the middle band, blurred toward the edges
+  if (onScreen(sc)) {
   scP = lerp(scP, prog(sc), 0.08);
   const ca = $("[data-sc-a]"), cb = $("[data-sc-b]");
   const travel = ca.scrollHeight / 2;
@@ -341,7 +376,9 @@ function loop(t) {
     if (d < scD) { scD = d; scBest = a; }
   });
   if (scBest) { swapText($("[data-sc-name]"), scBest.dataset.title); $("[data-sc-sub]").textContent = scBest.dataset.sub; }
+  }
 
   requestAnimationFrame(loop);
 }
+[ww, cv, ob, sc, dm].forEach((el) => visIO.observe(el));
 requestAnimationFrame(loop);

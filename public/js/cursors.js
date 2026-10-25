@@ -19,9 +19,9 @@ export function mountRingCursor({ accent = "#6f8faf" } = {}) {
   .ring-cursor > i { position: fixed; left: 0; top: 0; z-index: 9999; border-radius: 50%; will-change: transform; }
   .rc-dot { width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; background: var(--rc-dot); transition: background .25s, opacity .15s; }
   .rc-ring { width: ${SIZE}px; height: ${SIZE}px; margin: -${SIZE / 2}px 0 0 -${SIZE / 2}px; display: grid; place-items: center; }
-  .rc-ring::before { content: ""; position: absolute; inset: 0; border-radius: 50%; border: var(--rc-bw, 3.4px) solid var(--rc-accent); background: transparent; transition: background-color .14s; }
+  .rc-ring::before { content: ""; position: absolute; inset: 0; border-radius: 50%; border: var(--rc-bw, 3.4px) solid var(--rc-accent); background: transparent; transition: background-color .08s; }
   .ring-cursor.big .rc-ring::before { background-color: var(--rc-accent); }
-  .rc-ring b { position: relative; font: 700 11px/1 "Barlow Semi Condensed", sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #1d1d1b; opacity: 0; transition: opacity .12s; }
+  .rc-ring b { position: relative; font: 700 11px/1 "Barlow Semi Condensed", sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #1d1d1b; opacity: 0; transition: opacity .08s; }
   .ring-cursor.big .rc-ring b { opacity: 1; }
   .ring-cursor.big .rc-dot { opacity: 0; }
   .ring-cursor.hidden > i { opacity: 0; }
@@ -55,9 +55,9 @@ export function mountRingCursor({ accent = "#6f8faf" } = {}) {
     const vx = m.x - prev.x, vy = m.y - prev.y;
     prev.x = m.x; prev.y = m.y;
     // The big disc sits right on the pointer; the small ring trails a little.
-    const follow = big ? 0.55 : 0.3;
+    const follow = big ? 1 : 0.35;
     r.x = lerp(r.x, m.x, follow); r.y = lerp(r.y, m.y, follow);
-    size = lerp(size, big ? 1 : SMALL, 0.28);
+    size = lerp(size, big ? 1 : SMALL, 0.42);
     const speed = Math.hypot(vx, vy);
     stretch = lerp(stretch, big ? 1 : Math.min(1.5, 1 + speed / 50), 0.25);
     if (speed > 0.5) angle = Math.atan2(vy, vx) * 57.3;

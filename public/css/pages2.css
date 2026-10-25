@@ -181,10 +181,10 @@
 /* all three cards share one outlined style and fill with the blue when you point at them */
 .ct-card { display: flex; flex-direction: column; gap: 22px; min-height: 280px; padding: clamp(22px, 2.4vw, 34px); border-radius: 18px; border: 1.5px solid rgba(29, 29, 27, 0.2);
   transition: transform 0.6s var(--ease), box-shadow 0.6s var(--ease), background-color 0.45s, border-color 0.45s; }
-.ct-card:hover, .ct-card:focus-within { background: var(--accent); border-color: var(--acc-t); transform: translateY(-6px); box-shadow: 0 30px 60px -24px rgba(20, 20, 18, 0.3); }
+.ct-card:hover, .ct-card:has(:focus-visible) { background: var(--accent); border-color: var(--acc-t); transform: translateY(-6px); box-shadow: 0 30px 60px -24px rgba(20, 20, 18, 0.3); }
 .ct-card .label, .ct-card .acc, .ct-socials a i { transition: color 0.45s; }
-.ct-card:hover .label, .ct-card:focus-within .label { color: var(--char); }
-.ct-card:hover .acc, .ct-card:focus-within .acc { color: var(--cream); }
+.ct-card:hover .label, .ct-card:has(:focus-visible) .label { color: var(--char); }
+.ct-card:hover .acc, .ct-card:has(:focus-visible) .acc { color: var(--cream); }
 .ct-mail { font-weight: 700; font-size: clamp(20px, 2vw, 32px); word-break: break-all; border-bottom: 2px solid rgba(111, 143, 175, 0.5); align-self: flex-start; transition: color 0.3s, border-color 0.3s; }
 .ct-card:hover .ct-mail { border-color: var(--char); }
 .ct-mail:hover { color: var(--cream); }

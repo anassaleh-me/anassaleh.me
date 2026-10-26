@@ -69,7 +69,8 @@ function apply(key, { first = false } = {}) {
 
 chips.addEventListener("click", (e) => { const b = e.target.closest("[data-f]"); if (b) apply(b.dataset.f); });
 // old addresses (?f=video, ?f=design) still land on the right chip
-const ALIAS = { video: "film", design: "graphic-design", graphic: "graphic-design", direction: "art-direction" };
+// older shared links (?f=video, ?f=3d...) open the category that replaced them
+const ALIAS = { video: "video-production", film: "video-production", design: "branding-graphic-design", graphic: "branding-graphic-design", "graphic-design": "branding-graphic-design", branding: "branding-graphic-design", "3d": "3d-design", motion: "animation", direction: "art-direction", web: "ui-ux", drawing: "traditional-art" };
 const asked = new URLSearchParams(location.search).get("f") || "all";
 apply(ALIAS[asked] && !FILTERS.some(([k]) => k === asked) ? ALIAS[asked] : asked, { first: true });
 

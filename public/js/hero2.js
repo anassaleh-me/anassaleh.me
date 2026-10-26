@@ -170,11 +170,10 @@ export async function mountHero(stage, opts) {
   const tick = (t) => {
     requestAnimationFrame(tick);
     if (!visible || document.hidden) return;
-    if (t - last > 2000) {
-      // resting pointer: a slow, small drift (always on; it's a gentle movement, not a big animation)
-      const k = reduceMotion ? 0.6 : 1;
-      target.x = Math.sin(t / 3200) * 0.32 * k;
-      target.y = Math.cos(t / 4100) * 0.14 * k;
+    if (t - last > 1200) {
+      // resting pointer: the head turns slowly on its own, a soft look left and right with a little nod
+      target.x = Math.sin(t / 2400) * 0.55;
+      target.y = Math.sin(t / 3700) * 0.22;
       lens.tr = 0;
     }
     cur.x += (target.x - cur.x) * 0.045;

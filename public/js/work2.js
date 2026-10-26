@@ -2,7 +2,7 @@
 // ?f=<filter> in the URL picks the starting chip (the home page's discipline words link here).
 import { shell, $, $$, esc, lerp, clamp, pad, cats, thumb } from "/js/shell2.js";
 
-const { projects, reveal } = await shell({ current: "work" });
+const { site, projects, reveal } = await shell({ current: "work" });
 
 // [key, chip label, test, the short line shown under the chips]
 const FILTERS = [
@@ -15,10 +15,27 @@ const FILTERS = [
 ].filter(([, , test]) => projects.some(test));
 
 const chips = $("[data-chips]");
+FILTERS.forEach((f) => { const c = (site.workCategories || []).find((x) => x.key === f[0]); if (c?.label) f[1] = c.label; if (c?.description) f[3] = c.description; });
 chips.innerHTML = FILTERS.map(([k, label]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="false">${label}</button>`).join("");
 
 const fnote = $("[data-fnote]");
 const list = $("[data-index]");
+// banner for the chosen category (image, title and line from Pages CMS, Site > Work categories)
+const BANNERS = Object.fromEntries((site.workCategories || []).map((c) => [c.key, c]));
+const banner = $("[data-banner]");
+const setBanner = (key, fallback) => {
+  const b = BANNERS[key];
+  if (!b?.banner) { banner.classList.remove("on"); banner.setAttribute("aria-hidden", "true"); return; }
+  const img = new Image();
+  img.alt = ""; img.src = b.banner;
+  img.onload = () => {
+    banner.querySelector(".wb__img").replaceChildren(img);
+    requestAnimationFrame(() => img.classList.add("in"));
+  };
+  banner.querySelector(".wb__t").textContent = b.label || fallback[1];
+  banner.querySelector(".wb__d").textContent = b.description || fallback[3];
+  banner.classList.add("on"); banner.removeAttribute("aria-hidden");
+};
 // the hover previews are fetched as soon as the list comes near, so the first hover already has its picture
 new IntersectionObserver(([e], io) => {
   if (!e.isIntersecting) return;
@@ -36,7 +53,8 @@ function apply(key, { first = false } = {}) {
   history.replaceState(null, "", current === "all" ? "/work" : `/work?f=${current}`);
 
   // the line under the chips says what this filter shows
-  fnote.textContent = f[3];
+  fnote.textContent = BANNERS[current]?.description || f[3];
+  setBanner(current, f);
   if (!first) fnote.animate([{ opacity: 0, transform: "translateY(8px)", filter: "blur(6px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }], { duration: 600, easing: "cubic-bezier(.16,1,.3,1)" });
 
   // index: the lines blur out, the new set comes into focus line by line

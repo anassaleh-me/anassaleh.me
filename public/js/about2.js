@@ -31,7 +31,11 @@ $("[data-exp]").innerHTML = (a.experience || []).map((x) => `<li data-reveal>
 </li>`).join("");
 
 // tools: each tile shows the app's mark in white with its name under it, and tilts toward the pointer
-$("[data-tools]").innerHTML = (a.tools || []).map((t) => `<li data-reveal><span class="ab-tool__i">${toolIcon(t)}</span><span class="ab-tool__t">${esc(t)}</span></li>`).join("");
+const tile = (t) => `<li data-reveal><span class="ab-tool__i">${toolIcon(t)}</span><span class="ab-tool__t">${esc(t)}</span></li>`;
+$("[data-tools]").innerHTML = (a.tools || []).map(tile).join("");
+const wf = $("[data-tools-workflow]");
+if ((a.workflowTools || []).length) wf.innerHTML = a.workflowTools.map(tile).join("");
+else wf.closest(".ab-tools__group").remove();
 $$(".ab-tools__list li").forEach((li) => {
   li.addEventListener("pointermove", (e) => {
     const r = li.getBoundingClientRect();

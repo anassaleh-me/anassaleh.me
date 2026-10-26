@@ -18,8 +18,9 @@
   /* the blue as text on cream: a deeper shade for small text and a touch deeper for big words, so both pass WCAG AA */
   --acc-t: #4c6c8c;
   --acc-l: #6888a9;
-  --acc-g: #4f6f90;          /* deeper end of the blue gradient on cream */
-  --acc-fill: linear-gradient(to top, #5b7b9c, #6f8faf);  /* blue surfaces: buttons, chips, cards */
+  --acc-g: #48698b;          /* deeper end of the blue gradient on cream */
+  --acc-top: #86a4c2;        /* lighter end at the top */
+  --acc-fill: linear-gradient(to top, #56779a, #8fadca);  /* blue surfaces: buttons, chips, cards */
   --halftone: radial-gradient(circle, rgba(241, 236, 226, 0.13) 1.3px, transparent 1.6px);
 }
 
@@ -51,12 +52,13 @@ h1, h2, h3, h4 { margin: 0; font-weight: 400; }
 
 .wrap { width: 100%; max-width: var(--max); margin-inline: auto; padding-inline: var(--g); }
 .up { font-family: var(--display); text-transform: uppercase; line-height: 0.9; letter-spacing: -0.01em; }
-.acc { color: var(--acc-l); font-style: normal; background: linear-gradient(to top, var(--acc-g), var(--acc-l)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.acc { color: var(--acc-l); font-style: normal; background: linear-gradient(to top, var(--acc-g) 8%, var(--acc-l) 55%, var(--acc-top) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  padding-right: 0.08em; margin-right: -0.08em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 .label { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 14px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--acc-t); }
 .label::before { content: ""; width: 26px; height: 1.5px; background: currentColor; }
 
 /* charcoal surfaces always carry the halftone */
-.dark { --acc-t: var(--accent); --acc-l: var(--accent); --acc-g: #577797; background-color: var(--char); background-image: var(--halftone); background-size: 22px 22px; color: var(--cream); }
+.dark { --acc-t: var(--accent); --acc-l: var(--accent); --acc-g: #4e6f92; --acc-top: #a3bdd6; background-color: var(--char); background-image: var(--halftone); background-size: 22px 22px; color: var(--cream); }
 
 /* moving between pages: the old page fades out while the new one fades in */
 @view-transition { navigation: auto; }

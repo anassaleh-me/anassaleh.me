@@ -2,7 +2,8 @@
 # Fonts and vendor files have fixed names and never change, so browsers keep them for a year.
 # Images are kept for a week: when replacing an image, upload it under a new file name so visitors see it at once.
 # Code (CSS, JS) is checked on every visit so a new release never mixes with old files; pages preload all their
-# modules, so the checks run side by side. Content (JSON) is used at once and refreshed in the background.
+# modules, so the checks run side by side. Content (JSON) is checked on every visit too, so an edit made in
+# Pages CMS shows on the very next page load.
 
 # Security basics for every page and file.
 /*
@@ -28,4 +29,4 @@
   Cache-Control: public, max-age=0, must-revalidate
 
 /content/*
-  Cache-Control: public, max-age=0, stale-while-revalidate=604800
+  Cache-Control: public, max-age=0, must-revalidate

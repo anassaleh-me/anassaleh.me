@@ -4,7 +4,7 @@
     "subtitle": "Product film",
     "slug": "exoskeleton-film",
     "categories": [
-      "Film",
+      "VIDEO PRODUCTION",
       "Art direction"
     ],
     "client": "MangoBot",
@@ -53,7 +53,7 @@
     "slug": "mangobot-production",
     "categories": [
       "Art direction",
-      "Video editing"
+      "VIDEO PRODUCTION"
     ],
     "client": "MangoBot",
     "year": "2026",
@@ -98,7 +98,7 @@
     "subtitle": "Official 3D model",
     "slug": "g2-humanoid-robot",
     "categories": [
-      "3D"
+      "3D DESIGN"
     ],
     "client": "MangoBot",
     "year": "2026",
@@ -158,7 +158,7 @@
     "subtitle": "3D character and cinematic scene",
     "slug": "mechanical-spider",
     "categories": [
-      "3D",
+      "3D DESIGN",
       "Animation"
     ],
     "client": "Personal project",
@@ -250,7 +250,7 @@
     "subtitle": "Brand identity and guidelines",
     "slug": "mangobot-brand-identity",
     "categories": [
-      "Branding"
+      "BRANDING & GRAPHIC DESIGN"
     ],
     "client": "MangoBot",
     "year": "2026",
@@ -424,7 +424,7 @@
     "subtitle": "E-commerce visuals and 3D renders",
     "slug": "promate-ecommerce",
     "categories": [
-      "Graphic design"
+      "BRANDING & GRAPHIC DESIGN"
     ],
     "client": "Promate Technologies",
     "year": "2024 to 2026",
@@ -503,9 +503,10 @@
     "subtitle": "3D, motion and brand design, 2024 to 2025",
     "slug": "selected-work-2025",
     "categories": [
-      "3D",
-      "Graphic design",
-      "Animation"
+      "3D DESIGN",
+      "BRANDING & GRAPHIC DESIGN",
+      "Animation",
+      "VIDEO PRODUCTION"
     ],
     "client": "Various",
     "year": "2024 to 2025",
@@ -696,7 +697,7 @@
     "subtitle": "Social media design",
     "slug": "mangobot-social",
     "categories": [
-      "Graphic design"
+      "BRANDING & GRAPHIC DESIGN"
     ],
     "client": "MangoBot",
     "year": "2026",
@@ -740,7 +741,7 @@
     "subtitle": "Product packaging design",
     "slug": "promate-packaging",
     "categories": [
-      "Graphic design"
+      "BRANDING & GRAPHIC DESIGN"
     ],
     "client": "Promate Technologies",
     "year": "2025",
@@ -775,8 +776,7 @@
     "slug": "intro-video",
     "categories": [
       "Animation",
-      "Film",
-      "Video editing"
+      "VIDEO PRODUCTION"
     ],
     "client": "Personal project",
     "year": "2025",
@@ -804,7 +804,7 @@
     "subtitle": "Website design",
     "slug": "mangobot-website",
     "categories": [
-      "UI&UX"
+      "UI & UX"
     ],
     "client": "MangoBot",
     "year": "2026",
@@ -853,7 +853,7 @@
     "subtitle": "3D product animation",
     "slug": "ugreen-animation",
     "categories": [
-      "3D",
+      "3D DESIGN",
       "Animation"
     ],
     "client": "UGREEN",
@@ -870,7 +870,7 @@
     "subtitle": "The Phi monogram",
     "slug": "phi-monogram",
     "categories": [
-      "Branding"
+      "BRANDING & GRAPHIC DESIGN"
     ],
     "client": "Concept",
     "year": "2025",
@@ -886,7 +886,7 @@
     "subtitle": "Theme refresh",
     "slug": "dicm-theme",
     "categories": [
-      "Branding"
+      "BRANDING & GRAPHIC DESIGN"
     ],
     "client": "Dubai International Content Market",
     "year": "2025",
@@ -902,7 +902,7 @@
     "subtitle": "Carousel design concept",
     "slug": "social-carousel",
     "categories": [
-      "Graphic design"
+      "BRANDING & GRAPHIC DESIGN"
     ],
     "client": "Concept",
     "year": "2025",

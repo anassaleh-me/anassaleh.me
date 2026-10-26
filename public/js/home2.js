@@ -170,7 +170,12 @@ disc.addEventListener("pointerover", (e) => {
   if (d.images.length > 1) cycle = setInterval(() => showImg(d.images[(++cycleI) % d.images.length]), 750);
   float.classList.add("on");
 });
-disc.addEventListener("pointerleave", () => { float.classList.remove("on"); clearInterval(cycle); });
+const hideFloat = () => { float.classList.remove("on"); clearInterval(cycle); };
+disc.addEventListener("pointerleave", hideFloat);
+// scrolling moves the page under a still pointer without a pointerleave, so the picture would stay on screen:
+// hide it as soon as the pointer is no longer over the words, or the section has left the screen
+addEventListener("scroll", () => { if (float.classList.contains("on") && !disc.matches(":hover")) hideFloat(); }, { passive: true });
+new IntersectionObserver(([e]) => { if (!e.isIntersecting) hideFloat(); }).observe(disc);
 
 /* ---------- works wheel ---------- */
 mountWorksWheel($("[data-works]"), {
@@ -217,7 +222,7 @@ const tilts = [-4, 3, -2, 4, -3, 2];
 // It drifts on its own, speeds up with the scroll, and can be dragged (with a little throw when you let go).
 const drawSet = dr.images || [];
 const drawRepeat = drawSet.length ? Math.max(3, Math.ceil(12 / drawSet.length)) : 0;
-row.innerHTML = Array.from({ length: drawRepeat }, () => drawSet).flat().map((src, i) => `<figure class="paper" style="margin:0;transform:rotate(${tilts[i % tilts.length]}deg)" data-tilt="${tilts[i % tilts.length]}"><img src="${esc(src)}" alt="${i < drawSet.length ? `Pencil drawing by ${esc(site.fullName)}` : ""}" loading="lazy" draggable="false"></figure>`).join("");
+row.innerHTML = Array.from({ length: drawRepeat }, () => drawSet).flat().map((src, i) => `<figure class="paper" style="margin:0;transform:rotate(${tilts[i % drawSet.length % tilts.length]}deg)" data-tilt="${tilts[i % drawSet.length % tilts.length]}"><img src="${esc(src)}" alt="${i < drawSet.length ? `Pencil drawing by ${esc(site.fullName)}` : ""}" loading="lazy" draggable="false"></figure>`).join("");
 const drawSection = row.closest(".draw");
 const drag = { x: 0, v: -0.45, down: false, lastX: 0, moved: 0 };
 const setW = () => (row.children[drawSet.length]?.offsetLeft || 0) - (row.children[0]?.offsetLeft || 0);

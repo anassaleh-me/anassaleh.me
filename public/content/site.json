@@ -56,7 +56,7 @@
   },
   "drawings": {
     "title": "I also draw",
-    "text": "Pencil on paper is where most of my ideas start. Faces, expressions, characters, before any of them become 3D.",
+    "text": "Traditional drawing in pencil and charcoal, mostly portraits. Faces, expressions and the small details that make a person who they are.",
     "images": [
       "/images/drawings/drawing-1.webp",
       "/images/drawings/drawing-2.webp",
@@ -103,7 +103,12 @@
       "Framer",
       "Camera and lighting"
     ],
-    "cv": "/Anas_Al_Shikh_Saleh_CV.pdf"
+    "cv": "/Anas_Al_Shikh_Saleh_CV.pdf",
+    "workflowTools": [
+      "Notion",
+      "Slack",
+      "Claude"
+    ]
   },
   "services": [
     "Design",
@@ -151,5 +156,43 @@
     "behance": "https://www.behance.net/anassaleh2-/",
     "instagram": "https://www.instagram.com/anas_saleh_designs/",
     "whatsapp": "https://wa.me/971567061214"
-  }
+  },
+  "workCategories": [
+    {
+      "key": "all",
+      "label": "All work",
+      "description": "Every project, client work and personal.",
+      "banner": "/images/projects/g2-humanoid-robot/05.webp"
+    },
+    {
+      "key": "direction",
+      "label": "Art direction",
+      "description": "Projects where I led the creative direction.",
+      "banner": "/images/projects/exoskeleton-film/02-poster.webp"
+    },
+    {
+      "key": "design",
+      "label": "Design",
+      "description": "Brand identity, packaging, social and visual design.",
+      "banner": "/images/covers/mangobot-brand-identity.webp"
+    },
+    {
+      "key": "3d",
+      "label": "3D",
+      "description": "Models, product renders and animation, made in Blender.",
+      "banner": "/images/projects/g2-humanoid-robot/06.webp"
+    },
+    {
+      "key": "motion",
+      "label": "Motion",
+      "description": "Animation, motion graphics and type in motion.",
+      "banner": "/images/projects/mechanical-spider/12.webp"
+    },
+    {
+      "key": "video",
+      "label": "Video",
+      "description": "Films I directed, shot and edited.",
+      "banner": "/images/projects/exoskeleton-film/04-poster.webp"
+    }
+  ]
 }

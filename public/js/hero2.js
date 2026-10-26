@@ -170,11 +170,10 @@ export async function mountHero(stage, opts) {
   const tick = (t) => {
     requestAnimationFrame(tick);
     if (!visible || document.hidden) return;
-    if (t - last > 3000) {
-      if (!reduceMotion) {
-        target.x = Math.sin(t / 2600) * 0.5;
-        target.y = Math.cos(t / 3400) * 0.22;
-      }
+    if (t - last > 1200) {
+      // resting pointer: the head turns slowly on its own, a soft look left and right with a little nod
+      target.x = Math.sin(t / 2400) * 0.55;
+      target.y = Math.sin(t / 3700) * 0.22;
       lens.tr = 0;
     }
     cur.x += (target.x - cur.x) * 0.045;
@@ -183,7 +182,7 @@ export async function mountHero(stage, opts) {
     lens.y += (lens.ty - lens.y) * 0.1;
     lens.r += ((state.mode ? lens.tr : 0) - lens.r) * 0.07;
     // only redraw when something moved: a still frame costs nothing
-    const key = `${cur.x.toFixed(4)},${cur.y.toFixed(4)},${lens.x.toFixed(3)},${lens.y.toFixed(3)},${lens.r.toFixed(4)},${state.mode}`;
+    const key = `${cur.x.toFixed(3)},${cur.y.toFixed(3)},${lens.x.toFixed(3)},${lens.y.toFixed(3)},${lens.r.toFixed(3)},${state.mode}`;
     if (key === drawn && !state.mode) return;
     drawn = key;
     gl.uniform2f(uP, cur.x, cur.y);

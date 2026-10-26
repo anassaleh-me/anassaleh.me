@@ -126,7 +126,8 @@ content:
               - { name: role, label: Role, type: string }
               - { name: company, label: Company, type: string }
               - { name: note, label: Note, type: string }
-          - { name: tools, label: Tools, type: string, list: true }
+          - { name: tools, label: "Tools: Create (design, 3D, film)", type: string, list: true }
+          - { name: workflowTools, label: "Tools: Workflow (organising, AI)", type: string, list: true }
           - { name: cv, label: CV (PDF), type: file, options: { media: files } }
       - { name: services, label: Services (shown in the contact form), type: string, list: true }
       - name: contactPage
@@ -138,6 +139,25 @@ content:
           - { name: replyNote, label: Reply time note, type: string }
           - { name: budgets, label: Budget options, type: string, list: true }
           - { name: sources, label: "How did you find me? options", type: string, list: true }
+      - name: workCategories
+        label: "Work categories (the banner and line under the filters on the Work page)"
+        type: object
+        list: true
+        fields:
+          - name: key
+            label: Category
+            type: select
+            options:
+              values:
+                - { name: all, label: All (no filter) }
+                - { name: direction, label: Art direction }
+                - { name: design, label: Design }
+                - { name: 3d, label: 3D }
+                - { name: motion, label: Motion }
+                - { name: video, label: Video }
+          - { name: label, label: Name shown on the filter, type: string }
+          - { name: description, label: Short line, type: string }
+          - { name: banner, label: "Banner image (wide, about 2000 x 700)", type: image, options: { media: images } }
       - name: journal
         label: Journal
         type: object

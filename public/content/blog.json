@@ -1,15 +1,15 @@
 [
   {
-    "title": "Why I still start with a pencil",
-    "slug": "why-i-still-start-with-a-pencil",
+    "title": "Why I still draw with a pencil",
+    "slug": "why-i-still-draw-with-a-pencil",
     "date": "2026-10-20",
     "tag": "Process",
-    "excerpt": "Before Blender, before the camera, there was a pencil. It's still where most of my ideas begin.",
+    "excerpt": "Pencil and charcoal portraits, and what they teach me about looking.",
     "cover": "/images/drawings/drawing-4.webp",
     "draft": true,
     "blocks": [
       {
-        "text": "<p>Sample entry, written to show the design. Replace it with your own words in Pages CMS, or delete it.</p><p>I started drawing long before I opened any design software. A pencil is slow, and that's the point: it makes me look properly at light, shape and expression before I decide anything.</p>",
+        "text": "<p>Sample entry, written to show the design. Replace it with your own words in Pages CMS, or delete it.</p><p>Most of my drawings are portraits in pencil and charcoal. A pencil is slow, and that's the point: it makes me look properly at light, shape and expression.</p>",
         "images": [],
         "caption": ""
       },
@@ -23,7 +23,7 @@
         "caption": "Pencil studies"
       },
       {
-        "text": "<h2>From paper to 3D</h2><p>When I model a character or plan a shot, a quick sketch comes first. It tells me what matters in the frame, so the hours in Blender go into the right places.</p><blockquote>The sketch is where the idea is still cheap to change.</blockquote>",
+        "text": "<h2>Faces first</h2><p>A face asks for patience: the light on a cheek, the weight of a look, the line that changes the whole expression. That way of looking stays with me in everything else I make.</p><blockquote>A portrait is finished when it looks back at you.</blockquote>",
         "images": [
           "/images/drawings/drawing-5.webp"
         ],

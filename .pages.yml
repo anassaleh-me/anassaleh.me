@@ -46,20 +46,7 @@ content:
             list: true
             fields:
               - { name: title, label: Word, type: string }
-              - name: filter
-                label: Shows on hover
-                type: select
-                options:
-                  values:
-                    - { name: direction, label: Art direction projects }
-                    - { name: design, label: "Design projects (branding, graphic, web)" }
-                    - { name: branding, label: Branding projects }
-                    - { name: graphic, label: Graphic design projects }
-                    - { name: 3d, label: 3D projects }
-                    - { name: motion, label: Motion projects }
-                    - { name: film, label: Film projects }
-                    - { name: web, label: Web projects }
-                    - { name: drawing, label: Your drawings }
+              - { name: filter, label: "Shows on hover: a category name (Drawing = your drawings, Design = Branding + Graphic design + Web)", type: string }
               - { name: image, label: Picture if no project matches, type: image, options: { media: images } }
       - name: works
         label: "Section: Selected work (the wheel shows projects ticked Show on homepage)"
@@ -105,27 +92,20 @@ content:
     fields:
       - { name: show, label: Show this page, type: boolean, default: true }
       - { name: intro, label: Intro line, type: text }
+      - name: all
+        label: "Banner for All (when no filter is picked)"
+        type: object
+        fields:
+          - { name: label, label: Title, type: string }
+          - { name: description, label: Short line, type: string }
+          - { name: banner, label: "Banner image (wide, about 2000 x 700)", type: image, options: { media: images } }
       - name: categories
-        label: "Categories (filters, names, lines and banners; a filter shows only when a project has that category)"
+        label: "Categories: order of the filters, plus a line and banner for each. Add one here or just type a new name on a project; a filter shows only when a project uses it"
         type: object
         list: true
         fields:
-          - name: key
-            label: Category
-            type: select
-            options:
-              values:
-                - { name: all, label: All (no filter) }
-                - { name: direction, label: Art direction }
-                - { name: branding, label: Branding }
-                - { name: graphic, label: Graphic design }
-                - { name: 3d, label: 3D }
-                - { name: motion, label: Motion }
-                - { name: film, label: Film }
-                - { name: web, label: Web }
-                - { name: drawing, label: Drawing }
+          - { name: name, label: "Name (written the same as on the projects)", type: string, required: true }
           - { name: show, label: Show as a filter, type: boolean, default: true }
-          - { name: label, label: Name on the filter, type: string }
           - { name: description, label: Short line, type: string }
           - { name: banner, label: "Banner image (wide, about 2000 x 700)", type: image, options: { media: images } }
 
@@ -145,19 +125,9 @@ content:
         required: true
         pattern: { regex: "^[a-z0-9]+(-[a-z0-9]+)*$", message: "Use lowercase letters, numbers and dashes only" }
       - name: categories
-        label: Categories (pick as many as fit)
-        type: select
-        options:
-          multiple: true
-          values:
-            - { name: direction, label: Art direction }
-            - { name: branding, label: Branding }
-            - { name: graphic, label: Graphic design }
-            - { name: 3d, label: 3D }
-            - { name: motion, label: Motion }
-            - { name: film, label: Film }
-            - { name: web, label: Web }
-            - { name: drawing, label: Drawing }
+        label: "Categories: type a name per line, as many as fit (Art direction, Branding, Graphic design, 3D, Motion, Film, Web, Drawing). A new name makes a new category"
+        type: string
+        list: true
       - { name: client, label: Client, type: string }
       - { name: year, label: Year, type: string }
       - { name: role, label: My role, type: string }

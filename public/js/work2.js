@@ -1,17 +1,17 @@
 // Work page (stage 3): filter chips over an index of every project (the works wheel lives on the home page).
 // ?f=<filter> in the URL picks the starting chip (the home page's discipline words link here).
-import { shell, $, $$, esc, lerp, clamp, pad, cats, thumb, CAT } from "/js/shell2.js";
+import { shell, $, $$, esc, lerp, clamp, pad, cats, thumb, inCategory } from "/js/shell2.js";
 
 const { site, projects, reveal } = await shell({ current: "work" });
 if (site.workIntro) $(".ph__foot p").textContent = site.workIntro;
 
 // [key, chip label, test, the short line shown under the chips]. The categories, their names and lines come from
 // Pages CMS (Work > Categories); a chip shows only when at least one project has that category.
-const CATS = (site.workCategories || []).length ? site.workCategories : Object.entries(CAT).map(([key, label]) => ({ key, label }));
+const CATS = site.workCategories || [];
 const allCat = CATS.find((c) => c.key === "all");
 const FILTERS = [
   ["all", "All", () => true, allCat?.description || "Every project, client work and personal."],
-  ...CATS.filter((c) => c.key !== "all").map((c) => [c.key, c.label || c.key, (p) => (p.categories || []).includes(c.key), c.description || ""]),
+  ...CATS.filter((c) => c.key !== "all").map((c) => [c.key, c.label || c.key, (p) => inCategory(p, c.key), c.description || ""]),
 ].filter(([, , test]) => projects.some(test));
 
 const chips = $("[data-chips]");
@@ -69,7 +69,7 @@ function apply(key, { first = false } = {}) {
 
 chips.addEventListener("click", (e) => { const b = e.target.closest("[data-f]"); if (b) apply(b.dataset.f); });
 // old addresses (?f=video, ?f=design) still land on the right chip
-const ALIAS = { video: "film", design: "graphic" };
+const ALIAS = { video: "film", design: "graphic-design", graphic: "graphic-design", direction: "art-direction" };
 const asked = new URLSearchParams(location.search).get("f") || "all";
 apply(ALIAS[asked] && !FILTERS.some(([k]) => k === asked) ? ALIAS[asked] : asked, { first: true });
 

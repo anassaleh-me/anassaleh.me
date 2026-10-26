@@ -1,69 +1,59 @@
 {
   "show": true,
   "intro": "Art direction, design, 3D, motion and film. Client work and personal projects.",
+  "all": {
+    "label": "All work",
+    "description": "Every project, client work and personal.",
+    "banner": "/images/projects/g2-humanoid-robot/05.webp"
+  },
   "categories": [
     {
-      "key": "all",
-      "label": "All work",
-      "description": "Every project, client work and personal.",
-      "banner": "/images/projects/g2-humanoid-robot/05.webp",
-      "show": true
-    },
-    {
-      "key": "direction",
-      "label": "Art direction",
+      "name": "Art direction",
+      "show": true,
       "description": "Projects where I led the creative direction.",
-      "banner": "/images/projects/exoskeleton-film/02-poster.webp",
-      "show": true
+      "banner": "/images/projects/exoskeleton-film/02-poster.webp"
     },
     {
-      "key": "branding",
-      "label": "Branding",
+      "name": "Branding",
+      "show": true,
       "description": "Brand identities and the systems that hold them together.",
-      "banner": "/images/covers/mangobot-brand-identity.webp",
-      "show": true
+      "banner": "/images/covers/mangobot-brand-identity.webp"
     },
     {
-      "key": "graphic",
-      "label": "Graphic design",
+      "name": "Graphic design",
+      "show": true,
       "description": "Packaging, social and e-commerce visuals.",
-      "banner": "/images/projects/promate-ecommerce/03.webp",
-      "show": true
+      "banner": "/images/projects/promate-ecommerce/03.webp"
     },
     {
-      "key": "3d",
-      "label": "3D",
+      "name": "3D",
+      "show": true,
       "description": "Models, product renders and animation, made in Blender.",
-      "banner": "/images/projects/g2-humanoid-robot/06.webp",
-      "show": true
+      "banner": "/images/projects/g2-humanoid-robot/06.webp"
     },
     {
-      "key": "motion",
-      "label": "Motion",
+      "name": "Motion",
+      "show": true,
       "description": "Animation, motion graphics and type in motion.",
-      "banner": "/images/projects/mechanical-spider/12.webp",
-      "show": true
+      "banner": "/images/projects/mechanical-spider/12.webp"
     },
     {
-      "key": "film",
-      "label": "Film",
+      "name": "Film",
+      "show": true,
       "description": "Films I directed, shot and edited.",
-      "banner": "/images/projects/exoskeleton-film/04-poster.webp",
-      "show": true
+      "banner": "/images/projects/exoskeleton-film/04-poster.webp"
     },
     {
-      "key": "web",
-      "label": "Web",
+      "name": "Web",
+      "show": true,
       "description": "Websites, designed and built.",
-      "banner": "",
-      "show": true
+      "banner": ""
     },
     {
-      "key": "drawing",
-      "label": "Drawing",
+      "name": "Drawing",
+      "show": true,
       "description": "Pencil and charcoal, mostly portraits.",
-      "banner": "",
-      "show": true
+      "banner": ""
     }
   ]
 }

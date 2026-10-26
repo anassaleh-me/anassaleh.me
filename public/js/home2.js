@@ -18,8 +18,9 @@ const esc = (s = "") => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<
 const accent = (s = "") => esc(s).replace(/\[([^\]]+)\]/g, '<span class="acc">$1</span>');
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const EASE_OUT = "cubic-bezier(.16, 1, .3, 1)";
-const CAT = { direction: "Art direction", branding: "Branding", graphic: "Graphic design", "3d": "3D", motion: "Motion", film: "Film", web: "Web", drawing: "Drawing" };
-const cats = (p) => (p.categories || []).map((c) => CAT[c] || c).join(" · ");
+const CAT = {};
+const slug = (s) => String(s || "").toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const cats = (p) => (p.categories || []).map((c) => CAT[slug(c)] || c).join(" · ");
 const cover = (p) => p.cover || `/images/covers/${p.slug}.webp`;
 const thumb = (p) => (cover(p).startsWith("/images/covers/") ? cover(p).replace("/images/covers/", "/images/covers/thumb/") : cover(p));
 const GLOWS = { none: ["0px", 0], "very-light": ["28px", 0.1], light: ["44px", 0.16], strong: ["64px", 0.24] };
@@ -147,19 +148,22 @@ hero.addEventListener("pointermove", (e) => { sp.tx = e.clientX; sp.ty = e.clien
 const disc = $("[data-disc]");
 const float = $("[data-float]");
 const fl = { x: 0, y: 0, tx: 0, ty: 0 };
-// "design" covers branding, graphic design and web; older "video" means film
-const DESIGN = ["branding", "graphic", "web"];
-const keyOf = (f) => (f === "video" ? "film" : f);
-const inCat = (p, f) => (p.categories || []).some((c) => (keyOf(f) === "design" ? DESIGN.includes(c) : c === keyOf(f)));
-const discImages = (f) => (f === "drawing" ? (site.drawings?.images || []).slice() : projects.filter((p) => inCat(p, f)).map(thumb));
+// each word names a category; "Drawing" shows the drawings, and "Design" (when no category has that name) covers
+// branding, graphic design and web
+const DESIGN = ["branding", "graphic-design", "web"];
+const used = (k) => projects.some((p) => (p.categories || []).some((c) => slug(c) === k));
+const keyOf = (f) => ({ video: "film", direction: "art-direction", graphic: "graphic-design" })[slug(f)] || slug(f);
+const isDesign = (f) => keyOf(f) === "design" && !used("design");
+const inCat = (p, f) => (p.categories || []).some((c) => (isDesign(f) ? DESIGN.includes(slug(c)) : slug(c) === keyOf(f)));
+const discImages = (f) => (keyOf(f) === "drawing" || keyOf(f) === "drawings" ? (site.drawings?.images || []).slice() : projects.filter((p) => inCat(p, f)).map(thumb));
 const discHref = (f) => {
-  if (f === "drawing") return "#drawings";
-  if (keyOf(f) === "design") { const k = DESIGN.find((d) => projects.some((p) => p.categories?.includes(d))); return k ? `/work?f=${k}` : "/work"; }
+  if (keyOf(f) === "drawing" || keyOf(f) === "drawings") return "#drawings";
+  if (isDesign(f)) { const k = DESIGN.find(used); return k ? `/work?f=${k}` : "/work"; }
   return f ? `/work?f=${esc(keyOf(f))}` : "/work";
 };
 if (disc) {
 const discs = (h.disciplines || []).map((d) => ({ ...d, images: discImages(d.filter).length ? discImages(d.filter) : [d.image] }));
-disc.innerHTML = discs.map((d, i) => `<li data-reveal><a href="${discHref(d.filter)}" data-i="${i}" data-cursor="${d.filter === "drawing" ? "Drawings" : "See work"}">${esc(d.title)}</a></li>`).join("");
+disc.innerHTML = discs.map((d, i) => `<li data-reveal><a href="${discHref(d.filter)}" data-i="${i}" data-cursor="${/^drawings?$/.test(keyOf(d.filter)) ? "Drawings" : "See work"}">${esc(d.title)}</a></li>`).join("");
 discs.forEach((d) => d.images.forEach((src) => { const i = new Image(); i.src = src; }));
 float.insertAdjacentHTML("beforeend", '<span class="float-count" data-float-count></span>');
 let cycle = 0, cycleI = 0;
@@ -183,7 +187,7 @@ disc.addEventListener("pointerover", (e) => {
   // switching words: drop the previous word's pictures at once, so no other discipline shows through
   $$("img", float).forEach((o) => o.remove());
   showImg(d.images[0]);
-  $("[data-float-count]").textContent = `${d.images.length} ${d.filter === "drawing" ? (d.images.length === 1 ? "drawing" : "drawings") : d.images.length === 1 ? "project" : "projects"}`;
+  $("[data-float-count]").textContent = `${d.images.length} ${/^drawings?$/.test(keyOf(d.filter)) ? (d.images.length === 1 ? "drawing" : "drawings") : d.images.length === 1 ? "project" : "projects"}`;
   if (d.images.length > 1) cycle = setInterval(() => showImg(d.images[(++cycleI) % d.images.length]), 750);
   float.classList.add("on");
 });

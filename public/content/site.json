@@ -159,6 +159,12 @@
   },
   "workCategories": [
     {
+      "key": "all",
+      "label": "All work",
+      "description": "Every project, client work and personal.",
+      "banner": "/images/projects/g2-humanoid-robot/05.webp"
+    },
+    {
       "key": "direction",
       "label": "Art direction",
       "description": "Projects where I led the creative direction.",

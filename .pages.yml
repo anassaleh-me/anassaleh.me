@@ -149,6 +149,7 @@ content:
             type: select
             options:
               values:
+                - { name: all, label: All (no filter) }
                 - { name: direction, label: Art direction }
                 - { name: design, label: Design }
                 - { name: 3d, label: 3D }

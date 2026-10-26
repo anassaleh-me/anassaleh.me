@@ -15,7 +15,7 @@ const FILTERS = [
 ].filter(([, , test]) => projects.some(test));
 
 const chips = $("[data-chips]");
-FILTERS.forEach((f) => { const c = (site.workCategories || []).find((x) => x.key === f[0]); if (c?.label) f[1] = c.label; if (c?.description) f[3] = c.description; });
+FILTERS.forEach((f) => { const c = (site.workCategories || []).find((x) => x.key === f[0]); if (c?.label && f[0] !== "all") f[1] = c.label; if (c?.description) f[3] = c.description; });
 chips.innerHTML = FILTERS.map(([k, label]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="false">${label}</button>`).join("");
 
 const fnote = $("[data-fnote]");

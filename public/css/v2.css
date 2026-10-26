@@ -137,9 +137,11 @@ footer[data-footer]:empty { display: block; min-height: 520px; background-color:
 .disc__head { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; margin-bottom: clamp(30px, 4vw, 60px); }
 .disc__head p { max-width: 38ch; color: var(--ink-soft); }
 .disc__words { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.08em 0.32em; font-size: clamp(46px, 8.2vw, 150px); }
-.disc__words a, .disc__words span.word { display: inline-block; transition: color 0.4s, transform 0.6s var(--ease); }
-.disc__words li { display: inline-flex; align-items: baseline; gap: 0.32em; }
-.disc__words li:not(:last-child)::after { content: ""; width: 0.14em; height: 0.14em; border-radius: 50%; background: var(--accent); transform: translateY(-0.28em); }
+/* words stay inline so a long one ("Branding & graphic design") wraps and its dot follows the last line */
+.disc__words a, .disc__words span.word { display: inline; transition: color 0.4s; }
+.disc__words li { display: block; }
+.disc__end { white-space: nowrap; }
+.disc__words li:not(:last-child) .disc__end::after { content: ""; display: inline-block; width: 0.14em; height: 0.14em; margin-left: 0.32em; border-radius: 50%; background: var(--accent); vertical-align: 0.21em; }
 .disc__words:hover a, .disc__words:hover span.word { color: rgba(29, 29, 27, 0.18); }
 .disc__words a:hover, .disc__words span.word:hover { color: var(--acc-t); }
 .float-img { position: fixed; left: 0; top: 0; width: 340px; aspect-ratio: 4 / 3.1; border-radius: 12px; overflow: hidden; pointer-events: none; z-index: 60; opacity: 0; transition: opacity 0.35s; box-shadow: 0 30px 60px rgba(20, 20, 18, 0.25); }

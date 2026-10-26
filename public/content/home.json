@@ -15,28 +15,28 @@
         "image": "/images/covers/mangobot-production.webp"
       },
       {
-        "title": "Design",
-        "filter": "Design",
+        "title": "Branding & graphic design",
+        "filter": "Branding & graphic design",
         "image": "/images/covers/mangobot-brand-identity.webp"
       },
       {
-        "title": "3D",
-        "filter": "3D",
+        "title": "3D design",
+        "filter": "3D design",
         "image": "/images/covers/g2-humanoid-robot.webp"
       },
       {
-        "title": "Motion",
-        "filter": "Motion",
+        "title": "Animation",
+        "filter": "Animation",
         "image": "/images/covers/intro-video.webp"
       },
       {
-        "title": "Film",
-        "filter": "Film",
+        "title": "Video production",
+        "filter": "Video production",
         "image": "/images/covers/exoskeleton-film.webp"
       },
       {
-        "title": "Drawing",
-        "filter": "Drawing",
+        "title": "Traditional art",
+        "filter": "Traditional art",
         "image": "/images/drawings/drawing-3.webp"
       }
     ]

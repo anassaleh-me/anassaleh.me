@@ -46,7 +46,7 @@ content:
             list: true
             fields:
               - { name: title, label: Word, type: string }
-              - { name: filter, label: "Shows on hover: a category name (Drawing = your drawings, Design = Branding + Graphic design + Web)", type: string }
+              - { name: filter, label: "Shows on hover: a category name (Traditional art = your drawings)", type: string }
               - { name: image, label: Picture if no project matches, type: image, options: { media: images } }
       - name: works
         label: "Section: Selected work (the wheel shows projects ticked Show on homepage)"
@@ -125,7 +125,7 @@ content:
         required: true
         pattern: { regex: "^[a-z0-9]+(-[a-z0-9]+)*$", message: "Use lowercase letters, numbers and dashes only" }
       - name: categories
-        label: "Categories: type a name per line, as many as fit (Art direction, Branding, Graphic design, 3D, Motion, Film, Web, Drawing). A new name makes a new category"
+        label: "Categories: type a name per line, as many as fit (Art direction, Branding & graphic design, 3D design, Animation, Video production, UI & UX, Traditional art). A new name makes a new category"
         type: string
         list: true
       - { name: client, label: Client, type: string }

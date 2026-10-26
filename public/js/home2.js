@@ -148,22 +148,25 @@ hero.addEventListener("pointermove", (e) => { sp.tx = e.clientX; sp.ty = e.clien
 const disc = $("[data-disc]");
 const float = $("[data-float]");
 const fl = { x: 0, y: 0, tx: 0, ty: 0 };
-// each word names a category; "Drawing" shows the drawings, and "Design" (when no category has that name) covers
-// branding, graphic design and web
+// each word names a category; "Traditional art" (or "Drawing") shows the drawings, and "Design" (when no category
+// has that name) covers branding, graphic design and web
 const DESIGN = ["branding", "graphic-design", "web"];
 const used = (k) => projects.some((p) => (p.categories || []).some((c) => slug(c) === k));
-const keyOf = (f) => ({ video: "film", direction: "art-direction", graphic: "graphic-design" })[slug(f)] || slug(f);
+const keyOf = (f) => slug(f);
+const isDrawing = (f) => ["traditional-art", "drawing", "drawings"].includes(keyOf(f));
 const isDesign = (f) => keyOf(f) === "design" && !used("design");
 const inCat = (p, f) => (p.categories || []).some((c) => (isDesign(f) ? DESIGN.includes(slug(c)) : slug(c) === keyOf(f)));
-const discImages = (f) => (keyOf(f) === "drawing" || keyOf(f) === "drawings" ? (site.drawings?.images || []).slice() : projects.filter((p) => inCat(p, f)).map(thumb));
+const discImages = (f) => (isDrawing(f) ? (site.drawings?.images || []).slice() : projects.filter((p) => inCat(p, f)).map(thumb));
 const discHref = (f) => {
-  if (keyOf(f) === "drawing" || keyOf(f) === "drawings") return "#drawings";
+  if (isDrawing(f)) return "#drawings";
   if (isDesign(f)) { const k = DESIGN.find(used); return k ? `/work?f=${k}` : "/work"; }
   return f ? `/work?f=${esc(keyOf(f))}` : "/work";
 };
 if (disc) {
 const discs = (h.disciplines || []).map((d) => ({ ...d, images: discImages(d.filter).length ? discImages(d.filter) : [d.image] }));
-disc.innerHTML = discs.map((d, i) => `<li data-reveal><a href="${discHref(d.filter)}" data-i="${i}" data-cursor="${/^drawings?$/.test(keyOf(d.filter)) ? "Drawings" : "See work"}">${esc(d.title)}</a></li>`).join("");
+// the last word sits in its own span so the dot after it never wraps onto a line by itself
+const lastWord = (t) => { const s = String(t || "").trim(), k = s.lastIndexOf(" "); return `${esc(s.slice(0, k + 1))}<span class="disc__end">${esc(s.slice(k + 1))}</span>`; };
+disc.innerHTML = discs.map((d, i) => `<li data-reveal><a href="${discHref(d.filter)}" data-i="${i}" data-cursor="${isDrawing(d.filter) ? "Drawings" : "See work"}">${lastWord(d.title)}</a></li>`).join("");
 discs.forEach((d) => d.images.forEach((src) => { const i = new Image(); i.src = src; }));
 float.insertAdjacentHTML("beforeend", '<span class="float-count" data-float-count></span>');
 let cycle = 0, cycleI = 0;
@@ -187,7 +190,7 @@ disc.addEventListener("pointerover", (e) => {
   // switching words: drop the previous word's pictures at once, so no other discipline shows through
   $$("img", float).forEach((o) => o.remove());
   showImg(d.images[0]);
-  $("[data-float-count]").textContent = `${d.images.length} ${/^drawings?$/.test(keyOf(d.filter)) ? (d.images.length === 1 ? "drawing" : "drawings") : d.images.length === 1 ? "project" : "projects"}`;
+  $("[data-float-count]").textContent = `${d.images.length} ${isDrawing(d.filter) ? (d.images.length === 1 ? "drawing" : "drawings") : d.images.length === 1 ? "project" : "projects"}`;
   if (d.images.length > 1) cycle = setInterval(() => showImg(d.images[(++cycleI) % d.images.length]), 750);
   float.classList.add("on");
 });

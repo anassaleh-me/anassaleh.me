@@ -14,43 +14,37 @@
       "banner": "/images/projects/exoskeleton-film/02-poster.webp"
     },
     {
-      "name": "Branding",
+      "name": "Branding & graphic design",
       "show": true,
-      "description": "Brand identities and the systems that hold them together.",
+      "description": "Brand identities, packaging, social and e-commerce visuals.",
       "banner": "/images/covers/mangobot-brand-identity.webp"
     },
     {
-      "name": "Graphic design",
-      "show": true,
-      "description": "Packaging, social and e-commerce visuals.",
-      "banner": "/images/projects/promate-ecommerce/03.webp"
-    },
-    {
-      "name": "3D",
+      "name": "3D design",
       "show": true,
       "description": "Models, product renders and animation, made in Blender.",
       "banner": "/images/projects/g2-humanoid-robot/06.webp"
     },
     {
-      "name": "Motion",
+      "name": "Animation",
       "show": true,
       "description": "Animation, motion graphics and type in motion.",
       "banner": "/images/projects/mechanical-spider/12.webp"
     },
     {
-      "name": "Film",
+      "name": "Video production",
       "show": true,
-      "description": "Films I directed, shot and edited.",
+      "description": "Films and videos I directed, shot and edited.",
       "banner": "/images/projects/exoskeleton-film/04-poster.webp"
     },
     {
-      "name": "Web",
+      "name": "UI & UX",
       "show": true,
       "description": "Websites, designed and built.",
       "banner": ""
     },
     {
-      "name": "Drawing",
+      "name": "Traditional art",
       "show": true,
       "description": "Pencil and charcoal, mostly portraits.",
       "banner": ""

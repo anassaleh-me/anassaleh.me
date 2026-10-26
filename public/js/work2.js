@@ -1,21 +1,20 @@
 // Work page (stage 3): filter chips over an index of every project (the works wheel lives on the home page).
 // ?f=<filter> in the URL picks the starting chip (the home page's discipline words link here).
-import { shell, $, $$, esc, lerp, clamp, pad, cats, thumb } from "/js/shell2.js";
+import { shell, $, $$, esc, lerp, clamp, pad, cats, thumb, CAT } from "/js/shell2.js";
 
 const { site, projects, reveal } = await shell({ current: "work" });
+if (site.workIntro) $(".ph__foot p").textContent = site.workIntro;
 
-// [key, chip label, test, the short line shown under the chips]
+// [key, chip label, test, the short line shown under the chips]. The categories, their names and lines come from
+// Pages CMS (Work > Categories); a chip shows only when at least one project has that category.
+const CATS = (site.workCategories || []).length ? site.workCategories : Object.entries(CAT).map(([key, label]) => ({ key, label }));
+const allCat = CATS.find((c) => c.key === "all");
 const FILTERS = [
-  ["all", "All", () => true, "Every project, client work and personal."],
-  ["direction", "Art direction", (p) => /direct/i.test(`${p.role} ${p.subtitle}`), "Projects where I led the creative direction."],
-  ["design", "Design", (p) => p.categories?.includes("design"), "Brand identity, packaging, social and visual design."],
-  ["3d", "3D", (p) => p.categories?.includes("3d"), "Models, product renders and animation, made in Blender."],
-  ["motion", "Motion", (p) => p.categories?.includes("motion"), "Animation, motion graphics and type in motion."],
-  ["video", "Video", (p) => p.categories?.includes("video"), "Films I directed, shot and edited."],
+  ["all", "All", () => true, allCat?.description || "Every project, client work and personal."],
+  ...CATS.filter((c) => c.key !== "all").map((c) => [c.key, c.label || c.key, (p) => (p.categories || []).includes(c.key), c.description || ""]),
 ].filter(([, , test]) => projects.some(test));
 
 const chips = $("[data-chips]");
-FILTERS.forEach((f) => { const c = (site.workCategories || []).find((x) => x.key === f[0]); if (c?.label && f[0] !== "all") f[1] = c.label; if (c?.description) f[3] = c.description; });
 chips.innerHTML = FILTERS.map(([k, label]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="false">${label}</button>`).join("");
 
 const fnote = $("[data-fnote]");
@@ -69,7 +68,10 @@ function apply(key, { first = false } = {}) {
 }
 
 chips.addEventListener("click", (e) => { const b = e.target.closest("[data-f]"); if (b) apply(b.dataset.f); });
-apply(new URLSearchParams(location.search).get("f") || "all", { first: true });
+// old addresses (?f=video, ?f=design) still land on the right chip
+const ALIAS = { video: "film", design: "graphic" };
+const asked = new URLSearchParams(location.search).get("f") || "all";
+apply(ALIAS[asked] && !FILTERS.some(([k]) => k === asked) ? ALIAS[asked] : asked, { first: true });
 
 reveal();
 

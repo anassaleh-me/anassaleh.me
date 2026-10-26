@@ -4,6 +4,7 @@ import { mountHero } from "/js/hero2.js";
 import { mountPillNav } from "/js/nav.js";
 import { mountRingCursor } from "/js/cursors.js";
 import { mountWorksWheel } from "/js/works-wheel.js";
+import { navLinks, ctaLink } from "/js/shell2.js";
 import { getJSON, prefetchOnHover } from "/js/data.js";
 import { mountMailButton } from "/js/mailto.js";
 
@@ -17,8 +18,8 @@ const esc = (s = "") => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<
 const accent = (s = "") => esc(s).replace(/\[([^\]]+)\]/g, '<span class="acc">$1</span>');
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const EASE_OUT = "cubic-bezier(.16, 1, .3, 1)";
-const CAT = { design: "Design", "3d": "3D", motion: "Motion", video: "Video" };
-const cats = (p) => (p.categories || []).map((c) => CAT[c]).join(" · ");
+const CAT = { direction: "Art direction", branding: "Branding", graphic: "Graphic design", "3d": "3D", motion: "Motion", film: "Film", web: "Web", drawing: "Drawing" };
+const cats = (p) => (p.categories || []).map((c) => CAT[c] || c).join(" · ");
 const cover = (p) => p.cover || `/images/covers/${p.slug}.webp`;
 const thumb = (p) => (cover(p).startsWith("/images/covers/") ? cover(p).replace("/images/covers/", "/images/covers/thumb/") : cover(p));
 const GLOWS = { none: ["0px", 0], "very-light": ["28px", 0.1], light: ["44px", 0.16], strong: ["64px", 0.24] };
@@ -33,6 +34,17 @@ const [site, all] = await Promise.all([
   getJSON("/content/projects.json"),
 ]);
 const projects = all.filter((p) => !p.draft);
+(site.workCategories || []).forEach((c) => { if (c.key && c.label && c.key !== "all") CAT[c.key] = c.label; });
+
+/* ---------- sections switched off in Pages CMS (Home) are taken out before anything else runs ---------- */
+const S = site.homeSections || {};
+[["disciplines", "section.disc"], ["works", "[data-works]"], ["spider", "section.spider"], ["inProgress", "#in-progress"], ["drawings", "#drawings"], ["contact", "section.contact"]]
+  .forEach(([k, sel]) => { if (S[k] === false) document.querySelector(sel)?.remove(); });
+// footer links to pages that are switched off
+const PAGES = site.pages || {};
+[["work", "/work"], ["about", "/about"], ["progress", "/in-progress"], ["contact", "/contact"]].forEach(([k, href]) => {
+  if (PAGES[k] === false) document.querySelectorAll(`footer a[href="${href}"]`).forEach((a) => a.closest("li")?.remove());
+});
 const h = site.home || {};
 const c = site.contact || {};
 
@@ -40,8 +52,8 @@ const c = site.contact || {};
 mountPillNav({
   logo: LOGO,
   name: site.name,
-  links: [{ href: "/work", label: "Work" }, { href: "/about", label: "About" }, ...(site.studio?.length ? [{ href: "/in-progress", label: "In progress" }] : [])],
-  cta: { href: "/contact", label: "Let's talk" },
+  links: navLinks(site),
+  cta: ctaLink(site),
 });
 mountRingCursor({ accent: "#6f8faf" });
 prefetchOnHover();
@@ -133,18 +145,23 @@ hero.addEventListener("pointermove", (e) => { sp.tx = e.clientX; sp.ty = e.clien
 /* ---------- what I do ---------- */
 // Each word shows the work behind it: hovering cycles through that discipline's covers (or the drawings).
 const disc = $("[data-disc]");
-const discImages = (f) => {
-  if (f === "drawing") return (site.drawings?.images || []).slice();
-  if (f === "direction") return projects.filter((p) => /direct/i.test(`${p.role} ${p.subtitle}`)).map(thumb);
-  return projects.filter((p) => (p.categories || []).includes(f)).map(thumb);
+const float = $("[data-float]");
+const fl = { x: 0, y: 0, tx: 0, ty: 0 };
+// "design" covers branding, graphic design and web; older "video" means film
+const DESIGN = ["branding", "graphic", "web"];
+const keyOf = (f) => (f === "video" ? "film" : f);
+const inCat = (p, f) => (p.categories || []).some((c) => (keyOf(f) === "design" ? DESIGN.includes(c) : c === keyOf(f)));
+const discImages = (f) => (f === "drawing" ? (site.drawings?.images || []).slice() : projects.filter((p) => inCat(p, f)).map(thumb));
+const discHref = (f) => {
+  if (f === "drawing") return "#drawings";
+  if (keyOf(f) === "design") { const k = DESIGN.find((d) => projects.some((p) => p.categories?.includes(d))); return k ? `/work?f=${k}` : "/work"; }
+  return f ? `/work?f=${esc(keyOf(f))}` : "/work";
 };
-const discHref = (f) => (f === "drawing" ? "#drawings" : f ? `/work?f=${esc(f)}` : "/work");
+if (disc) {
 const discs = (h.disciplines || []).map((d) => ({ ...d, images: discImages(d.filter).length ? discImages(d.filter) : [d.image] }));
 disc.innerHTML = discs.map((d, i) => `<li data-reveal><a href="${discHref(d.filter)}" data-i="${i}" data-cursor="${d.filter === "drawing" ? "Drawings" : "See work"}">${esc(d.title)}</a></li>`).join("");
 discs.forEach((d) => d.images.forEach((src) => { const i = new Image(); i.src = src; }));
-const float = $("[data-float]");
 float.insertAdjacentHTML("beforeend", '<span class="float-count" data-float-count></span>');
-const fl = { x: 0, y: 0, tx: 0, ty: 0 };
 let cycle = 0, cycleI = 0;
 addEventListener("pointermove", (e) => { fl.tx = e.clientX; fl.ty = e.clientY; }, { passive: true });
 const showImg = (src) => {
@@ -176,9 +193,10 @@ disc.addEventListener("pointerleave", hideFloat);
 // hide it as soon as the pointer is no longer over the words, or the section has left the screen
 addEventListener("scroll", () => { if (float.classList.contains("on") && !disc.matches(":hover")) hideFloat(); }, { passive: true });
 new IntersectionObserver(([e]) => { if (!e.isIntersecting) hideFloat(); }).observe(disc);
+}
 
 /* ---------- works wheel ---------- */
-mountWorksWheel($("[data-works]"), {
+if ($("[data-works]")) mountWorksWheel($("[data-works]"), {
   items: projects.some((p) => p.featured) ? projects.filter((p) => p.featured) : projects,
   label: esc(h.worksLabel || "Works '26").replace(/&#39;(\d+)/, '<span class="acc">&#39;$1</span>'),
   cover,
@@ -187,16 +205,18 @@ mountWorksWheel($("[data-works]"), {
 
 /* ---------- spider slot ---------- */
 const spd = site.spider || {};
-if (spd.title) $("[data-spider-title]").innerHTML = accent(spd.title.replace(/spider/i, "[Spider]"));
-$("[data-spider-text]").textContent = spd.text || "";
-if (spd.link) $("[data-spider-link]").href = spd.link;
 const spStage = $("[data-spider-stage]"), spHint = $("[data-spider-hint]");
 const sh = { x: 0, y: 0, tx: 0, ty: 0 };
-spStage.addEventListener("pointermove", (e) => { const r = spStage.getBoundingClientRect(); sh.tx = (e.clientX - r.left) / r.width - 0.5; sh.ty = (e.clientY - r.top) / r.height - 0.5; });
-spStage.addEventListener("pointerleave", () => { sh.tx = 0; sh.ty = 0; });
+if (spStage) {
+  if (spd.title) $("[data-spider-title]").innerHTML = accent(spd.title.replace(/spider/i, "[Spider]"));
+  $("[data-spider-text]").textContent = spd.text || "";
+  if (spd.link) $("[data-spider-link]").href = spd.link;
+  spStage.addEventListener("pointermove", (e) => { const r = spStage.getBoundingClientRect(); sh.tx = (e.clientX - r.left) / r.width - 0.5; sh.ty = (e.clientY - r.top) / r.height - 0.5; });
+  spStage.addEventListener("pointerleave", () => { sh.tx = 0; sh.ty = 0; });
+}
 
 /* ---------- in progress (teaser of the In progress page; the section and its links go away while it's empty) ---------- */
-if (!site.studio?.length) {
+if (!site.studio?.length || site.pages?.progress === false) {
   $("#in-progress")?.remove();
   document.querySelectorAll('a[href="/in-progress"]').forEach((a) => a.closest("li")?.remove());
 }
@@ -214,18 +234,19 @@ if (studioGrid) studioGrid.innerHTML = (site.studio || []).map((s) => {
 
 /* ---------- drawings ---------- */
 const dr = site.drawings || {};
+const row = $("[data-draw-row]");
+const drawSection = row?.closest(".draw");
+const drawSet = row ? dr.images || [] : [];
+const drag = { x: 0, v: -0.45, down: false, lastX: 0, moved: 0 };
+const setW = () => (row.children[drawSet.length]?.offsetLeft || 0) - (row.children[0]?.offsetLeft || 0);
+if (row) {
 if (dr.title) $("[data-draw-title]").innerHTML = accent(dr.title.replace(/draw$/i, "[draw]"));
 $("[data-draw-text]").textContent = dr.text || "";
-const row = $("[data-draw-row]");
 const tilts = [-4, 3, -2, 4, -3, 2];
 // An endless strip: the set of drawings is repeated three times and wraps around, so every drawing comes by.
 // It drifts on its own, speeds up with the scroll, and can be dragged (with a little throw when you let go).
-const drawSet = dr.images || [];
 const drawRepeat = drawSet.length ? Math.max(3, Math.ceil(12 / drawSet.length)) : 0;
 row.innerHTML = Array.from({ length: drawRepeat }, () => drawSet).flat().map((src, i) => `<figure class="paper" style="margin:0;transform:rotate(${tilts[i % drawSet.length % tilts.length]}deg)" data-tilt="${tilts[i % drawSet.length % tilts.length]}"><img src="${esc(src)}" alt="${i < drawSet.length ? `Pencil drawing by ${esc(site.fullName)}` : ""}" loading="lazy" draggable="false"></figure>`).join("");
-const drawSection = row.closest(".draw");
-const drag = { x: 0, v: -0.45, down: false, lastX: 0, moved: 0 };
-const setW = () => (row.children[drawSet.length]?.offsetLeft || 0) - (row.children[0]?.offsetLeft || 0);
 row.addEventListener("pointerdown", (e) => { drag.down = true; drag.lastX = e.clientX; drag.moved = 0; row.setPointerCapture(e.pointerId); row.classList.add("dragging"); });
 row.addEventListener("pointermove", (e) => {
   if (!drag.down) return;
@@ -241,18 +262,23 @@ $$(".paper", row).forEach((p) => {
   p.addEventListener("pointerleave", () => (p.style.transform = `rotate(${p.dataset.tilt}deg)`));
 });
 row.dataset.cursor = "Drag";
+}
 
 /* ---------- contact and footer ---------- */
-$("[data-mail]").href = `mailto:${c.email}`;
-$("[data-mail]").textContent = c.email;
-mountMailButton($("[data-mailto]"), c.email);
-const wa = $("[data-wa]");
-if (c.whatsapp) wa.href = c.whatsapp; else wa.remove();
-$("[data-copy]").addEventListener("click", async (e) => {
-  const b = e.currentTarget;
-  try { await navigator.clipboard.writeText(c.email); b.textContent = "Copied"; } catch { b.textContent = "Ctrl+C"; }
-  setTimeout(() => (b.textContent = "Copy"), 1600);
-});
+if ($("[data-mail]")) {
+  $("[data-mail]").href = `mailto:${c.email}`;
+  $("[data-mail]").textContent = c.email;
+  mountMailButton($("[data-mailto]"), c.email);
+  const wa = $("[data-wa]");
+  if (c.whatsapp) wa.href = c.whatsapp; else wa.remove();
+  $("[data-copy]").addEventListener("click", async (e) => {
+    const b = e.currentTarget;
+    try { await navigator.clipboard.writeText(c.email); b.textContent = "Copied"; } catch { b.textContent = "Ctrl+C"; }
+    setTimeout(() => (b.textContent = "Copy"), 1600);
+  });
+  // the Start a project button needs the Contact page; without it, it writes an email instead
+  if (site.pages?.contact === false) { const start = $('.contact a[href="/contact"]'); if (start) { start.href = `mailto:${c.email}`; start.firstChild.textContent = "Email me "; } }
+}
 $("[data-logo]").innerHTML = LOGO;
 $("[data-socials]").innerHTML = [["Instagram", c.instagram], ["Behance", c.behance], ["LinkedIn", c.linkedin], ["WhatsApp", c.whatsapp]]
   .filter(([, u]) => u).map(([n, u]) => `<li><a href="${esc(u)}" target="_blank" rel="noopener">${n}</a></li>`).join("");
@@ -301,15 +327,15 @@ function loop(t) {
   // floating discipline image
   fl.x = lerp(fl.x, fl.tx, 0.16); fl.y = lerp(fl.y, fl.ty, 0.16);
   const vx = fl.tx - fl.x;
-  float.style.transform = `translate(${fl.x}px, ${fl.y}px) translate(-50%, -50%) rotate(${clamp(vx * 0.08, -10, 10)}deg)`;
+  if (float) float.style.transform = `translate(${fl.x}px, ${fl.y}px) translate(-50%, -50%) rotate(${clamp(vx * 0.08, -10, 10)}deg)`;
 
   // spider stage: the hint and floor lean toward the pointer
   sh.x = lerp(sh.x, sh.tx, 0.08); sh.y = lerp(sh.y, sh.ty, 0.08);
-  spHint.style.transform = `translate(${sh.x * 30}px, ${sh.y * 20}px)`;
+  if (spHint) spHint.style.transform = `translate(${sh.x * 30}px, ${sh.y * 20}px)`;
 
   // drawings: endless strip that drifts, follows the scroll and can be dragged
-  const dRect = drawSection.getBoundingClientRect();
-  if (dRect.bottom > 0 && dRect.top < innerHeight && drawSet.length) {
+  const dRect = drawSection?.getBoundingClientRect();
+  if (dRect && dRect.bottom > 0 && dRect.top < innerHeight && drawSet.length) {
     const vy = scrollY - lastScroll;
     if (!drag.down) {
       drag.v = lerp(drag.v, -0.45 - Math.abs(vy) * 0.25, 0.04);

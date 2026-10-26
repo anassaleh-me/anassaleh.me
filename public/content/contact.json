@@ -1,0 +1,30 @@
+{
+  "show": true,
+  "headline": "Let's make something.",
+  "intro": "Tell me about your project. I read every message and reply with next steps and a quote.",
+  "replyNote": "I usually reply within two working days.",
+  "services": [
+    "Design",
+    "Video editing",
+    "Filming",
+    "Website design",
+    "3D",
+    "Animation",
+    "Other"
+  ],
+  "budgets": [
+    "Not sure yet",
+    "Under 2,000 AED",
+    "2,000 to 5,000 AED",
+    "5,000 to 15,000 AED",
+    "15,000 AED and up"
+  ],
+  "sources": [
+    "Instagram",
+    "Behance",
+    "LinkedIn",
+    "Referral",
+    "Google",
+    "Other"
+  ]
+}

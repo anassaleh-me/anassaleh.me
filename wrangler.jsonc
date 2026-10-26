@@ -11,7 +11,7 @@
     "binding": "ASSETS",
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page",
-    "run_worker_first": ["/api/*", "/work/*", "/journal/*", "/sitemap.xml"]
+    "run_worker_first": ["/api/*", "/work", "/work/*", "/about", "/contact", "/in-progress", "/film", "/journal", "/journal/*", "/sitemap.xml", "/content/site.json"]
   },
   // Every contact form submission is stored here (Cloudflare dashboard > Storage > KV > SUBMISSIONS).
   "kv_namespaces": [

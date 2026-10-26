@@ -1,4 +1,5 @@
-# Pages CMS config (https://pagescms.org). Edits the JSON files in public/content/.
+# Pages CMS config (https://pagescms.org). One section per page of the site; each edits its own JSON file in
+# public/content/. Every page and every home section has a "Show" switch. The site combines the files itself.
 media:
   - name: images
     label: Images
@@ -12,135 +13,100 @@ media:
     extensions: [pdf, glb, gltf, mp4, webm]
 
 content:
-  - name: site
-    label: Site, About and Contact
+  # ---------------------------------------------------------------- Home
+  - name: home
+    label: "Home"
     type: file
-    path: public/content/site.json
+    path: public/content/home.json
     format: json
     fields:
-      - { name: name, label: Short name (shown on the site), type: string, required: true }
-      - { name: fullName, label: Full name, type: string, required: true }
-      - { name: location, label: Location, type: string }
-      - name: theme
-        label: Look
+      - { name: headline, label: Headline under the name, type: string }
+      - { name: intro, label: Intro line, type: text }
+      - { name: statement, label: "Big statement (put a word in [brackets] to colour it blue)", type: text }
+      - { name: statementSub, label: Line under the statement, type: text }
+      - { name: heroImage, label: Portrait (transparent background), type: image, options: { media: images } }
+      - { name: heroDepth, label: Portrait depth map (grayscale, white is near), type: image, options: { media: images } }
+      - name: heroGlow
+        label: Glow around the portrait
+        type: select
+        options:
+          values:
+            - { name: none, label: None }
+            - { name: very-light, label: Very light }
+            - { name: light, label: Light }
+            - { name: strong, label: Stronger }
+      - name: disciplines
+        label: "Section: What I do"
         type: object
         fields:
-          - name: palette
-            label: Colour palette
-            type: select
-            options:
-              values:
-                - { name: paper, label: "Paper: warm off-white and charcoal" }
-                - { name: stone, label: "Stone: cool grey and graphite" }
-                - { name: sand, label: "Sand: beige and dark brown-grey" }
-      - name: home
-        label: Homepage
-        type: object
-        fields:
-          - { name: headline, label: Headline under the name, type: string }
-          - { name: intro, label: Intro line, type: text }
-          - { name: statement, label: "Big statement (put a word in [brackets] to colour it blue)", type: text }
-          - { name: statementSub, label: Line under the statement, type: text }
-          - name: heroGlow
-            label: Glow around the portrait
-            type: select
-            options:
-              values:
-                - { name: none, label: None }
-                - { name: very-light, label: Very light }
-                - { name: light, label: Light }
-                - { name: strong, label: Stronger }
-          - { name: worksLabel, label: Title in the middle of the works wheel, type: string }
-          - name: heroType
-            label: Hero type
-            type: select
-            options:
-              values:
-                - { name: portrait, label: Portrait with 3D depth }
-                - { name: video, label: Full-screen video }
-                - { name: image, label: Image }
-          - { name: heroImage, label: Hero image (portrait with transparent background), type: image, options: { media: images } }
-          - { name: heroDepth, label: Hero depth map (grayscale, white is near), type: image, options: { media: images } }
-          - { name: heroVideo, label: Hero video (muted loop file), type: file, options: { media: files } }
-          - { name: heroModel, label: 3D model (.glb, under 10 MB, for later), type: file, options: { media: files } }
-          - { name: showreelUrl, label: Showreel link (YouTube or Vimeo), type: string }
-          - name: disciplines
-            label: What I do (words with a picture on hover)
+          - { name: show, label: Show this section, type: boolean, default: true }
+          - name: items
+            label: Words (each shows that kind of work on hover)
             type: object
             list: true
             fields:
-              - { name: title, label: Title, type: string }
+              - { name: title, label: Word, type: string }
               - name: filter
-                label: "Shows these projects on hover (direction = projects where you directed, drawing = your drawings)"
+                label: Shows on hover
                 type: select
                 options:
-                  values: [direction, design, 3d, motion, video, drawing]
-              - { name: image, label: Image, type: image, options: { media: images } }
-      - name: spider
-        label: Mechanical Spider 3D section
+                  values:
+                    - { name: direction, label: Art direction projects }
+                    - { name: design, label: "Design projects (branding, graphic, web)" }
+                    - { name: branding, label: Branding projects }
+                    - { name: graphic, label: Graphic design projects }
+                    - { name: 3d, label: 3D projects }
+                    - { name: motion, label: Motion projects }
+                    - { name: film, label: Film projects }
+                    - { name: web, label: Web projects }
+                    - { name: drawing, label: Your drawings }
+              - { name: image, label: Picture if no project matches, type: image, options: { media: images } }
+      - name: works
+        label: "Section: Selected work (the wheel shows projects ticked Show on homepage)"
         type: object
         fields:
+          - { name: show, label: Show this section, type: boolean, default: true }
+          - { name: label, label: Title in the middle of the wheel, type: string }
+      - name: spider
+        label: "Section: Mechanical Spider 3D"
+        type: object
+        fields:
+          - { name: show, label: Show this section, type: boolean, default: true }
           - { name: title, label: Title, type: string }
           - { name: text, label: Text, type: text }
           - { name: model, label: "3D model (.glb, under 10 MB). Empty = placeholder", type: file, options: { media: files } }
           - { name: poster, label: Still image, type: image, options: { media: images } }
           - { name: link, label: Link, type: string }
-      - name: studio
-        label: "In progress (what you're making now and what's coming; shown on the In progress page and on the home page)"
+      - name: inProgress
+        label: "Section: In progress (shows the items of the In progress page)"
         type: object
-        list: true
         fields:
-          - { name: title, label: Title, type: string }
-          - name: status
-            label: Status
-            type: select
-            options:
-              values:
-                - { name: in-production, label: In the works }
-                - { name: coming-soon, label: Coming soon }
-                - { name: idea, label: Idea }
-          - { name: text, label: Text, type: text }
-          - { name: image, label: Image, type: image, options: { media: images } }
-          - { name: details, label: "Longer note (optional, In progress page only)", type: text }
-          - { name: gallery, label: "Extra images (optional, In progress page only)", type: image, options: { media: images, multiple: { max: 6 } } }
-          - { name: link, label: "Link (optional, for example /film)", type: string }
+          - { name: show, label: Show this section, type: boolean, default: true }
       - name: drawings
-        label: Drawings
+        label: "Section: Drawings"
         type: object
         fields:
+          - { name: show, label: Show this section, type: boolean, default: true }
           - { name: title, label: Title, type: string }
           - { name: text, label: Text, type: text }
           - { name: images, label: Drawings, type: image, options: { media: images, multiple: true } }
-      - name: about
-        label: About
+      - name: contact
+        label: "Section: Let's talk"
         type: object
         fields:
-          - { name: portrait, label: Portrait, type: image, options: { media: images } }
-          - { name: bio, label: Bio paragraphs, type: text, list: true }
-          - name: experience
-            label: Experience
-            type: object
-            list: true
-            fields:
-              - { name: period, label: Period (e.g. 2024 to 2026), type: string }
-              - { name: role, label: Role, type: string }
-              - { name: company, label: Company, type: string }
-              - { name: note, label: Note, type: string }
-          - { name: tools, label: "Tools: Create (design, 3D, film)", type: string, list: true }
-          - { name: workflowTools, label: "Tools: Workflow (organising, AI)", type: string, list: true }
-          - { name: cv, label: CV (PDF), type: file, options: { media: files } }
-      - { name: services, label: Services (shown in the contact form), type: string, list: true }
-      - name: contactPage
-        label: Contact page
-        type: object
-        fields:
-          - { name: headline, label: Headline, type: string }
-          - { name: intro, label: Intro, type: text }
-          - { name: replyNote, label: Reply time note, type: string }
-          - { name: budgets, label: Budget options, type: string, list: true }
-          - { name: sources, label: "How did you find me? options", type: string, list: true }
-      - name: workCategories
-        label: "Work categories (the banner and line under the filters on the Work page)"
+          - { name: show, label: Show this section, type: boolean, default: true }
+
+  # ---------------------------------------------------------------- Work
+  - name: work
+    label: "Work page"
+    type: file
+    path: public/content/work.json
+    format: json
+    fields:
+      - { name: show, label: Show this page, type: boolean, default: true }
+      - { name: intro, label: Intro line, type: text }
+      - name: categories
+        label: "Categories (filters, names, lines and banners; a filter shows only when a project has that category)"
         type: object
         list: true
         fields:
@@ -151,57 +117,19 @@ content:
               values:
                 - { name: all, label: All (no filter) }
                 - { name: direction, label: Art direction }
-                - { name: design, label: Design }
+                - { name: branding, label: Branding }
+                - { name: graphic, label: Graphic design }
                 - { name: 3d, label: 3D }
                 - { name: motion, label: Motion }
-                - { name: video, label: Video }
-          - { name: label, label: Name shown on the filter, type: string }
+                - { name: film, label: Film }
+                - { name: web, label: Web }
+                - { name: drawing, label: Drawing }
+          - { name: show, label: Show as a filter, type: boolean, default: true }
+          - { name: label, label: Name on the filter, type: string }
           - { name: description, label: Short line, type: string }
           - { name: banner, label: "Banner image (wide, about 2000 x 700)", type: image, options: { media: images } }
-      - name: journal
-        label: Journal
-        type: object
-        fields:
-          - { name: show, label: "Show the journal on the site (adds it to the menu)", type: boolean }
-          - { name: intro, label: Intro line, type: text }
-      - name: inProduction
-        label: Film diary (the short film's own page, at /film)
-        type: object
-        fields:
-          - { name: show, label: Show this page on the site, type: boolean }
-          - { name: title, label: Film title, type: string }
-          - { name: logline, label: Logline (one sentence), type: text }
-          - { name: poster, label: Poster or key still, type: image, options: { media: images } }
-          - name: stage
-            label: Current stage
-            type: select
-            options:
-              values:
-                - { name: development, label: Development }
-                - { name: pre-production, label: Pre-production }
-                - { name: production, label: Production }
-                - { name: post-production, label: Post-production }
-                - { name: release, label: Release }
-          - { name: about, label: About the film, type: text }
-          - name: diary
-            label: Production diary
-            type: object
-            list: true
-            fields:
-              - { name: date, label: Date, type: date }
-              - { name: title, label: Title, type: string }
-              - { name: text, label: Text, type: text }
-              - { name: image, label: Image, type: image, options: { media: images } }
-      - name: contact
-        label: Contact
-        type: object
-        fields:
-          - { name: email, label: Email, type: string }
-          - { name: linkedin, label: LinkedIn URL, type: string }
-          - { name: behance, label: Behance URL, type: string }
-          - { name: instagram, label: Instagram URL, type: string }
-          - { name: whatsapp, label: WhatsApp link (https://wa.me/...), type: string }
 
+  # ---------------------------------------------------------------- Projects
   - name: projects
     label: Projects
     type: file
@@ -217,21 +145,25 @@ content:
         required: true
         pattern: { regex: "^[a-z0-9]+(-[a-z0-9]+)*$", message: "Use lowercase letters, numbers and dashes only" }
       - name: categories
-        label: Categories
+        label: Categories (pick as many as fit)
         type: select
         options:
           multiple: true
           values:
-            - { name: design, label: Design }
+            - { name: direction, label: Art direction }
+            - { name: branding, label: Branding }
+            - { name: graphic, label: Graphic design }
             - { name: 3d, label: 3D }
             - { name: motion, label: Motion }
-            - { name: video, label: Video }
+            - { name: film, label: Film }
+            - { name: web, label: Web }
+            - { name: drawing, label: Drawing }
       - { name: client, label: Client, type: string }
       - { name: year, label: Year, type: string }
       - { name: role, label: My role, type: string }
       - { name: format, label: Format, type: string }
       - { name: tools, label: Tools and gear, type: string }
-      - { name: featured, label: Show on homepage, type: boolean }
+      - { name: featured, label: Show on homepage (in the works wheel), type: boolean }
       - { name: draft, label: Hide from site (draft), type: boolean }
       - { name: cover, label: "Cover image (about 1600 x 1250, used on the cards, the project page and link previews)", type: image, options: { media: images } }
       - { name: description, label: Description, type: text }
@@ -246,8 +178,115 @@ content:
           - { name: images, label: "Images or .mp4 loops side by side (1 = full width, up to 8)", type: file, options: { media: images, multiple: { max: 8 } } }
           - { name: caption, label: "Caption under the row (optional)", type: string }
 
+  # ---------------------------------------------------------------- About
+  - name: about
+    label: "About page"
+    type: file
+    path: public/content/about.json
+    format: json
+    fields:
+      - { name: show, label: Show this page, type: boolean, default: true }
+      - { name: portrait, label: Portrait, type: image, options: { media: images } }
+      - { name: bio, label: Story (paragraphs), type: text, list: true }
+      - name: experience
+        label: Experience
+        type: object
+        list: true
+        fields:
+          - { name: period, label: Period (e.g. 2024 to 2026), type: string }
+          - { name: role, label: Role, type: string }
+          - { name: company, label: Company, type: string }
+          - { name: note, label: Note, type: string }
+      - { name: tools, label: "Tools: Create (design, 3D, film)", type: string, list: true }
+      - { name: workflowTools, label: "Tools: Workflow (organising, AI)", type: string, list: true }
+
+  # ---------------------------------------------------------------- Contact
+  - name: contact
+    label: "Contact page"
+    type: file
+    path: public/content/contact.json
+    format: json
+    fields:
+      - { name: show, label: "Show this page (when off, the Let's talk buttons write an email instead)", type: boolean, default: true }
+      - { name: headline, label: Headline, type: string }
+      - { name: intro, label: Intro, type: text }
+      - { name: replyNote, label: Reply time note, type: string }
+      - { name: services, label: Services in the form, type: string, list: true }
+      - { name: budgets, label: Budget options, type: string, list: true }
+      - { name: sources, label: "How did you find me? options", type: string, list: true }
+
+  # ---------------------------------------------------------------- In progress
+  - name: progress
+    label: "In progress page"
+    type: file
+    path: public/content/progress.json
+    format: json
+    fields:
+      - { name: show, label: "Show this page (it also hides itself when there are no items)", type: boolean, default: true }
+      - name: items
+        label: What you're making now
+        type: object
+        list: true
+        fields:
+          - { name: title, label: Title, type: string }
+          - name: status
+            label: Status
+            type: select
+            options:
+              values:
+                - { name: in-production, label: In the works }
+                - { name: coming-soon, label: Coming soon }
+                - { name: idea, label: Idea }
+          - { name: text, label: Text, type: text }
+          - { name: image, label: Image, type: image, options: { media: images } }
+          - { name: details, label: "Longer note (optional)", type: text }
+          - { name: gallery, label: "Extra images (optional)", type: image, options: { media: images, multiple: { max: 6 } } }
+          - { name: link, label: "Link (optional, for example /film)", type: string }
+
+  # ---------------------------------------------------------------- Film diary
+  - name: film
+    label: "Film diary page (/film)"
+    type: file
+    path: public/content/film.json
+    format: json
+    fields:
+      - { name: show, label: Show this page, type: boolean }
+      - { name: title, label: Film title, type: string }
+      - { name: logline, label: Logline (one sentence), type: text }
+      - { name: poster, label: Poster or key still, type: image, options: { media: images } }
+      - name: stage
+        label: Current stage
+        type: select
+        options:
+          values:
+            - { name: development, label: Development }
+            - { name: pre-production, label: Pre-production }
+            - { name: production, label: Production }
+            - { name: post-production, label: Post-production }
+            - { name: release, label: Release }
+      - { name: about, label: About the film, type: text }
+      - name: diary
+        label: Production diary
+        type: object
+        list: true
+        fields:
+          - { name: date, label: Date, type: date }
+          - { name: title, label: Title, type: string }
+          - { name: text, label: Text, type: text }
+          - { name: image, label: Image, type: image, options: { media: images } }
+
+  # ---------------------------------------------------------------- Journal
+  - name: journal
+    label: "Journal page"
+    type: file
+    path: public/content/journal.json
+    format: json
+    fields:
+      - { name: show, label: "Show the journal (adds it to the menu)", type: boolean }
+      - { name: intro, label: Intro line, type: text }
+
   - name: blog
-    label: "Journal entries (the page is switched on in Site > Journal)"
+    label: "Journal entries"
     type: file
     path: public/content/blog.json
     format: json
@@ -273,6 +312,27 @@ content:
           - { name: text, label: Text, type: rich-text }
           - { name: images, label: "Images or .mp4 loops side by side (optional, up to 8)", type: file, options: { media: images, multiple: { max: 8 } } }
           - { name: caption, label: "Caption under the images (optional)", type: string }
+
+  # ---------------------------------------------------------------- Settings
+  - name: settings
+    label: "Settings (name, email, social links, CV)"
+    type: file
+    path: public/content/settings.json
+    format: json
+    fields:
+      - { name: name, label: Short name (shown on the site), type: string, required: true }
+      - { name: fullName, label: Full name, type: string, required: true }
+      - { name: location, label: Location, type: string }
+      - { name: cv, label: CV (PDF), type: file, options: { media: files } }
+      - name: contact
+        label: Contact and social links
+        type: object
+        fields:
+          - { name: email, label: Email, type: string }
+          - { name: linkedin, label: LinkedIn URL, type: string }
+          - { name: behance, label: Behance URL, type: string }
+          - { name: instagram, label: Instagram URL, type: string }
+          - { name: whatsapp, label: WhatsApp link (https://wa.me/...), type: string }
 
   - name: offers
     label: Offers (hidden on the site until used)

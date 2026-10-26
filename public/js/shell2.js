@@ -10,8 +10,14 @@ export const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 export const esc = (s = "") => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 export const accent = (s = "") => esc(s).replace(/\[([^\]]+)\]/g, '<span class="acc">$1</span>');
 export const pad = (n) => String(n).padStart(2, "0");
-export const CAT = { design: "Design", "3d": "3D", motion: "Motion", video: "Video" };
-export const cats = (p) => (p.categories || []).map((c) => CAT[c]).join(" · ");
+// category names come from Pages CMS (Work > Categories); these are only used until the content has loaded
+export const CAT = { direction: "Art direction", branding: "Branding", graphic: "Graphic design", "3d": "3D", motion: "Motion", film: "Film", web: "Web", drawing: "Drawing" };
+export const cats = (p) => (p.categories || []).map((c) => CAT[c] || c).join(" · ");
+// the menu links, in order, for the pages that are switched on
+export const navLinks = (site) => [
+  ["work", "/work", "Work"], ["about", "/about", "About"], ["progress", "/in-progress", "In progress"], ["journal", "/journal", "Journal"],
+].filter(([k]) => site.pages?.[k] !== false).map(([key, href, label]) => ({ key, href, label }));
+export const ctaLink = (site) => (site.pages?.contact !== false ? { href: "/contact", label: "Let's talk" } : { href: `mailto:${site.contact?.email || ""}`, label: "Email me" });
 // the cover set in Pages CMS; covers in /images/covers/ also have a small copy for hover previews
 export const cover = (p) => p.cover || `/images/covers/${p.slug}.webp`;
 export const thumb = (p) => (cover(p).startsWith("/images/covers/") ? cover(p).replace("/images/covers/", "/images/covers/thumb/") : cover(p));
@@ -88,14 +94,14 @@ export async function shell({ current = "" } = {}) {
     getJSON("/content/projects.json"),
   ]);
   const projects = all.filter((p) => !p.draft);
+  (site.workCategories || []).forEach((c) => { if (c.key && c.label && c.key !== "all") CAT[c.key] = c.label; });
 
   mountPillNav({
     logo: LOGO,
     name: site.name,
     current,
-    links: [{ href: "/work", label: "Work", key: "work" }, { href: "/about", label: "About", key: "about" }, ...(site.studio?.length ? [{ href: "/in-progress", label: "In progress", key: "progress" }] : []),
-      ...(site.journal?.show ? [{ href: "/journal", label: "Journal", key: "journal" }] : [])],
-    cta: { href: "/contact", label: "Let's talk" },
+    links: navLinks(site),
+    cta: ctaLink(site),
   });
   mountRingCursor({ accent: "#6f8faf" });
   prefetchOnHover();
@@ -127,7 +133,7 @@ function footerHTML(site) {
     <div class="wrap">
       <div class="foot__top">
         <div><span class="foot__logo">${LOGO}</span><p>Visual artist and art director in Dubai. Art direction, design, 3D, motion, film and drawing.</p></div>
-        <div><h3>Pages</h3><ul><li><a href="/">Home</a></li><li><a href="/work">Work</a></li><li><a href="/about">About</a></li>${site.studio?.length ? '<li><a href="/in-progress">In progress</a></li>' : ""}${site.journal?.show ? '<li><a href="/journal">Journal</a></li>' : ""}<li><a href="/contact">Contact</a></li></ul></div>
+        <div><h3>Pages</h3><ul><li><a href="/">Home</a></li>${navLinks(site).map((l) => `<li><a href="${l.href}">${l.label}</a></li>`).join("")}${site.pages?.contact !== false ? '<li><a href="/contact">Contact</a></li>' : ""}</ul></div>
         <div><h3>Follow</h3><ul>${socials.map(([n, u]) => `<li><a href="${esc(u)}" target="_blank" rel="noopener">${n}</a></li>`).join("")}</ul></div>
         <div><h3>Say hi</h3><ul><li><a href="mailto:${esc(c.email)}">${esc(c.email)}</a></li><li><a href="${esc(site.about?.cv || "/Anas_Al_Shikh_Saleh_CV.pdf")}" target="_blank" rel="noopener">Download CV</a></li></ul></div>
       </div>

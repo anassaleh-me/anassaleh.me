@@ -4,8 +4,9 @@
     "title": "Exoskeleton",
     "subtitle": "Product film",
     "categories": [
-      "video",
-      "motion"
+      "film",
+      "motion",
+      "direction"
     ],
     "client": "MangoBot",
     "year": "2026",
@@ -57,8 +58,9 @@
     "title": "MangoBot Robotics",
     "subtitle": "Post-production and art direction",
     "categories": [
-      "video",
-      "motion"
+      "film",
+      "motion",
+      "direction"
     ],
     "client": "MangoBot",
     "year": "2026",
@@ -281,7 +283,7 @@
     "title": "MangoBot Visual Identity",
     "subtitle": "Brand identity and guidelines",
     "categories": [
-      "design"
+      "branding"
     ],
     "client": "MangoBot",
     "year": "2026",
@@ -487,7 +489,7 @@
     "title": "Promate Technologies",
     "subtitle": "E-commerce visuals and 3D renders",
     "categories": [
-      "design",
+      "graphic",
       "3d"
     ],
     "client": "Promate Technologies",
@@ -581,7 +583,7 @@
     "subtitle": "3D, motion and brand design, 2024 to 2025",
     "categories": [
       "3d",
-      "design",
+      "graphic",
       "motion"
     ],
     "client": "Various",
@@ -806,7 +808,8 @@
     "title": "MangoBot Social Collection",
     "subtitle": "Social media design",
     "categories": [
-      "design"
+      "graphic",
+      "direction"
     ],
     "client": "MangoBot",
     "year": "2026",
@@ -856,7 +859,7 @@
     "title": "Promate Packaging",
     "subtitle": "Product packaging design",
     "categories": [
-      "design"
+      "graphic"
     ],
     "client": "Promate Technologies",
     "year": "2025",
@@ -895,7 +898,7 @@
     "subtitle": "Creative intro video",
     "categories": [
       "motion",
-      "video"
+      "film"
     ],
     "client": "Personal project",
     "year": "2025",
@@ -924,7 +927,7 @@
     "title": "MangoBot Website",
     "subtitle": "Website design",
     "categories": [
-      "design"
+      "web"
     ],
     "client": "MangoBot",
     "year": "2026",
@@ -1000,7 +1003,7 @@
     "title": "PHILOSOPHY",
     "subtitle": "The Phi monogram",
     "categories": [
-      "design"
+      "branding"
     ],
     "client": "Concept",
     "year": "2025",
@@ -1019,7 +1022,7 @@
     "title": "Dubai International Content Market",
     "subtitle": "Theme refresh",
     "categories": [
-      "design",
+      "branding",
       "motion"
     ],
     "client": "Dubai International Content Market",
@@ -1039,7 +1042,7 @@
     "title": "Social Media Carousel",
     "subtitle": "Carousel design concept",
     "categories": [
-      "design"
+      "graphic"
     ],
     "client": "Concept",
     "year": "2025",

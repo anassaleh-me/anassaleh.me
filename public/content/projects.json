@@ -1,11 +1,10 @@
 [
   {
-    "slug": "exoskeleton-film",
     "title": "Exoskeleton",
     "subtitle": "Product film",
+    "slug": "exoskeleton-film",
     "categories": [
       "film",
-      "motion",
       "direction"
     ],
     "client": "MangoBot",
@@ -16,50 +15,43 @@
     "featured": true,
     "draft": false,
     "cover": "/images/covers/exoskeleton-film.webp",
-    "video": "https://player.vimeo.com/video/1239052181",
     "description": "A product film for MangoBot's wearable exoskeleton, from unboxing to a run on the grass. I took it from the first idea to the final file: concept, creative direction, filming, editing, colour grading, motion type and sound design. Shot in 4K on a Sony a6700 with a DJI Ronin, then cut and graded in Premiere Pro.",
+    "video": "https://player.vimeo.com/video/1239052181",
     "blocks": [
       {
         "images": [
           "/images/projects/exoskeleton-film/01.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/exoskeleton-film/02.mp4",
           "/images/projects/exoskeleton-film/03.mp4",
           "/images/projects/exoskeleton-film/04.mp4"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/exoskeleton-film/05.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/exoskeleton-film/06.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/exoskeleton-film/07.webp"
-        ],
-        "caption": ""
+        ]
       }
     ]
   },
   {
-    "slug": "mangobot-production",
     "title": "MangoBot Robotics",
     "subtitle": "Post-production and art direction",
+    "slug": "mangobot-production",
     "categories": [
-      "film",
-      "motion",
       "direction"
     ],
     "client": "MangoBot",
@@ -70,45 +62,40 @@
     "featured": true,
     "draft": false,
     "cover": "/images/covers/mangobot-production.webp",
-    "video": "https://www.youtube.com/watch?v=4fMmY7Bs0_g",
     "description": "A brand film for MangoBot, from storyboard to final delivery. I planned the visual sequence, directed the look on set so every shot fit the edit, then cut the film, built the motion graphics and VFX, graded it and synced the sound.",
+    "video": "https://www.youtube.com/watch?v=4fMmY7Bs0_g",
     "blocks": [
       {
         "images": [
           "/images/projects/mangobot-production/01.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-production/02.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-production/03.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-production/04.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-production/05.webp"
-        ],
-        "caption": ""
+        ]
       }
     ]
   },
   {
-    "slug": "g2-humanoid-robot",
     "title": "G2 Humanoid Robot",
     "subtitle": "Official 3D model",
+    "slug": "g2-humanoid-robot",
     "categories": [
       "3d"
     ],
@@ -120,64 +107,55 @@
     "featured": true,
     "draft": false,
     "cover": "/images/covers/g2-humanoid-robot.webp",
-    "video": "",
     "description": "G2 is MangoBot's humanoid robot, and this is its official 3D model, built end to end in Blender. I handled the whole pipeline: hard-surface modeling, materials and texturing, lighting and the final renders. The goal was a clean, premium look that holds up in close-ups, product films and the website.",
     "blocks": [
       {
         "images": [
           "/images/projects/g2-humanoid-robot/01.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/g2-humanoid-robot/02.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/g2-humanoid-robot/03.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/g2-humanoid-robot/04.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/g2-humanoid-robot/05.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/g2-humanoid-robot/06.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/g2-humanoid-robot/07.mp4",
           "/images/projects/g2-humanoid-robot/08.mp4"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/g2-humanoid-robot/09.webp"
-        ],
-        "caption": ""
+        ]
       }
     ]
   },
   {
-    "slug": "mechanical-spider",
     "title": "Mechanical Spider",
     "subtitle": "3D character and cinematic scene",
+    "slug": "mechanical-spider",
     "categories": [
       "3d",
       "motion"
@@ -190,98 +168,86 @@
     "featured": true,
     "draft": false,
     "cover": "/images/covers/mechanical-spider.webp",
-    "video": "https://www-ccv.adobe.io/v1/player/ccv/QMIEnuLQmFf/embed",
     "description": "An unknown mechanical spider wakes up inside a sterile white room. Captured after a mysterious arrival on Earth, it explores the space and itself while people watch from behind reinforced glass. The scene is about isolation, confusion and the feeling of being observed. I made everything myself: character design, modeling and texturing, rigging, animation, lighting, sound design and the final edit.",
+    "video": "https://www-ccv.adobe.io/v1/player/ccv/QMIEnuLQmFf/embed",
     "blocks": [
       {
         "images": [
           "/images/projects/mechanical-spider/01.mp4",
           "/images/projects/mechanical-spider/02.mp4"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mechanical-spider/03.mp4",
           "/images/projects/mechanical-spider/04.mp4",
           "/images/projects/mechanical-spider/05.mp4"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mechanical-spider/06.mp4",
           "/images/projects/mechanical-spider/07.mp4"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mechanical-spider/08.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mechanical-spider/09.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mechanical-spider/10.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mechanical-spider/11.webp",
           "/images/projects/mechanical-spider/12.webp",
           "/images/projects/mechanical-spider/13.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mechanical-spider/14.webp",
           "/images/projects/mechanical-spider/15.webp",
           "/images/projects/mechanical-spider/16.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mechanical-spider/17.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mechanical-spider/18.mp4",
           "/images/projects/mechanical-spider/19.mp4"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mechanical-spider/20.mp4",
           "/images/projects/mechanical-spider/21.mp4",
           "/images/projects/mechanical-spider/22.mp4"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mechanical-spider/23.webp"
-        ],
-        "caption": ""
+        ]
       }
     ]
   },
   {
-    "slug": "mangobot-brand-identity",
     "title": "MangoBot Visual Identity",
     "subtitle": "Brand identity and guidelines",
+    "slug": "mangobot-brand-identity",
     "categories": [
       "branding"
     ],
@@ -293,201 +259,169 @@
     "featured": true,
     "draft": false,
     "cover": "/images/covers/mangobot-brand-identity.webp",
-    "video": "",
     "description": "MangoBot builds humanoid robots for hospitality, events and lifestyle spaces in the Middle East. When I started, the only brand asset was the logo. I built everything around it: the colour system, typography, graphic elements, layouts and the rules that keep them consistent across digital, print, events and products.",
     "blocks": [
       {
         "images": [
           "/images/projects/mangobot-brand-identity/01.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/02.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/03.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/04.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/05.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/06.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/07.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/08.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/09.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/10.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/11.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/12.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/13.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/14.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/15.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/16.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/17.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/18.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/19.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/20.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/21.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/22.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/23.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/24.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/25.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/26.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/27.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/28.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/29.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/30.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-brand-identity/31.webp"
-        ],
-        "caption": ""
+        ]
       }
     ]
   },
   {
-    "slug": "promate-ecommerce",
     "title": "Promate Technologies",
     "subtitle": "E-commerce visuals and 3D renders",
+    "slug": "promate-ecommerce",
     "categories": [
       "graphic",
       "3d"
@@ -500,87 +434,74 @@
     "featured": true,
     "draft": false,
     "cover": "/images/covers/promate-ecommerce.webp",
-    "video": "",
     "description": "Product visuals for Promate's mobile and computer accessories. The job was to turn technical features into clear, engaging stories for online shoppers. Where real photography was missing or limited, I modeled the products in 3D and rendered them for listings, campaigns and launches.",
     "blocks": [
       {
         "images": [
           "/images/projects/promate-ecommerce/01.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/promate-ecommerce/02.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/promate-ecommerce/03.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/promate-ecommerce/04.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/promate-ecommerce/05.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/promate-ecommerce/06.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/promate-ecommerce/07.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/promate-ecommerce/08.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/promate-ecommerce/09.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/promate-ecommerce/10.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/promate-ecommerce/11.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/promate-ecommerce/12.webp"
-        ],
-        "caption": ""
+        ]
       }
     ]
   },
   {
-    "slug": "selected-work-2025",
     "title": "Selected Work",
     "subtitle": "3D, motion and brand design, 2024 to 2025",
+    "slug": "selected-work-2025",
     "categories": [
       "3d",
       "graphic",
@@ -594,92 +515,77 @@
     "featured": false,
     "draft": false,
     "cover": "/images/covers/selected-work-2025.webp",
-    "video": "",
     "description": "A collection of pieces from 2024 and 2025: product renders and conceptual scenes in Blender, motion work, illustration and marketing visuals for brands. Every piece started from the brand's core message and ended with a consistent look.",
     "blocks": [
       {
         "images": [
           "/images/projects/selected-work-2025/01.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/02.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/03.mp4"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/04.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/05.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/06.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/07.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/08.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/09.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/10.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/11.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/12.mp4"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/13.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/14.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
@@ -688,14 +594,12 @@
           "/images/projects/selected-work-2025/17.mp4",
           "/images/projects/selected-work-2025/18.mp4",
           "/images/projects/selected-work-2025/19.mp4"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/20.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
@@ -706,107 +610,91 @@
           "/images/projects/selected-work-2025/25.mp4",
           "/images/projects/selected-work-2025/26.mp4",
           "/images/projects/selected-work-2025/27.mp4"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/28.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/29.mp4",
           "/images/projects/selected-work-2025/30.mp4",
           "/images/projects/selected-work-2025/31.mp4"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/32.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/33.mp4"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/34.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/35.mp4"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/36.mp4"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/37.mp4"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/38.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/39.mp4"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/40.mp4"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/41.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/42.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/43.mp4"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/selected-work-2025/44.webp"
-        ],
-        "caption": ""
+        ]
       }
     ]
   },
   {
-    "slug": "mangobot-social",
     "title": "MangoBot Social Collection",
     "subtitle": "Social media design",
+    "slug": "mangobot-social",
     "categories": [
       "graphic",
       "direction"
@@ -819,45 +707,39 @@
     "featured": false,
     "draft": false,
     "cover": "/images/covers/mangobot-social.webp",
-    "video": "",
     "description": "Social content for MangoBot's robot rental service across the GCC, including a step by step carousel on renting a robot, robot introductions and a series of feed posts. Clear explanations, the brand system, and the robots front and centre.",
     "blocks": [
       {
         "images": [
           "/images/projects/mangobot-social/01.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-social/02.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-social/03.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-social/04.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-social/05.webp"
-        ],
-        "caption": ""
+        ]
       }
     ]
   },
   {
-    "slug": "promate-packaging",
     "title": "Promate Packaging",
     "subtitle": "Product packaging design",
+    "slug": "promate-packaging",
     "categories": [
       "graphic"
     ],
@@ -869,33 +751,29 @@
     "featured": false,
     "draft": false,
     "cover": "/images/covers/promate-packaging.webp",
-    "video": "",
     "description": "Retail packaging for a Promate product, built for clarity and shelf presence. The layout leads with the product's key features in a bold, minimal, retail-ready look.",
     "blocks": [
       {
         "images": [
           "/images/projects/promate-packaging/01.mp4"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/promate-packaging/02.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/promate-packaging/03.webp"
-        ],
-        "caption": ""
+        ]
       }
     ]
   },
   {
-    "slug": "intro-video",
     "title": "Personal Intro",
     "subtitle": "Creative intro video",
+    "slug": "intro-video",
     "categories": [
       "motion",
       "film"
@@ -908,8 +786,8 @@
     "featured": false,
     "draft": false,
     "cover": "/images/covers/intro-video.webp",
-    "video": "https://www-ccv.adobe.io/v1/player/ccv/4EkPLDqBJA6/embed",
     "description": "A short self-introduction that shows the range of what I do: illustration, graphic design, motion graphics, 3D and video editing, cut together in one piece.",
+    "video": "https://www-ccv.adobe.io/v1/player/ccv/4EkPLDqBJA6/embed",
     "blocks": [
       {
         "images": [
@@ -917,15 +795,14 @@
           "/images/projects/intro-video/02.mp4",
           "/images/projects/intro-video/03.mp4",
           "/images/projects/intro-video/04.mp4"
-        ],
-        "caption": ""
+        ]
       }
     ]
   },
   {
-    "slug": "mangobot-website",
     "title": "MangoBot Website",
     "subtitle": "Website design",
+    "slug": "mangobot-website",
     "categories": [
       "web"
     ],
@@ -937,51 +814,44 @@
     "featured": false,
     "draft": false,
     "cover": "/images/covers/mangobot-website.webp",
-    "video": "",
     "description": "The company's first website, built around the new visual identity. Responsive layouts for desktop and mobile, in English and Arabic.",
     "blocks": [
       {
         "images": [
           "/images/projects/mangobot-website/01.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-website/02.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-website/03.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-website/04.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-website/05.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/mangobot-website/06.webp"
-        ],
-        "caption": ""
+        ]
       }
     ]
   },
   {
-    "slug": "ugreen-animation",
     "title": "UGREEN, A Reliable Little Friend",
     "subtitle": "3D product animation",
+    "slug": "ugreen-animation",
     "categories": [
       "3d",
       "motion"
@@ -993,15 +863,12 @@
     "tools": "Blender",
     "featured": false,
     "draft": true,
-    "cover": "",
-    "video": "",
-    "description": "A short product animation that gives a tech accessory a friendly character, built entirely in 3D.",
-    "blocks": []
+    "description": "A short product animation that gives a tech accessory a friendly character, built entirely in 3D."
   },
   {
-    "slug": "phi-monogram",
     "title": "PHILOSOPHY",
     "subtitle": "The Phi monogram",
+    "slug": "phi-monogram",
     "categories": [
       "branding"
     ],
@@ -1012,15 +879,12 @@
     "tools": "Illustrator",
     "featured": false,
     "draft": true,
-    "cover": "",
-    "video": "",
-    "description": "A monogram built around the Greek letter Phi, drawn for a luxury brand and tested across print and digital applications.",
-    "blocks": []
+    "description": "A monogram built around the Greek letter Phi, drawn for a luxury brand and tested across print and digital applications."
   },
   {
-    "slug": "dicm-theme",
     "title": "Dubai International Content Market",
     "subtitle": "Theme refresh",
+    "slug": "dicm-theme",
     "categories": [
       "branding",
       "motion"
@@ -1032,15 +896,12 @@
     "tools": "Illustrator, After Effects",
     "featured": false,
     "draft": true,
-    "cover": "",
-    "video": "",
-    "description": "A refreshed visual theme for a content industry event, adapted across screens, print and social.",
-    "blocks": []
+    "description": "A refreshed visual theme for a content industry event, adapted across screens, print and social."
   },
   {
-    "slug": "social-carousel",
     "title": "Social Media Carousel",
     "subtitle": "Carousel design concept",
+    "slug": "social-carousel",
     "categories": [
       "graphic"
     ],
@@ -1052,20 +913,17 @@
     "featured": false,
     "draft": true,
     "cover": "/images/covers/social-carousel.webp",
-    "video": "",
     "description": "A carousel system for social media that keeps a single story moving across several frames.",
     "blocks": [
       {
         "images": [
           "/images/projects/social-carousel/01.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/social-carousel/02.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
@@ -1074,8 +932,7 @@
           "/images/projects/social-carousel/05.webp",
           "/images/projects/social-carousel/06.webp",
           "/images/projects/social-carousel/07.webp"
-        ],
-        "caption": ""
+        ]
       }
     ]
   }

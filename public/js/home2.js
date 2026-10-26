@@ -170,7 +170,12 @@ disc.addEventListener("pointerover", (e) => {
   if (d.images.length > 1) cycle = setInterval(() => showImg(d.images[(++cycleI) % d.images.length]), 750);
   float.classList.add("on");
 });
-disc.addEventListener("pointerleave", () => { float.classList.remove("on"); clearInterval(cycle); });
+const hideFloat = () => { float.classList.remove("on"); clearInterval(cycle); };
+disc.addEventListener("pointerleave", hideFloat);
+// scrolling moves the page under a still pointer without a pointerleave, so the picture would stay on screen:
+// hide it as soon as the pointer is no longer over the words, or the section has left the screen
+addEventListener("scroll", () => { if (float.classList.contains("on") && !disc.matches(":hover")) hideFloat(); }, { passive: true });
+new IntersectionObserver(([e]) => { if (!e.isIntersecting) hideFloat(); }).observe(disc);
 
 /* ---------- works wheel ---------- */
 mountWorksWheel($("[data-works]"), {

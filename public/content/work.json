@@ -1,0 +1,69 @@
+{
+  "show": true,
+  "intro": "Art direction, design, 3D, motion and film. Client work and personal projects.",
+  "categories": [
+    {
+      "key": "all",
+      "label": "All work",
+      "description": "Every project, client work and personal.",
+      "banner": "/images/projects/g2-humanoid-robot/05.webp",
+      "show": true
+    },
+    {
+      "key": "direction",
+      "label": "Art direction",
+      "description": "Projects where I led the creative direction.",
+      "banner": "/images/projects/exoskeleton-film/02-poster.webp",
+      "show": true
+    },
+    {
+      "key": "branding",
+      "label": "Branding",
+      "description": "Brand identities and the systems that hold them together.",
+      "banner": "/images/covers/mangobot-brand-identity.webp",
+      "show": true
+    },
+    {
+      "key": "graphic",
+      "label": "Graphic design",
+      "description": "Packaging, social and e-commerce visuals.",
+      "banner": "/images/projects/promate-ecommerce/03.webp",
+      "show": true
+    },
+    {
+      "key": "3d",
+      "label": "3D",
+      "description": "Models, product renders and animation, made in Blender.",
+      "banner": "/images/projects/g2-humanoid-robot/06.webp",
+      "show": true
+    },
+    {
+      "key": "motion",
+      "label": "Motion",
+      "description": "Animation, motion graphics and type in motion.",
+      "banner": "/images/projects/mechanical-spider/12.webp",
+      "show": true
+    },
+    {
+      "key": "film",
+      "label": "Film",
+      "description": "Films I directed, shot and edited.",
+      "banner": "/images/projects/exoskeleton-film/04-poster.webp",
+      "show": true
+    },
+    {
+      "key": "web",
+      "label": "Web",
+      "description": "Websites, designed and built.",
+      "banner": "",
+      "show": true
+    },
+    {
+      "key": "drawing",
+      "label": "Drawing",
+      "description": "Pencil and charcoal, mostly portraits.",
+      "banner": "",
+      "show": true
+    }
+  ]
+}

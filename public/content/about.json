@@ -1,0 +1,45 @@
+{
+  "show": true,
+  "portrait": "/images/portrait-v2.webp",
+  "bio": [
+    "I'm Anas, a visual artist and art director based in Dubai. I direct, design, model in 3D, animate, film and draw, and I like owning a piece of work from the first idea to the final file.",
+    "Today I lead creative content at MangoBot, a company building AI and humanoid robots. I built the brand identity and the in-house video production from the ground up, and I direct, film and edit the company's films.",
+    "Before that I was a senior graphic designer at Promate Technologies, where I taught myself Blender and made 3D a core part of my work. It all started with a pencil, and I still draw. Right now I'm writing and producing my own short film."
+  ],
+  "experience": [
+    {
+      "period": "2026 to now",
+      "role": "Creative Content Manager",
+      "company": "MangoBot",
+      "note": "Joined as Senior Multimedia Designer, then promoted. Brand, films and art direction"
+    },
+    {
+      "period": "2024 to 2026",
+      "role": "Senior Graphic Designer",
+      "company": "Promate Technologies",
+      "note": "E-commerce visuals, 3D product renders, GITEX Global"
+    },
+    {
+      "period": "2019 to 2024",
+      "role": "Graphic Designer and 3D Artist",
+      "company": "Freelance",
+      "note": "Brand identities, illustration, video"
+    }
+  ],
+  "tools": [
+    "Photoshop",
+    "Illustrator",
+    "InDesign",
+    "Premiere Pro",
+    "After Effects",
+    "Blender",
+    "Figma",
+    "Framer",
+    "Camera and lighting"
+  ],
+  "workflowTools": [
+    "Notion",
+    "Slack",
+    "Claude"
+  ]
+}

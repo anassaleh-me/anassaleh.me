@@ -2,7 +2,10 @@
 // - /work/<slug>   serves project.html with that project's title, description and cover in the page head,
 //                  so shared links show the right preview (404 for unknown or draft projects)
 // - /journal/<slug> serves journal-post.html with that entry's head (404 for unknown entries)
-// - /sitemap.xml   built from projects.json and blog.json, so new pages are listed without touching code
+// - /content/site.json  built from the per-page files Anas edits in Pages CMS (settings, home, work, about, contact,
+//                  progress, film, journal), in the shape the pages read
+// - hidden pages   a page switched off in Pages CMS answers with the 404 page (add ?preview to see it anyway)
+// - /sitemap.xml   built from the content, so new pages are listed and hidden ones left out without touching code
 // - /api/contact   receives the contact form, stores it (KV), adds it to the Notion database "Project requests"
 //                  (NOTION_TOKEN secret + NOTION_DB) and emails it (send_email binding)
 // Everything else falls through to the static assets in ./public.
@@ -16,6 +19,39 @@ const attr = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/"/g, "&quot;
 async function content(env, url, name) {
   const res = await env.ASSETS.fetch(new Request(new URL(`/content/${name}.json`, url)));
   return res.ok ? res.json() : null;
+}
+
+// The combined content the pages read. Every page file has a "show" switch; a missing switch means shown.
+async function buildSite(env, url) {
+  const names = ["settings", "home", "work", "about", "contact", "progress", "film", "journal"];
+  const [settings, home, work, about, contact, progress, film, journal] = (await Promise.all(names.map((n) => content(env, url, n)))).map((x) => x || {});
+  const on = (x) => x?.show !== false;
+  const items = progress.items || [];
+  return {
+    name: settings.name, fullName: settings.fullName, location: settings.location, contact: settings.contact || {},
+    home: {
+      headline: home.headline, intro: home.intro, statement: home.statement, statementSub: home.statementSub,
+      heroImage: home.heroImage, heroDepth: home.heroDepth, heroGlow: home.heroGlow,
+      worksLabel: home.works?.label, disciplines: home.disciplines?.items || [],
+    },
+    homeSections: {
+      disciplines: on(home.disciplines), works: on(home.works), spider: on(home.spider),
+      inProgress: on(home.inProgress), drawings: on(home.drawings), contact: on(home.contact),
+    },
+    spider: home.spider || {}, drawings: home.drawings || {},
+    about: { ...about, cv: settings.cv }, services: contact.services || [],
+    contactPage: { headline: contact.headline, intro: contact.intro, replyNote: contact.replyNote, budgets: contact.budgets || [], sources: contact.sources || [] },
+    studio: items, inProduction: film, journal, workIntro: work.intro, workCategories: (work.categories || []).filter((c) => c.show !== false),
+    pages: { work: on(work), about: on(about), contact: on(contact), progress: on(progress) && items.length > 0, film: film.show === true, journal: journal.show === true },
+  };
+}
+
+// which switch hides which address
+const PAGE_OF = { "/work": "work", "/about": "about", "/contact": "contact", "/in-progress": "progress", "/film": "film", "/journal": "journal" };
+
+async function notFound(env, url) {
+  const res = await env.ASSETS.fetch(new Request(new URL("/404", url)));
+  return new Response(res.body, { status: 404, headers: res.headers });
 }
 
 async function projects(env, url) {
@@ -32,10 +68,23 @@ export default {
       return handleContact(request, env, ctx);
     }
 
+    if (url.pathname === "/content/site.json") {
+      return new Response(JSON.stringify(await buildSite(env, url)), {
+        headers: { "content-type": "application/json; charset=utf-8", "cache-control": "public, max-age=0, must-revalidate" },
+      });
+    }
+
+    const preview = url.searchParams.has("preview");
+    const pageKey = PAGE_OF[url.pathname.replace(/\/$/, "")] || (url.pathname.startsWith("/journal/") ? "journal" : null);
+    if (pageKey && !preview) {
+      const site = await buildSite(env, url);
+      if (!site.pages[pageKey]) return notFound(env, url);
+    }
+
     if (url.pathname === "/sitemap.xml") {
-      const [list, site, blog] = await Promise.all([projects(env, url), content(env, url, "site"), content(env, url, "blog")]);
-      const journal = site?.journal?.show ? ["/journal", ...(blog || []).filter((p) => !p.draft).map((p) => `/journal/${p.slug}`)] : [];
-      const pages = ["/", "/work", "/about", ...(site?.studio?.length ? ["/in-progress"] : []), "/contact", ...journal, ...list.map((p) => `/work/${p.slug}`)];
+      const [list, site, blog] = await Promise.all([projects(env, url), buildSite(env, url), content(env, url, "blog")]);
+      const journal = site.pages.journal ? ["/journal", ...(blog || []).filter((p) => !p.draft).map((p) => `/journal/${p.slug}`)] : [];
+      const pages = ["/", ...["work", "about", "progress", "contact"].filter((k) => site.pages[k]).map((k) => (k === "progress" ? "/in-progress" : `/${k}`)), ...(site.pages.film ? ["/film"] : []), ...journal, ...list.map((p) => `/work/${p.slug}`)];
       const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map((p) => `  <url><loc>${SITE}${p}</loc></url>`).join("\n")}\n</urlset>\n`;
       return new Response(xml, { headers: { "content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600" } });
     }

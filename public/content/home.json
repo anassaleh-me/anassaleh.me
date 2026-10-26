@@ -1,0 +1,73 @@
+{
+  "headline": "Visual artist and art director",
+  "intro": "Art direction, design, 3D, motion, film and drawing.",
+  "statement": "I direct, design, model, animate, film and [draw].",
+  "statementSub": "Artist and art director. I shape the idea and see it through, from the first pencil line to the final frame. Based in Dubai.",
+  "heroImage": "/images/portrait-v2.webp",
+  "heroDepth": "/images/portrait-v2-depth.png",
+  "heroGlow": "light",
+  "disciplines": {
+    "show": true,
+    "items": [
+      {
+        "title": "Art direction",
+        "filter": "direction",
+        "image": "/images/covers/mangobot-production.webp"
+      },
+      {
+        "title": "Design",
+        "filter": "design",
+        "image": "/images/covers/mangobot-brand-identity.webp"
+      },
+      {
+        "title": "3D",
+        "filter": "3d",
+        "image": "/images/covers/g2-humanoid-robot.webp"
+      },
+      {
+        "title": "Motion",
+        "filter": "motion",
+        "image": "/images/covers/intro-video.webp"
+      },
+      {
+        "title": "Film",
+        "filter": "film",
+        "image": "/images/covers/exoskeleton-film.webp"
+      },
+      {
+        "title": "Drawing",
+        "filter": "drawing",
+        "image": "/images/drawings/drawing-3.webp"
+      }
+    ]
+  },
+  "works": {
+    "show": true,
+    "label": "Works '26"
+  },
+  "spider": {
+    "show": true,
+    "title": "Mechanical Spider",
+    "text": "A creature I designed, modeled, rigged and animated in Blender. Soon you'll be able to turn it around right here.",
+    "poster": "/images/covers/mechanical-spider.webp",
+    "link": "/work/mechanical-spider"
+  },
+  "inProgress": {
+    "show": true
+  },
+  "drawings": {
+    "show": true,
+    "title": "I also draw",
+    "text": "Traditional drawing in pencil and charcoal, mostly portraits. Faces, expressions and the small details that make a person who they are.",
+    "images": [
+      "/images/drawings/drawing-1.webp",
+      "/images/drawings/drawing-2.webp",
+      "/images/drawings/drawing-3.webp",
+      "/images/drawings/drawing-4.webp",
+      "/images/drawings/drawing-5.webp"
+    ]
+  },
+  "contact": {
+    "show": true
+  }
+}

@@ -61,7 +61,9 @@ const fl = { x: innerWidth / 2, y: innerHeight / 2, tx: innerWidth / 2, ty: inne
 addEventListener("pointermove", (e) => { fl.tx = e.clientX; fl.ty = e.clientY; }, { passive: true });
 list.addEventListener("pointerover", (e) => {
   const row = e.target.closest(".ix__row");
-  if (!row || float.dataset.src === row.dataset.cover) return;
+  if (!row) return;
+  float.classList.add("on");
+  if (float.dataset.src === row.dataset.cover) return;
   float.dataset.src = row.dataset.cover;
   const img = new Image();
   img.alt = ""; img.style.opacity = "0";

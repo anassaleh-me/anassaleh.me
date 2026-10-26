@@ -32,7 +32,7 @@ export function mountWorksWheel(root, { items, label, meta = () => "", cover }) 
     const w = stage.clientWidth, h = stage.clientHeight;
     const cardW = Math.min(h * G.CARD_H * G.RATIO, w * (w < 760 ? 0.5 : G.CARD_MAX_W)), cardH = cardW / G.RATIO;
     Object.assign(M, { cardW, cardH, drumR: cardH * G.DRUM, ringR: cardH * G.RING_R, bow: cardH * G.BOW, lens: cardH * G.LENS });
-    M.ringScale = clamp((((2 * Math.PI * M.ringR) / items.length) * 0.82) / cardW, 0.16, 1);
+    M.ringScale = clamp((((2 * Math.PI * M.ringR) / items.length) * 0.82) / cardW, 0.16, w < 760 ? 0.55 : 1);
     cards.forEach((c) => { c.style.width = `${cardW}px`; c.style.height = `${cardH}px`; c.style.margin = `${-cardH / 2}px 0 0 ${-cardW / 2}px`; });
   };
   measure();

@@ -10,9 +10,12 @@ export const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 export const esc = (s = "") => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 export const accent = (s = "") => esc(s).replace(/\[([^\]]+)\]/g, '<span class="acc">$1</span>');
 export const pad = (n) => String(n).padStart(2, "0");
-// category names come from Pages CMS (Work > Categories); these are only used until the content has loaded
-export const CAT = { direction: "Art direction", branding: "Branding", graphic: "Graphic design", "3d": "3D", motion: "Motion", film: "Film", web: "Web", drawing: "Drawing" };
-export const cats = (p) => (p.categories || []).map((c) => CAT[c] || c).join(" · ");
+// categories are names typed on each project; "Art direction" -> "art-direction" is the key used to match them
+export const slug = (s) => String(s || "").toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+// names as set on the Work page (Work page > Categories) win over the spelling typed on a project
+export const CAT = {};
+export const cats = (p) => (p.categories || []).map((c) => CAT[slug(c)] || c).join(" · ");
+export const inCategory = (p, key) => (p.categories || []).some((c) => slug(c) === key);
 // the menu links, in order, for the pages that are switched on
 export const navLinks = (site) => [
   ["work", "/work", "Work"], ["about", "/about", "About"], ["progress", "/in-progress", "In progress"], ["journal", "/journal", "Journal"],

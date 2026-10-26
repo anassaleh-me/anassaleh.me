@@ -11,32 +11,32 @@
     "items": [
       {
         "title": "Art direction",
-        "filter": "direction",
+        "filter": "Art direction",
         "image": "/images/covers/mangobot-production.webp"
       },
       {
         "title": "Design",
-        "filter": "design",
+        "filter": "Design",
         "image": "/images/covers/mangobot-brand-identity.webp"
       },
       {
         "title": "3D",
-        "filter": "3d",
+        "filter": "3D",
         "image": "/images/covers/g2-humanoid-robot.webp"
       },
       {
         "title": "Motion",
-        "filter": "motion",
+        "filter": "Motion",
         "image": "/images/covers/intro-video.webp"
       },
       {
         "title": "Film",
-        "filter": "film",
+        "filter": "Film",
         "image": "/images/covers/exoskeleton-film.webp"
       },
       {
         "title": "Drawing",
-        "filter": "drawing",
+        "filter": "Drawing",
         "image": "/images/drawings/drawing-3.webp"
       }
     ]

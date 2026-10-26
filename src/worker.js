@@ -24,7 +24,7 @@ async function content(env, url, name) {
 // The combined content the pages read. Every page file has a "show" switch; a missing switch means shown.
 async function buildSite(env, url) {
   const names = ["settings", "home", "work", "about", "contact", "progress", "film", "journal"];
-  const [settings, home, work, about, contact, progress, film, journal] = (await Promise.all(names.map((n) => content(env, url, n)))).map((x) => x || {});
+  const [settings, home, work, about, contact, progress, film, journal, projectList] = (await Promise.all([...names.map((n) => content(env, url, n)), projects(env, url)])).map((x) => x || {});
   const on = (x) => x?.show !== false;
   const items = progress.items || [];
   return {
@@ -41,9 +41,23 @@ async function buildSite(env, url) {
     spider: home.spider || {}, drawings: home.drawings || {},
     about: { ...about, cv: settings.cv }, services: contact.services || [],
     contactPage: { headline: contact.headline, intro: contact.intro, replyNote: contact.replyNote, budgets: contact.budgets || [], sources: contact.sources || [] },
-    studio: items, inProduction: film, journal, workIntro: work.intro, workCategories: (work.categories || []).filter((c) => c.show !== false),
+    studio: items, inProduction: film, journal, workIntro: work.intro, workCategories: workCategories(work, Array.isArray(projectList) ? projectList : []),
     pages: { work: on(work), about: on(about), contact: on(contact), progress: on(progress) && items.length > 0, film: film.show === true, journal: journal.show === true },
   };
+}
+
+// "Art direction" -> "art-direction": the key used in Work page addresses (?f=) and to match names
+const slug = (s) => String(s || "").toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+// The Work page categories: the ones listed under Work page > Categories (in that order, with their line and banner),
+// then any other name typed on a project. A category only becomes a filter when a project uses it.
+function workCategories(work, projectList) {
+  const listed = (work.categories || []).filter((c) => c.name).map((c) => ({ key: slug(c.name), label: c.name, description: c.description || "", banner: c.banner || "", show: c.show !== false }));
+  const seen = new Set(listed.map((c) => c.key));
+  const extra = [];
+  for (const p of projectList) for (const n of p.categories || []) { const k = slug(n); if (k && !seen.has(k)) { seen.add(k); extra.push({ key: k, label: String(n).trim(), description: "", banner: "", show: true }); } }
+  const all = work.all || {};
+  return [{ key: "all", label: all.label || "All work", description: all.description || "", banner: all.banner || "" }, ...listed, ...extra].filter((c) => c.show !== false);
 }
 
 // which switch hides which address

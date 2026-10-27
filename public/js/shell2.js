@@ -55,25 +55,17 @@ export const byDate = (list) => list.slice().sort((a, b) => when(b).localeCompar
 // phones and tablets: no hover, so pictures that follow the pointer stay off
 export const canHover = matchMedia("(hover: hover) and (pointer: fine)").matches;
 
-// each piece takes width in proportion to its shape, so a row lines up at one height; a piece smaller than the
-// page is never blown up past its own size; loops play only while on screen
+// every row fills the full width, and each piece takes width in proportion to its shape, so a row lines up at one
+// height; loops play only while on screen
 export function fitRows(root = document) {
   $$(".pj-row figure", root).forEach((f) => {
     const el = f.firstElementChild;
     const fit = (w, h) => {
       if (!w || !h) return;
-      f.dataset.r = w / h;
-      f.style.flex = `${w / h} 1 0`;
+      // (scaled up: if the shares add up to less than 1, a flex row leaves part of its width empty)
+      f.style.flex = `${(w / h) * 100} 1 0`;
       // a video has no shape of its own until it loads, so it gets one; images already keep theirs
       if (el.tagName === "VIDEO") el.style.aspectRatio = `${w} / ${h}`;
-      // a row of tall pieces (portrait videos, posters) is never taller than the screen; long strips stay full width
-      const row = f.parentElement, figs = [...row.children];
-      if (figs.every((x) => x.dataset.r)) {
-        const sum = figs.reduce((s, x) => s + Number(x.dataset.r), 0);
-        row.style.maxWidth = sum >= 0.45 ? `calc(${sum} * 88vh + ${(figs.length - 1) * 18}px)` : "";
-        row.style.marginInline = "auto";
-      }
-      if (f.parentElement.children.length === 1) f.style.maxWidth = `${w}px`;
     };
     if (el.tagName === "VIDEO") {
       const still = new Image();

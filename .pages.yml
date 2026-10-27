@@ -130,6 +130,10 @@ content:
         list: true
       - { name: client, label: Client, type: string }
       - { name: year, label: Year, type: string }
+      - name: date
+        label: "Date for the order (year-month, e.g. 2025-10). Newest shows first"
+        type: string
+        pattern: { regex: '^(\d{4}-\d{2})?$', message: "Write it as year-month, for example 2025-10" }
       - { name: role, label: My role, type: string }
       - { name: format, label: Format, type: string }
       - { name: tools, label: Tools and gear, type: string }

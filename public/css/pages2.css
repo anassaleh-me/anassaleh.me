@@ -25,7 +25,17 @@
 
 /* ---------- work gallery: every project as its cover, title and details under it ---------- */
 .ix { padding-block: 0 clamp(80px, 11vw, 160px); }
-.ix__filter { margin-bottom: clamp(22px, 3vw, 36px); }
+.ix__filter { position: sticky; top: var(--bar-top, 84px); z-index: 40; margin: 0 -12px clamp(22px, 3vw, 36px); padding: 10px 12px; border-radius: 26px;
+  transition: top 0.55s var(--ease), background-color 0.35s, box-shadow 0.35s; }
+/* stuck: a glass bar, like the nav */
+.ix__filter.is-stuck { background: rgba(241, 236, 226, 0.8); -webkit-backdrop-filter: blur(16px) saturate(1.2); backdrop-filter: blur(16px) saturate(1.2); box-shadow: 0 12px 34px rgba(20, 20, 18, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.5); }
+.ix__filter.is-stuck .ix__note { display: none; }
+/* phones: the chips are one row that scrolls sideways, so the bar stays short */
+@media (max-width: 760px) {
+  .chips { flex-wrap: nowrap; overflow-x: auto; padding: 4px 2px; margin: -4px -2px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip { flex: none; height: 40px; padding: 0 16px; }
+}
 .ix__filter:has(+ .wb.on) .ix__note { display: none; }
 .ix__note { margin-top: 14px; color: var(--ink-soft); font-size: 0.95em; }
 .ix__head { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; margin-bottom: clamp(24px, 3vw, 40px); }

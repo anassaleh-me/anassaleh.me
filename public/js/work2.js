@@ -2,7 +2,7 @@
 // ?f=<filter> in the URL picks the starting chip (the home page's discipline words link here).
 import { shell, $, $$, esc, cats, thumb, inCategory } from "/js/shell2.js";
 
-const { site, projects, reveal } = await shell({ current: "work" });
+const { site, projects, lenis, reveal } = await shell({ current: "work" });
 if (site.workIntro) $(".ph__foot p").textContent = site.workIntro;
 
 // [key, chip label, test, the short line shown under the chips]. The categories, their names and lines come from
@@ -61,7 +61,33 @@ function apply(key, { first = false } = {}) {
   if (first) build(); else { list.classList.add("swap"); setTimeout(build, 300); }
 }
 
-chips.addEventListener("click", (e) => { const b = e.target.closest("[data-f]"); if (b) apply(b.dataset.f); });
+// the filter bar stays on screen while the projects scroll by: just under the nav, or at the very top while the nav
+// is away; it turns to glass once it sticks
+const bar = $(".ix__filter"), nav = $(".pill-nav");
+// (the nav's resting bottom edge comes from its top and height, so a nav still sliding in or out doesn't count)
+const place = () => {
+  const away = !nav || nav.classList.contains("is-away");
+  const navBottom = nav ? parseFloat(getComputedStyle(nav).top) + nav.offsetHeight : 0;
+  bar.style.setProperty("--bar-top", `${away ? 12 : Math.round(navBottom) + 10}px`);
+};
+const stuck = () => bar.classList.toggle("is-stuck", bar.getBoundingClientRect().top <= parseFloat(getComputedStyle(bar).top) + 1);
+if (nav) new MutationObserver(place).observe(nav, { attributes: true, attributeFilter: ["class"] });
+place(); stuck();
+addEventListener("resize", place);
+addEventListener("scroll", stuck, { passive: true });
+
+chips.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-f]");
+  if (!b) return;
+  // on a phone the chips are one row that scrolls sideways: bring the picked one to the middle
+  chips.scrollTo({ left: b.offsetLeft - (chips.clientWidth - b.offsetWidth) / 2, behavior: "smooth" });
+  // picked far down the page: go back up to the first projects of the new filter
+  if (bar.classList.contains("is-stuck")) {
+    const y = $("#index").getBoundingClientRect().top + scrollY - parseFloat(getComputedStyle(bar).top);
+    lenis ? lenis.scrollTo(y) : scrollTo({ top: y, behavior: "smooth" });
+  }
+  apply(b.dataset.f);
+});
 // old addresses (?f=video, ?f=design) still land on the right chip
 // older shared links (?f=video, ?f=3d...) open the category that replaced them
 const ALIAS = { video: "video-production", film: "video-production", design: "branding-graphic-design", graphic: "branding-graphic-design", "graphic-design": "branding-graphic-design", branding: "branding-graphic-design", "3d": "3d-design", motion: "animation", direction: "art-direction", web: "ui-ux", drawing: "traditional-art" };

@@ -42,7 +42,17 @@
 .ix__row:hover .ix__t, .ix__row:focus-visible .ix__t { color: var(--acc-t); }
 .ix__row:hover .ix__img img { transform: scale(1.05); }
 @media (max-width: 960px) { .ix__list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 560px) { .ix__list { grid-template-columns: minmax(0, 1fr); } }
+/* phones: a list, each project with a small cover beside its name (as before the gallery) */
+@media (max-width: 760px) {
+  .ix__list { display: block; border-top: 1px solid rgba(29, 29, 27, 0.14); }
+  .ix__list li { border-bottom: 1px solid rgba(29, 29, 27, 0.14); }
+  .ix__row { display: grid; grid-template-columns: 96px minmax(0, 1fr) auto; align-items: baseline; gap: 6px 14px; padding: 20px 0; }
+  .ix__img { grid-column: 1; grid-row: 1 / span 2; align-self: center; margin: 0; border-radius: 8px; }
+  .ix__t { grid-column: 2; font-size: clamp(22px, 6vw, 26px); }
+  .ix__s { display: none; }
+  .ix__c { grid-column: 2; grid-row: 2; }
+  .ix__y { position: static; grid-column: 3; grid-row: 1; padding: 0; background: none; color: var(--ink-soft); text-align: right; }
+}
 
 /* ---------- contact band ---------- */
 .cta-band { padding-block: clamp(90px, 12vw, 170px); text-align: center; }

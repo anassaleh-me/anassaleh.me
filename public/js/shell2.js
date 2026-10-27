@@ -72,10 +72,18 @@ export function fitRows(root = document) {
     if (el.complete && el.naturalWidth) fit(el.naturalWidth, el.naturalHeight);
     el.addEventListener("load", () => fit(el.naturalWidth, el.naturalHeight));
   });
+  // loops start when they come on screen; iPhones only start a video by themselves when it is muted (set here as well
+  // as in the markup), and not at all in Low Power Mode, so then a play mark shows and a tap starts it
+  const start = (v) => v.play().then(() => v.parentElement.classList.remove("is-paused")).catch(() => v.parentElement.classList.add("is-paused"));
   const loopIO = new IntersectionObserver((es) => es.forEach((e) => {
-    if (e.isIntersecting) { e.target.preload = "auto"; e.target.play().catch(() => {}); } else e.target.pause();
+    const v = e.target;
+    if (e.isIntersecting) { v.muted = v.defaultMuted = true; v.preload = "auto"; start(v); } else v.pause();
   }), { rootMargin: "200px 0px" });
-  $$(".pj-row video", root).forEach((v) => loopIO.observe(v));
+  $$(".pj-row video", root).forEach((v) => {
+    v.muted = v.defaultMuted = true;
+    loopIO.observe(v);
+    v.parentElement.addEventListener("click", () => { if (v.paused) start(v); });
+  });
 }
 
 // formatted text from the CMS: keep simple tags and safe links only

@@ -63,7 +63,8 @@ export function fitRows(root = document) {
     const fit = (w, h) => {
       if (!w || !h) return;
       f.style.flex = `${w / h} 1 0`;
-      f.style.aspectRatio = `${w} / ${h}`;
+      // a video has no shape of its own until it loads, so it gets one; images already keep theirs
+      if (el.tagName === "VIDEO") el.style.aspectRatio = `${w} / ${h}`;
       if (f.parentElement.children.length === 1) f.style.maxWidth = `${w}px`;
     };
     if (el.tagName === "VIDEO") {

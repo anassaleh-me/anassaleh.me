@@ -36,7 +36,9 @@ export function rowsHTML(rows = [], title = "", { rich = false } = {}) {
     count++;
     if (/\.(mp4|webm)$/i.test(src)) {
       const poster = src.replace(/\.(mp4|webm)$/i, "-poster.webp");
-      return `<video src="${esc(src)}" poster="${esc(poster)}" muted loop playsinline preload="none" aria-label="${esc(title)}, animation ${count}"></video>`;
+      // the poster sits underneath as a plain image and gives the piece its shape, so a loop is never cropped even
+      // before (or without) the video loading; the video plays on top of it
+      return `<img class="pj-still" src="${esc(poster)}" alt="" loading="lazy" decoding="async"><video src="${esc(src)}" poster="${esc(poster)}" muted loop playsinline preload="none" aria-label="${esc(title)}, animation ${count}"></video>`;
     }
     return `<img src="${esc(src)}" alt="${esc(title)}, image ${count}" loading="lazy" decoding="async">`;
   };
@@ -59,24 +61,16 @@ export const canHover = matchMedia("(hover: hover) and (pointer: fine)").matches
 // height; loops play only while on screen
 export function fitRows(root = document) {
   $$(".pj-row figure", root).forEach((f) => {
-    const el = f.firstElementChild;
+    // a loop is measured by its poster image underneath
+    const el = f.querySelector("img");
     const fit = (w, h) => {
       if (!w || !h) return;
       // (scaled up: if the shares add up to less than 1, a flex row leaves part of its width empty)
       f.style.flex = `${(w / h) * 100} 1 0`;
-      // a video has no shape of its own until it loads, so it gets one; images already keep theirs
-      if (el.tagName === "VIDEO") el.style.aspectRatio = `${w} / ${h}`;
     };
-    if (el.tagName === "VIDEO") {
-      const still = new Image();
-      still.onload = () => fit(still.naturalWidth, still.naturalHeight);
-      still.src = el.poster;
-      el.addEventListener("loadedmetadata", () => fit(el.videoWidth, el.videoHeight));
-    } else {
-      // Safari reports a lazy image that hasn't loaded yet as complete with no size, so also wait for it to load
-      if (el.complete && el.naturalWidth) fit(el.naturalWidth, el.naturalHeight);
-      el.addEventListener("load", () => fit(el.naturalWidth, el.naturalHeight));
-    }
+    // Safari reports a lazy image that hasn't loaded yet as complete with no size, so also wait for it to load
+    if (el.complete && el.naturalWidth) fit(el.naturalWidth, el.naturalHeight);
+    el.addEventListener("load", () => fit(el.naturalWidth, el.naturalHeight));
   });
   const loopIO = new IntersectionObserver((es) => es.forEach((e) => {
     if (e.isIntersecting) { e.target.preload = "auto"; e.target.play().catch(() => {}); } else e.target.pause();

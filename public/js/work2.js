@@ -1,6 +1,6 @@
 // Work page (stage 3): filter chips over an index of every project (the works wheel lives on the home page).
 // ?f=<filter> in the URL picks the starting chip (the home page's discipline words link here).
-import { shell, $, $$, esc, lerp, clamp, pad, cats, thumb, inCategory } from "/js/shell2.js";
+import { shell, $, $$, esc, lerp, clamp, pad, cats, thumb, inCategory, canHover } from "/js/shell2.js";
 
 const { site, projects, reveal } = await shell({ current: "work" });
 if (site.workIntro) $(".ph__foot p").textContent = site.workIntro;
@@ -82,7 +82,7 @@ const fl = { x: innerWidth / 2, y: innerHeight / 2, tx: innerWidth / 2, ty: inne
 addEventListener("pointermove", (e) => { fl.tx = e.clientX; fl.ty = e.clientY; }, { passive: true });
 list.addEventListener("pointerover", (e) => {
   const row = e.target.closest(".ix__row");
-  if (!row) return;
+  if (!row || !canHover) return;
   float.classList.add("on");
   if (float.dataset.src === row.dataset.cover) return;
   float.dataset.src = row.dataset.cover;

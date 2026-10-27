@@ -4,7 +4,7 @@ import { mountHero } from "/js/hero2.js";
 import { mountPillNav } from "/js/nav.js";
 import { mountRingCursor } from "/js/cursors.js";
 import { mountWorksWheel } from "/js/works-wheel.js";
-import { navLinks, ctaLink } from "/js/shell2.js";
+import { navLinks, ctaLink, byDate, canHover } from "/js/shell2.js";
 import { getJSON, prefetchOnHover } from "/js/data.js";
 import { mountMailButton } from "/js/mailto.js";
 
@@ -34,7 +34,7 @@ const [site, all] = await Promise.all([
   getJSON("/content/site.json"),
   getJSON("/content/projects.json"),
 ]);
-const projects = all.filter((p) => !p.draft);
+const projects = byDate(all.filter((p) => !p.draft));
 (site.workCategories || []).forEach((c) => { if (c.key && c.label && c.key !== "all") CAT[c.key] = c.label; });
 
 /* ---------- sections switched off in Pages CMS (Home) are taken out before anything else runs ---------- */
@@ -181,7 +181,7 @@ const showImg = (src) => {
 };
 disc.addEventListener("pointerover", (e) => {
   const t = e.target.closest("[data-i]");
-  if (!t) return;
+  if (!t || !canHover) return;
   const d = discs[Number(t.dataset.i)];
   clearInterval(cycle);
   // random order every time, but only this discipline's work

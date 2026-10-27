@@ -47,6 +47,14 @@ export function rowsHTML(rows = [], title = "", { rich = false } = {}) {
     </div>`).join("");
 }
 
+// newest first: by the last year in "Year" ("2024 to 2026" counts as 2026), then the first; projects from the same
+// year keep their Pages CMS order
+const years = (p) => (String(p.year || "").match(/\d{4}/g) || ["0"]).map(Number);
+export const byDate = (list) => list.slice().sort((a, b) => { const A = years(a), B = years(b); return B[B.length - 1] - A[A.length - 1] || B[0] - A[0]; });
+
+// phones and tablets: no hover, so pictures that follow the pointer stay off
+export const canHover = matchMedia("(hover: hover) and (pointer: fine)").matches;
+
 // each piece takes width in proportion to its shape, so a row lines up at one height; a piece smaller than the
 // page is never blown up past its own size; loops play only while on screen
 export function fitRows(root = document) {
@@ -63,8 +71,11 @@ export function fitRows(root = document) {
       still.onload = () => fit(still.naturalWidth, still.naturalHeight);
       still.src = el.poster;
       el.addEventListener("loadedmetadata", () => fit(el.videoWidth, el.videoHeight));
-    } else if (el.complete) fit(el.naturalWidth, el.naturalHeight);
-    else el.addEventListener("load", () => fit(el.naturalWidth, el.naturalHeight));
+    } else {
+      // Safari reports a lazy image that hasn't loaded yet as complete with no size, so also wait for it to load
+      if (el.complete && el.naturalWidth) fit(el.naturalWidth, el.naturalHeight);
+      el.addEventListener("load", () => fit(el.naturalWidth, el.naturalHeight));
+    }
   });
   const loopIO = new IntersectionObserver((es) => es.forEach((e) => {
     if (e.isIntersecting) { e.target.preload = "auto"; e.target.play().catch(() => {}); } else e.target.pause();
@@ -96,7 +107,7 @@ export async function shell({ current = "" } = {}) {
     getJSON("/content/site.json"),
     getJSON("/content/projects.json"),
   ]);
-  const projects = all.filter((p) => !p.draft);
+  const projects = byDate(all.filter((p) => !p.draft));
   (site.workCategories || []).forEach((c) => { if (c.key && c.label && c.key !== "all") CAT[c.key] = c.label; });
 
   mountPillNav({

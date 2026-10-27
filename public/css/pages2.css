@@ -33,7 +33,7 @@
 .ix__list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(36px, 4vw, 60px) clamp(16px, 2vw, 28px); list-style: none; margin: 0; padding: 0; }
 .ix__row { position: relative; display: flex; flex-direction: column; gap: 6px; }
 .ix__img { order: -1; margin-bottom: 12px; aspect-ratio: 1.28; border-radius: 12px; overflow: hidden; background: var(--cream-2); }
-.ix__img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.9s var(--ease), filter 0.6s; }
+.ix__img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.9s var(--ease); }
 .ix__n { display: none; }
 .ix__t { font-size: clamp(20px, 1.7vw, 28px); line-height: 1; transition: color 0.35s; }
 .ix__s { color: var(--ink-soft); font-size: 0.95em; }
@@ -41,9 +41,18 @@
 .ix__y { position: absolute; top: 14px; right: 14px; padding: 6px 10px; border-radius: 999px; background: rgba(241, 236, 226, 0.88); color: var(--char); font-weight: 700; font-size: 12px; letter-spacing: 0.1em; }
 .ix__row:hover .ix__t, .ix__row:focus-visible .ix__t { color: var(--acc-t); }
 .ix__row:hover .ix__img img { transform: scale(1.05); }
-.ix__list:hover .ix__row:not(:hover) .ix__img img { filter: saturate(0.4) brightness(0.92); }
 @media (max-width: 960px) { .ix__list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 560px) { .ix__list { grid-template-columns: minmax(0, 1fr); } }
+/* phones: a list, each project with a small cover beside its name (as before the gallery) */
+@media (max-width: 760px) {
+  .ix__list { display: block; border-top: 1px solid rgba(29, 29, 27, 0.14); }
+  .ix__list li { border-bottom: 1px solid rgba(29, 29, 27, 0.14); }
+  .ix__row { display: grid; grid-template-columns: 96px minmax(0, 1fr) auto; align-items: baseline; gap: 6px 14px; padding: 20px 0; }
+  .ix__img { grid-column: 1; grid-row: 1 / span 2; align-self: center; margin: 0; border-radius: 8px; }
+  .ix__t { grid-column: 2; font-size: clamp(22px, 6vw, 26px); }
+  .ix__s { display: none; }
+  .ix__c { grid-column: 2; grid-row: 2; }
+  .ix__y { position: static; grid-column: 3; grid-row: 1; padding: 0; background: none; color: var(--ink-soft); text-align: right; }
+}
 
 /* ---------- contact band ---------- */
 .cta-band { padding-block: clamp(90px, 12vw, 170px); text-align: center; }
@@ -88,6 +97,11 @@
 .pj-row img { display: block; width: 100%; height: auto; }
 /* a loop plays over its poster, which holds the shape */
 .pj-row video { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
+/* when the phone won't start a loop by itself (iPhone in Low Power Mode), a play mark shows and a tap starts it */
+.pj-row figure.is-paused { cursor: pointer; }
+.pj-row figure.is-paused::after { content: ""; position: absolute; left: 50%; top: 50%; width: 58px; height: 58px; margin: -29px 0 0 -29px; border-radius: 50%;
+  background: rgba(29, 29, 27, 0.6) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5v14l11-7z' fill='%23f1ece2'/%3E%3C/svg%3E") 56% 50% / 26px no-repeat;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); pointer-events: none; }
 .pj-row__text { max-width: 46ch; margin: clamp(30px, 4vw, 60px) auto clamp(16px, 2vw, 28px); font-size: clamp(20px, 1.7vw, 27px); line-height: 1.4; text-align: center; }
 .pj-row__cap { margin-top: 12px; color: var(--ink-soft); font-size: 0.92em; text-align: center; }
 /* on phones, rows of four or more become two per line */

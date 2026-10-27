@@ -8,11 +8,17 @@
 .ph__foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 28px; flex-wrap: wrap; }
 .ph__foot p { max-width: 40ch; color: var(--ink-soft); }
 
-/* ---------- filter chips ---------- */
-.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+/* ---------- filter chips: always one line; when they don't all fit, the line slides sideways (swipe, trackpad or
+   drag) and fades at the edge that has more ---------- */
+.chips { display: flex; flex-wrap: nowrap; gap: 6px; overflow-x: auto; padding: 4px 2px; margin: -4px -2px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.chips::-webkit-scrollbar { display: none; }
+.chips.more-r { -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent); mask-image: linear-gradient(90deg, #000 88%, transparent); }
+.chips.more-l { -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%); mask-image: linear-gradient(90deg, transparent, #000 12%); }
+.chips.more-l.more-r { -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+.chips.drag { cursor: grabbing; }
 .chip {
-  height: 44px; padding: 0 20px; border-radius: 999px; border: 1.5px solid rgba(29, 29, 27, 0.2);
-  font-weight: 700; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase;
+  flex: none; height: 42px; padding: 0 16px; border-radius: 999px; border: 1.5px solid rgba(29, 29, 27, 0.2);
+  font-weight: 700; font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase;
   transition: background-color 0.35s, color 0.35s, border-color 0.35s, transform 0.5s var(--ease);
 }
 .chip:hover { border-color: var(--acc-t); color: var(--char); transform: translateY(-2px); }
@@ -30,12 +36,8 @@
 /* stuck: a glass bar, like the nav */
 .ix__filter.is-stuck { background: rgba(241, 236, 226, 0.8); -webkit-backdrop-filter: blur(16px) saturate(1.2); backdrop-filter: blur(16px) saturate(1.2); box-shadow: 0 12px 34px rgba(20, 20, 18, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.5); }
 .ix__filter.is-stuck .ix__note { display: none; }
-/* phones: the chips are one row that scrolls sideways, so the bar stays short */
-@media (max-width: 760px) {
-  .chips { flex-wrap: nowrap; overflow-x: auto; padding: 4px 2px; margin: -4px -2px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-  .chips::-webkit-scrollbar { display: none; }
-  .chip { flex: none; height: 40px; padding: 0 16px; }
-}
+@media (max-width: 1366px) { .chip { font-size: 13px; padding: 0 14px; } }
+@media (max-width: 760px) { .chip { height: 40px; } }
 .ix__filter:has(+ .wb.on) .ix__note { display: none; }
 .ix__note { margin-top: 14px; color: var(--ink-soft); font-size: 0.95em; }
 .ix__head { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; margin-bottom: clamp(24px, 3vw, 40px); }

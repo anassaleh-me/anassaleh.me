@@ -16,6 +16,27 @@ const FILTERS = [
 
 const chips = $("[data-chips]");
 chips.innerHTML = FILTERS.map(([k, label]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="false">${label}</button>`).join("");
+// one line of chips: fade the side that has more, and let a mouse drag it sideways (a drag is not a click)
+const edges = () => {
+  chips.classList.toggle("more-l", chips.scrollLeft > 2);
+  chips.classList.toggle("more-r", chips.scrollLeft + chips.clientWidth < chips.scrollWidth - 2);
+};
+chips.addEventListener("scroll", edges, { passive: true });
+addEventListener("resize", edges);
+edges();
+let drag = null, dragged = false;
+chips.addEventListener("pointerdown", (e) => { if (e.pointerType === "mouse" && chips.scrollWidth > chips.clientWidth) drag = { x: e.clientX, left: chips.scrollLeft, moved: false }; });
+addEventListener("pointermove", (e) => {
+  if (!drag) return;
+  const dx = e.clientX - drag.x;
+  if (Math.abs(dx) > 5) { drag.moved = true; chips.classList.add("drag"); }
+  if (drag.moved) chips.scrollLeft = drag.left - dx;
+});
+addEventListener("pointerup", () => {
+  // the click that ends a drag is ignored; the flag clears right after it
+  if (drag?.moved) { dragged = true; setTimeout(() => (dragged = false)); }
+  drag = null; chips.classList.remove("drag");
+});
 
 const fnote = $("[data-fnote]");
 const list = $("[data-index]");
@@ -78,7 +99,7 @@ addEventListener("scroll", stuck, { passive: true });
 
 chips.addEventListener("click", (e) => {
   const b = e.target.closest("[data-f]");
-  if (!b) return;
+  if (!b || dragged) return;
   // on a phone the chips are one row that scrolls sideways: bring the picked one to the middle
   chips.scrollTo({ left: b.offsetLeft - (chips.clientWidth - b.offsetWidth) / 2, behavior: "smooth" });
   // picked far down the page: go back up to the first projects of the new filter

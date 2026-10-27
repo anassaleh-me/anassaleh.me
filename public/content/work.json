@@ -38,6 +38,18 @@
       "banner": "/images/projects/exoskeleton-film/04-poster.webp"
     },
     {
+      "name": "Illustration",
+      "show": true,
+      "description": "Vector portraits and characters, drawn in Illustrator.",
+      "banner": ""
+    },
+    {
+      "name": "Photo manipulation",
+      "show": true,
+      "description": "Worlds and characters built from photographs in Photoshop.",
+      "banner": ""
+    },
+    {
       "name": "UI & UX",
       "show": true,
       "description": "Websites, designed and built.",

@@ -47,10 +47,10 @@ export function rowsHTML(rows = [], title = "", { rich = false } = {}) {
     </div>`).join("");
 }
 
-// newest first: by the last year in "Year" ("2024 to 2026" counts as 2026), then the first; projects from the same
-// year keep their Pages CMS order
-const years = (p) => (String(p.year || "").match(/\d{4}/g) || ["0"]).map(Number);
-export const byDate = (list) => list.slice().sort((a, b) => { const A = years(a), B = years(b); return B[B.length - 1] - A[A.length - 1] || B[0] - A[0]; });
+// newest first: by "Date" (YYYY-MM) when it is set, otherwise by the last year in "Year" ("2024 to 2026" counts as
+// 2026); projects with the same date keep their Pages CMS order
+const when = (p) => (/^\d{4}-\d{2}/.test(p.date || "") ? p.date.slice(0, 7) : `${(String(p.year || "").match(/\d{4}/g) || ["0000"]).pop()}-00`);
+export const byDate = (list) => list.slice().sort((a, b) => when(b).localeCompare(when(a)));
 
 // phones and tablets: no hover, so pictures that follow the pointer stay off
 export const canHover = matchMedia("(hover: hover) and (pointer: fine)").matches;
@@ -62,9 +62,17 @@ export function fitRows(root = document) {
     const el = f.firstElementChild;
     const fit = (w, h) => {
       if (!w || !h) return;
+      f.dataset.r = w / h;
       f.style.flex = `${w / h} 1 0`;
       // a video has no shape of its own until it loads, so it gets one; images already keep theirs
       if (el.tagName === "VIDEO") el.style.aspectRatio = `${w} / ${h}`;
+      // a row of tall pieces (portrait videos, posters) is never taller than the screen; long strips stay full width
+      const row = f.parentElement, figs = [...row.children];
+      if (figs.every((x) => x.dataset.r)) {
+        const sum = figs.reduce((s, x) => s + Number(x.dataset.r), 0);
+        row.style.maxWidth = sum >= 0.45 ? `calc(${sum} * 88vh + ${(figs.length - 1) * 18}px)` : "";
+        row.style.marginInline = "auto";
+      }
       if (f.parentElement.children.length === 1) f.style.maxWidth = `${w}px`;
     };
     if (el.tagName === "VIDEO") {

@@ -23,44 +23,27 @@
 .ix__list { transition: opacity 0.3s, filter 0.3s; }
 .ix__list.swap { opacity: 0; filter: blur(10px); }
 
-/* ---------- work index ---------- */
+/* ---------- work gallery: every project as its cover, title and details under it ---------- */
 .ix { padding-block: 0 clamp(80px, 11vw, 160px); }
-.ix__img { display: none; }
 .ix__filter { margin-bottom: clamp(22px, 3vw, 36px); }
 .ix__filter:has(+ .wb.on) .ix__note { display: none; }
 .ix__note { margin-top: 14px; color: var(--ink-soft); font-size: 0.95em; }
 .ix__head { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; margin-bottom: clamp(24px, 3vw, 40px); }
 .ix__head p { color: var(--ink-soft); }
-.ix__list { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(29, 29, 27, 0.14); }
-.ix__list li { border-bottom: 1px solid rgba(29, 29, 27, 0.14); }
-.ix__row { position: relative; display: grid; grid-template-columns: 56px minmax(0, 2fr) minmax(0, 1fr) minmax(0, 0.8fr) 90px; align-items: baseline; gap: 20px; padding: 26px 0; transition: color 0.35s, padding 0.6s var(--ease); }
-.ix__row::before { content: ""; position: absolute; left: 0; bottom: -1px; height: 2px; width: 0; background: var(--accent); transition: width 0.7s var(--ease); }
-.ix__n, .ix__y { font-weight: 700; font-size: 14px; letter-spacing: 0.1em; color: var(--acc-t); }
-.ix__y { text-align: right; color: var(--ink-soft); }
-.ix__t { font-size: clamp(24px, 2.4vw, 40px); transition: transform 0.6s var(--ease); }
-.ix__s { color: var(--ink-soft); }
-.ix__c { font-weight: 600; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); }
-.ix__list:hover .ix__row { color: rgba(29, 29, 27, 0.35); }
-.ix__list .ix__row:hover { color: var(--char); }
-.ix__row:hover::before { width: 100%; }
-.ix__row:hover .ix__t { transform: translateX(14px); }
-@media (max-width: 860px) {
-  .ix__row { grid-template-columns: 36px minmax(0, 1fr) auto; gap: 6px 14px; padding: 20px 0; }
-  .ix__s { display: none; }
-  .ix__c { grid-column: 2; grid-row: 2; font-size: 12px; }
-  .ix__y { grid-column: 3; grid-row: 1; }
-}
-/* touch screens have no hover: each line shows its cover */
-@media (hover: none) {
-  .ix__row { grid-template-columns: 96px minmax(0, 1fr) auto; }
-  .ix__n { display: none; }
-  .ix__img { display: block; grid-column: 1; grid-row: 1 / span 2; align-self: center; aspect-ratio: 1.28; border-radius: 8px; overflow: hidden; }
-  .ix__img img { width: 100%; height: 100%; object-fit: cover; }
-  .ix__t, .ix__c { grid-column: 2; }
-  .ix__s { display: none; }
-  .ix__c { grid-row: 2; }
-  .ix__y { grid-column: 3; grid-row: 1; }
-}
+.ix__list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(36px, 4vw, 60px) clamp(16px, 2vw, 28px); list-style: none; margin: 0; padding: 0; }
+.ix__row { position: relative; display: flex; flex-direction: column; gap: 6px; }
+.ix__img { order: -1; margin-bottom: 12px; aspect-ratio: 1.28; border-radius: 12px; overflow: hidden; background: var(--cream-2); }
+.ix__img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.9s var(--ease), filter 0.6s; }
+.ix__n { display: none; }
+.ix__t { font-size: clamp(20px, 1.7vw, 28px); line-height: 1; transition: color 0.35s; }
+.ix__s { color: var(--ink-soft); font-size: 0.95em; }
+.ix__c { font-weight: 600; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); }
+.ix__y { position: absolute; top: 14px; right: 14px; padding: 6px 10px; border-radius: 999px; background: rgba(241, 236, 226, 0.88); color: var(--char); font-weight: 700; font-size: 12px; letter-spacing: 0.1em; }
+.ix__row:hover .ix__t, .ix__row:focus-visible .ix__t { color: var(--acc-t); }
+.ix__row:hover .ix__img img { transform: scale(1.05); }
+.ix__list:hover .ix__row:not(:hover) .ix__img img { filter: saturate(0.4) brightness(0.92); }
+@media (max-width: 960px) { .ix__list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .ix__list { grid-template-columns: minmax(0, 1fr); } }
 
 /* ---------- contact band ---------- */
 .cta-band { padding-block: clamp(90px, 12vw, 170px); text-align: center; }
@@ -391,3 +374,4 @@
 
 .ab-tools__group + .ab-tools__group { margin-top: clamp(36px, 4vw, 56px); }
 .ab-tools__h { font-weight: 700; font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--cream-soft); margin-bottom: 16px; }
+

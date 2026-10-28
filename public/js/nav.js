@@ -1,5 +1,7 @@
 // Floating glass pill nav. Hides on scroll down, returns on scroll up or when the pointer nears the top.
 // Switches to its dark style over elements marked [data-dark].
+// A page can set nav.quietTop = true (the pointer near the top then leaves the nav alone, e.g. while a bar sits there)
+// and call nav.hold(ms) (the nav keeps its state while the page scrolls itself).
 export function mountPillNav({ links = [], logo = "", name = "Anas Saleh", cta = { href: "/contact", label: "Contact" }, current = "" } = {}) {
   const nav = document.createElement("nav");
   nav.className = "pill-nav";
@@ -19,14 +21,16 @@ export function mountPillNav({ links = [], logo = "", name = "Anas Saleh", cta =
   });
   nav.querySelector(".pn-panel").addEventListener("click", () => { nav.classList.remove("is-open"); menuBtn.setAttribute("aria-expanded", "false"); });
 
-  let lastY = scrollY, away = false, nearTop = false, hovering = false;
+  let lastY = scrollY, away = false, nearTop = false, hovering = false, holdUntil = 0;
+  nav.quietTop = false;
+  nav.hold = (ms) => { holdUntil = performance.now() + ms; };
   const set = () => {
     const show = !away || nearTop || hovering || nav.matches(":focus-within");
     nav.classList.toggle("is-away", !show);
   };
   addEventListener("scroll", () => {
     const y = scrollY;
-    if (Math.abs(y - lastY) > 4) away = y > lastY && y > 120;
+    if (Math.abs(y - lastY) > 4 && performance.now() > holdUntil) away = y > lastY && y > 120;
     lastY = y;
     // dark style over dark sections
     const mid = 40;
@@ -37,7 +41,7 @@ export function mountPillNav({ links = [], logo = "", name = "Anas Saleh", cta =
     nav.classList.toggle("is-dark", dark);
     set();
   }, { passive: true });
-  addEventListener("pointermove", (e) => { nearTop = e.clientY < 90; set(); }, { passive: true });
+  addEventListener("pointermove", (e) => { nearTop = e.clientY < 90 && !nav.quietTop; set(); }, { passive: true });
   nav.addEventListener("pointerenter", () => { hovering = true; set(); });
   nav.addEventListener("pointerleave", () => { hovering = false; set(); });
   return nav;

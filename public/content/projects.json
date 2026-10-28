@@ -797,7 +797,7 @@
     "draft": false,
     "cover": "/images/covers/intro-video.webp",
     "description": "A short self-introduction that shows the range of what I do: illustration, graphic design, motion graphics, 3D and video editing, cut together in one piece.",
-    "video": "https://www-ccv.adobe.io/v1/player/ccv/4EkPLDqBJA6/embed",
+    "video": "<iframe title=\"vimeo-player\" src=\"https://player.vimeo.com/video/1240411864?h=77e8272265\" width=\"640\" height=\"360\" frameborder=\"0\" referrerpolicy=\"strict-origin-when-cross-origin\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\"   allowfullscreen></iframe>",
     "blocks": [
       {
         "images": [

@@ -91,7 +91,12 @@ const place = () => {
   const navBottom = nav ? parseFloat(getComputedStyle(nav).top) + nav.offsetHeight : 0;
   bar.style.setProperty("--bar-top", `${away ? 12 : Math.round(navBottom) + 10}px`);
 };
-const stuck = () => bar.classList.toggle("is-stuck", bar.getBoundingClientRect().top <= parseFloat(getComputedStyle(bar).top) + 1);
+// while the bar sticks, reaching for a chip near the top must not call the nav down over it
+const stuck = () => {
+  const on = bar.getBoundingClientRect().top <= parseFloat(getComputedStyle(bar).top) + 1;
+  bar.classList.toggle("is-stuck", on);
+  if (nav) nav.quietTop = on;
+};
 if (nav) new MutationObserver(place).observe(nav, { attributes: true, attributeFilter: ["class"] });
 place(); stuck();
 addEventListener("resize", place);
@@ -104,6 +109,8 @@ chips.addEventListener("click", (e) => {
   chips.scrollTo({ left: b.offsetLeft - (chips.clientWidth - b.offsetWidth) / 2, behavior: "smooth" });
   // picked far down the page: go back up to the first projects of the new filter
   if (bar.classList.contains("is-stuck")) {
+    // the page scrolls itself here, so the nav keeps its state and the bar stays where it is
+    nav?.hold(1600);
     const y = $("#index").getBoundingClientRect().top + scrollY - parseFloat(getComputedStyle(bar).top);
     lenis ? lenis.scrollTo(y) : scrollTo({ top: y, behavior: "smooth" });
   }

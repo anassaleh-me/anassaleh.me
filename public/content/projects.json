@@ -174,7 +174,7 @@
     "draft": false,
     "cover": "/images/covers/mechanical-spider.webp",
     "description": "An unknown mechanical spider wakes up inside a sterile white room. Captured after a mysterious arrival on Earth, it explores the space and itself while people watch from behind reinforced glass. The scene is about isolation, confusion and the feeling of being observed. I made everything myself: character design, modeling and texturing, rigging, animation, lighting, sound design and the final edit.",
-    "video": "https://www-ccv.adobe.io/v1/player/ccv/QMIEnuLQmFf/embed",
+    "video": "<iframe title=\"vimeo-player\" src=\"https://player.vimeo.com/video/1240407249?h=98ce1a170c\" width=\"640\" height=\"360\" frameborder=\"0\" referrerpolicy=\"strict-origin-when-cross-origin\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\"   allowfullscreen></iframe>",
     "blocks": [
       {
         "images": [
@@ -881,54 +881,40 @@
       {
         "images": [
           "/images/projects/ugreen-animation/01.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/ugreen-animation/02.mp4",
           "/images/projects/ugreen-animation/03.mp4"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/ugreen-animation/04.mp4",
           "/images/projects/ugreen-animation/05.mp4",
           "/images/projects/ugreen-animation/06.mp4"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/ugreen-animation/07.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/ugreen-animation/08.mp4"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/ugreen-animation/09.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/ugreen-animation/10.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
@@ -936,31 +922,23 @@
           "/images/projects/ugreen-animation/12.webp",
           "/images/projects/ugreen-animation/13.webp",
           "/images/projects/ugreen-animation/14.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/ugreen-animation/15.webp",
           "/images/projects/ugreen-animation/16.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/ugreen-animation/17.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/ugreen-animation/18.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
@@ -968,16 +946,12 @@
           "/images/projects/ugreen-animation/20.mp4",
           "/images/projects/ugreen-animation/21.mp4",
           "/images/projects/ugreen-animation/22.mp4"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/ugreen-animation/23.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       }
     ]
   },
@@ -1002,65 +976,47 @@
       {
         "images": [
           "/images/projects/phi-monogram/01.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/phi-monogram/02.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/phi-monogram/03.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/phi-monogram/04.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/phi-monogram/05.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/phi-monogram/06.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/phi-monogram/07.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/phi-monogram/08.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/phi-monogram/09.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       }
     ]
   },
@@ -1085,72 +1041,52 @@
       {
         "images": [
           "/images/projects/dicm-theme/01.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/dicm-theme/02.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/dicm-theme/03.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/dicm-theme/04.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/dicm-theme/05.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/dicm-theme/06.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/dicm-theme/07.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/dicm-theme/08.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/dicm-theme/09.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/dicm-theme/10.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       }
     ]
   },
@@ -1210,147 +1146,111 @@
     "draft": false,
     "cover": "/images/covers/spacetoon-in-syria.webp",
     "description": "A personal series that brings the cartoon characters a whole generation grew up with on Spacetoon into well-known places in Syria.",
-    "video": "",
     "blocks": [
       {
         "text": "Hamtaro",
         "images": [
           "/images/projects/spacetoon-in-syria/01.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/spacetoon-in-syria/02.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/spacetoon-in-syria/03.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/spacetoon-in-syria/04.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "text": "Babar the Elephant",
         "images": [
           "/images/projects/spacetoon-in-syria/05.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/spacetoon-in-syria/06.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/spacetoon-in-syria/07.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/spacetoon-in-syria/08.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "text": "Animaniacs",
         "images": [
           "/images/projects/spacetoon-in-syria/09.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/spacetoon-in-syria/10.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/spacetoon-in-syria/11.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/spacetoon-in-syria/12.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "text": "The Pink Panther",
         "images": [
           "/images/projects/spacetoon-in-syria/13.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/spacetoon-in-syria/14.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/spacetoon-in-syria/15.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/spacetoon-in-syria/16.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "text": "Pinky and the Brain",
         "images": [
           "/images/projects/spacetoon-in-syria/17.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/spacetoon-in-syria/18.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/spacetoon-in-syria/19.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/spacetoon-in-syria/20.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       }
     ]
   },
@@ -1371,64 +1271,50 @@
     "draft": false,
     "cover": "/images/covers/photo-manipulation.webp",
     "description": "Worlds and characters built from photographs in Photoshop.",
-    "video": "",
     "blocks": [
       {
         "text": "We are in the universe, and the universe is in us. My entry for the ASUS ProArt Awards, on the theme Explore Beyond the Limits.",
         "images": [
           "/images/projects/photo-manipulation/01.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/photo-manipulation/02.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/photo-manipulation/03.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/photo-manipulation/04.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/photo-manipulation/05.mp4"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "text": "Disney Princess, before and after.",
         "images": [
           "/images/projects/photo-manipulation/06.webp",
           "/images/projects/photo-manipulation/07.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "text": "Ryuk from Death Note, made only in Photoshop.",
         "images": [
           "/images/projects/photo-manipulation/08.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/photo-manipulation/09.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       }
     ]
   },
@@ -1449,57 +1335,46 @@
     "draft": false,
     "cover": "/images/covers/vector-portraits.webp",
     "description": "Portraits and characters drawn as vector art in Illustrator, from film stills to cartoons.",
-    "video": "",
     "blocks": [
       {
         "text": "Squid Game. The portrait and how it was drawn.",
         "images": [
           "/images/projects/vector-portraits/01.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/vector-portraits/02.mp4",
           "/images/projects/vector-portraits/03.mp4"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "text": "Shaun the Sheep",
         "images": [
           "/images/projects/vector-portraits/04.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "text": "Emilia Clarke, from the film Me Before You, chosen for the feeling in her expression.",
         "images": [
           "/images/projects/vector-portraits/05.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/vector-portraits/06.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "text": "Yazan",
         "images": [
           "/images/projects/vector-portraits/07.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/vector-portraits/08.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       }
     ]
   },
@@ -1520,7 +1395,6 @@
     "draft": false,
     "cover": "/images/covers/social-media-design.webp",
     "description": "Posts, ads and carousels for shops, schools, hotels and brands.",
-    "video": "",
     "blocks": [
       {
         "text": "Pullman Hotels",
@@ -1528,32 +1402,28 @@
           "/images/projects/social-media-design/01.webp",
           "/images/projects/social-media-design/02.webp",
           "/images/projects/social-media-design/03.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "text": "Arkhasly online shop",
         "images": [
           "/images/projects/social-media-design/04.webp",
           "/images/projects/social-media-design/05.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "text": "This is Chocolate, Valentine's Day",
         "images": [
           "/images/projects/social-media-design/06.webp",
           "/images/projects/social-media-design/07.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "text": "Syrian International Academy",
         "images": [
           "/images/projects/social-media-design/08.webp",
           "/images/projects/social-media-design/09.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "text": "ChatGPT references, an Instagram carousel",
@@ -1561,41 +1431,33 @@
           "/images/projects/social-media-design/10.webp",
           "/images/projects/social-media-design/11.webp",
           "/images/projects/social-media-design/12.webp"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/social-media-design/13.webp",
           "/images/projects/social-media-design/14.webp",
           "/images/projects/social-media-design/15.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/social-media-design/16.webp",
           "/images/projects/social-media-design/17.webp",
           "/images/projects/social-media-design/18.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/social-media-design/19.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "text": "Golden Milestone",
         "images": [
           "/images/projects/social-media-design/20.webp",
           "/images/projects/social-media-design/21.webp"
-        ],
-        "caption": ""
+        ]
       }
     ]
   },
@@ -1616,15 +1478,13 @@
     "draft": false,
     "cover": "/images/covers/animation-studies.webp",
     "description": "Three short motion pieces, each shown with a look at how it was made in After Effects.",
-    "video": "",
     "blocks": [
       {
         "text": "Building. The animation and its After Effects process.",
         "images": [
           "/images/projects/animation-studies/01.mp4",
           "/images/projects/animation-studies/02.mp4"
-        ],
-        "caption": ""
+        ]
       },
       {
         "text": "Coffee. The animation and its After Effects breakdown.",
@@ -1632,16 +1492,14 @@
           "/images/projects/animation-studies/03.mp4",
           "/images/projects/animation-studies/04.mp4",
           "/images/projects/animation-studies/05.mp4"
-        ],
-        "caption": ""
+        ]
       },
       {
         "text": "Traffic signs. Animated signs placed into real footage.",
         "images": [
           "/images/projects/animation-studies/06.mp4",
           "/images/projects/animation-studies/07.mp4"
-        ],
-        "caption": ""
+        ]
       }
     ]
   },
@@ -1662,104 +1520,81 @@
     "draft": false,
     "cover": "/images/covers/promate-ecommerce-designs.webp",
     "description": "Product visuals for Promate's online store listings.",
-    "video": "",
     "blocks": [
       {
         "images": [
           "/images/projects/promate-ecommerce-designs/01.webp",
           "/images/projects/promate-ecommerce-designs/02.webp",
           "/images/projects/promate-ecommerce-designs/03.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/promate-ecommerce-designs/04.webp",
           "/images/projects/promate-ecommerce-designs/05.webp",
           "/images/projects/promate-ecommerce-designs/06.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/promate-ecommerce-designs/07.webp",
           "/images/projects/promate-ecommerce-designs/08.webp",
           "/images/projects/promate-ecommerce-designs/09.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/promate-ecommerce-designs/10.webp",
           "/images/projects/promate-ecommerce-designs/11.webp",
           "/images/projects/promate-ecommerce-designs/12.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/promate-ecommerce-designs/13.webp",
           "/images/projects/promate-ecommerce-designs/14.webp",
           "/images/projects/promate-ecommerce-designs/15.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/promate-ecommerce-designs/16.webp",
           "/images/projects/promate-ecommerce-designs/17.webp",
           "/images/projects/promate-ecommerce-designs/18.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/promate-ecommerce-designs/19.webp",
           "/images/projects/promate-ecommerce-designs/20.webp",
           "/images/projects/promate-ecommerce-designs/21.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/promate-ecommerce-designs/22.webp",
           "/images/projects/promate-ecommerce-designs/23.webp",
           "/images/projects/promate-ecommerce-designs/24.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/promate-ecommerce-designs/25.webp",
           "/images/projects/promate-ecommerce-designs/26.webp",
           "/images/projects/promate-ecommerce-designs/27.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/promate-ecommerce-designs/28.webp",
           "/images/projects/promate-ecommerce-designs/29.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/promate-ecommerce-designs/30.webp",
           "/images/projects/promate-ecommerce-designs/31.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       }
     ]
   },
@@ -1780,49 +1615,38 @@
     "draft": false,
     "cover": "/images/covers/promate-vertux-social.webp",
     "description": "Social media posts for the Promate and Vertux brands.",
-    "video": "",
     "blocks": [
       {
         "images": [
           "/images/projects/promate-vertux-social/01.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/promate-vertux-social/02.webp",
           "/images/projects/promate-vertux-social/03.webp",
           "/images/projects/promate-vertux-social/04.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/promate-vertux-social/05.webp",
           "/images/projects/promate-vertux-social/06.webp",
           "/images/projects/promate-vertux-social/07.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/promate-vertux-social/08.webp",
           "/images/projects/promate-vertux-social/09.webp",
           "/images/projects/promate-vertux-social/10.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/promate-vertux-social/11.webp",
           "/images/projects/promate-vertux-social/12.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       }
     ]
   },
@@ -1843,84 +1667,61 @@
     "draft": false,
     "cover": "/images/covers/dubai-sports-council-logo.webp",
     "description": "A concept logo for Dubai Sports Council, shown across its applications.",
-    "video": "",
     "blocks": [
       {
         "images": [
           "/images/projects/dubai-sports-council-logo/01.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/dubai-sports-council-logo/02.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/dubai-sports-council-logo/03.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/dubai-sports-council-logo/04.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/dubai-sports-council-logo/05.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/dubai-sports-council-logo/06.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/dubai-sports-council-logo/07.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/dubai-sports-council-logo/08.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/dubai-sports-council-logo/09.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/dubai-sports-council-logo/10.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/dubai-sports-council-logo/11.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       }
     ]
   },
@@ -1941,35 +1742,26 @@
     "draft": false,
     "cover": "/images/covers/billboard-saudi-arabia.webp",
     "description": "A billboard design, shown in its real location in Saudi Arabia.",
-    "video": "",
     "blocks": [
       {
         "images": [
           "/images/projects/billboard-saudi-arabia/01.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/billboard-saudi-arabia/02.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/billboard-saudi-arabia/03.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/billboard-saudi-arabia/04.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       }
     ]
   },
@@ -1991,44 +1783,33 @@
     "draft": false,
     "cover": "/images/covers/product-3d-rendering.webp",
     "description": "A product modeled, textured, lit and animated in Blender.",
-    "video": "",
     "blocks": [
       {
         "images": [
           "/images/projects/product-3d-rendering/01.mp4",
           "/images/projects/product-3d-rendering/02.mp4",
           "/images/projects/product-3d-rendering/03.mp4"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/product-3d-rendering/04.mp4"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/product-3d-rendering/05.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/product-3d-rendering/06.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/product-3d-rendering/07.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       }
     ]
   },
@@ -2049,63 +1830,47 @@
     "draft": false,
     "cover": "/images/covers/lzs-love-architecture.webp",
     "description": "A 3D model of the LZ's Love building in Vietnam, made in Blender.",
-    "video": "",
     "blocks": [
       {
         "text": "The focus is clean geometry, accurate structure and the rhythm of the building's bold facade.",
         "images": [
           "/images/projects/lzs-love-architecture/01.mp4"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/lzs-love-architecture/02.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/lzs-love-architecture/03.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/lzs-love-architecture/04.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/lzs-love-architecture/05.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/lzs-love-architecture/06.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/lzs-love-architecture/07.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/lzs-love-architecture/08.mp4"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       }
     ]
   },
@@ -2126,28 +1891,22 @@
     "draft": false,
     "cover": "/images/covers/classical-guitar-3d.webp",
     "description": "A classical guitar modeled and rendered in Blender.",
-    "video": "",
     "blocks": [
       {
         "text": "Realistic proportions and clean topology, from the headstock to the bridge.",
         "images": [
           "/images/projects/classical-guitar-3d/01.mp4"
-        ],
-        "caption": ""
+        ]
       },
       {
         "images": [
           "/images/projects/classical-guitar-3d/02.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/classical-guitar-3d/03.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       }
     ]
   },
@@ -2168,35 +1927,26 @@
     "draft": false,
     "cover": "/images/covers/al-sultan-restaurant-box.webp",
     "description": "A take-away box design for Al Sultan Restaurant.",
-    "video": "",
     "blocks": [
       {
         "images": [
           "/images/projects/al-sultan-restaurant-box/01.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/al-sultan-restaurant-box/02.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/al-sultan-restaurant-box/03.mp4"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/al-sultan-restaurant-box/04.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       }
     ]
   },
@@ -2217,63 +1967,46 @@
     "draft": false,
     "cover": "/images/covers/aurelia-logo.webp",
     "description": "A logo for a student services center. The brief asked for something simple, and the name Aurelia means golden.",
-    "video": "",
     "blocks": [
       {
         "images": [
           "/images/projects/aurelia-logo/01.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/aurelia-logo/02.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/aurelia-logo/03.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/aurelia-logo/04.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/aurelia-logo/05.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/aurelia-logo/06.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/aurelia-logo/07.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       },
       {
         "images": [
           "/images/projects/aurelia-logo/08.webp"
-        ],
-        "caption": "",
-        "text": ""
+        ]
       }
     ]
   }

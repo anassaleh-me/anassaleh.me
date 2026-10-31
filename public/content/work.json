@@ -3,63 +3,53 @@
   "intro": "Art direction, design, 3D, motion and film. Client work and personal projects.",
   "all": {
     "label": "All work",
-    "description": "Every project, client work and personal.",
-    "banner": "/images/projects/g2-humanoid-robot/05.webp"
+    "description": "Every project, client work and personal."
   },
   "categories": [
     {
       "name": "Art direction",
       "show": true,
-      "description": "Projects where I led the creative direction.",
-      "banner": "/images/projects/exoskeleton-film/02-poster.webp"
+      "description": "Projects where I led the creative direction."
     },
     {
       "name": "Branding & graphic design",
       "show": true,
-      "description": "Brand identities, packaging, social and e-commerce visuals.",
-      "banner": "/images/covers/mangobot-brand-identity.webp"
+      "description": "Brand identities, packaging, social and e-commerce visuals."
     },
     {
       "name": "3D design",
       "show": true,
-      "description": "Models, product renders and animation, made in Blender.",
-      "banner": "/images/projects/g2-humanoid-robot/06.webp"
+      "description": "Models, product renders and animation, made in Blender."
     },
     {
       "name": "Animation",
       "show": true,
-      "description": "Animation, motion graphics and type in motion.",
-      "banner": "/images/projects/mechanical-spider/12.webp"
+      "description": "Animation, motion graphics and type in motion."
     },
     {
       "name": "Video production",
       "show": true,
-      "description": "Films and videos I directed, shot and edited.",
-      "banner": "/images/projects/exoskeleton-film/04-poster.webp"
+      "description": "Films and videos I directed, shot and edited."
     },
     {
       "name": "Illustration",
       "show": true,
-      "description": "Vector portraits and characters, drawn in Illustrator.",
-      "banner": ""
+      "description": "Vector portraits and characters, drawn in Illustrator."
     },
     {
       "name": "Photo manipulation",
       "show": true,
-      "description": "Worlds and characters built from photographs in Photoshop.",
-      "banner": ""
+      "description": "Worlds and characters built from photographs in Photoshop."
     },
     {
       "name": "UI & UX",
       "show": true,
-      "description": "Websites, designed and built.",
-      "banner": ""
+      "description": "Websites, designed and built."
     },
     {
       "name": "Traditional art",
       "show": true,
-      "description": "Pencil and charcoal, mostly portraits.",
-      "banner": ""
+      "description": "Pencil and charcoal, mostly portraits."
     }
   ]
 }

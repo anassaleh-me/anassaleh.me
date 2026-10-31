@@ -11,8 +11,10 @@
     "binding": "ASSETS",
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page",
-    "run_worker_first": ["/api/*", "/work", "/work/*", "/about", "/contact", "/in-progress", "/film", "/journal", "/journal/*", "/sitemap.xml", "/content/site.json"]
+    "run_worker_first": ["/img/*", "/api/*", "/work", "/work/*", "/services", "/about", "/contact", "/in-progress", "/film", "/journal", "/journal/*", "/sitemap.xml", "/content/site.json"]
   },
+  // Resizes uploaded images for smaller screens (/img/<width>/images/...), see src/worker.js.
+  "images": { "binding": "IMAGES" },
   // Every contact form submission is stored here (Cloudflare dashboard > Storage > KV > SUBMISSIONS).
   "kv_namespaces": [
     { "binding": "SUBMISSIONS", "id": "2d2802ed6f994213bf6e98a367c9bb48" }
@@ -30,6 +32,7 @@
   // skip the Notion step, so test requests from a preview never reach Notion.
   "previews": {
     "vars": { "NOTION_DB": "02a2162ee7bf4fbaaefec2e7690794c6" },
+    "images": { "binding": "IMAGES" },
     "kv_namespaces": [
       { "binding": "SUBMISSIONS", "id": "2d2802ed6f994213bf6e98a367c9bb48" }
     ]

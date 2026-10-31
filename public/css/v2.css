@@ -136,6 +136,9 @@ footer[data-footer]:empty { display: block; min-height: 520px; background-color:
 .disc { padding-block: clamp(90px, 13vw, 180px); }
 .disc__head { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; margin-bottom: clamp(30px, 4vw, 60px); }
 .disc__head p { max-width: 38ch; color: var(--ink-soft); }
+.disc__more { display: inline-flex; align-items: center; gap: 10px; margin-top: clamp(30px, 4vw, 50px); padding-bottom: 4px; font-weight: 700; font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--acc-t); border-bottom: 1.5px solid rgba(76, 108, 140, 0.35); transition: border-color 0.3s, gap 0.4s var(--ease); }
+.disc__more svg { width: 18px; height: 18px; }
+.disc__more:hover { border-color: var(--acc-t); gap: 14px; }
 .disc__words { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.08em 0.32em; font-size: clamp(46px, 8.2vw, 150px); }
 /* words stay inline so a long one ("Branding & graphic design") wraps and its dot follows the last line */
 .disc__words a, .disc__words span.word { display: inline; transition: color 0.4s; }

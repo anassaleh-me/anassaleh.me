@@ -1,6 +1,6 @@
 // Work page: filter chips over a gallery of every project, shown by its cover (the works wheel lives on the home page).
 // ?f=<filter> in the URL picks the starting chip (the home page's discipline words link here).
-import { shell, $, $$, esc, cats, thumb, inCategory } from "/js/shell2.js";
+import { shell, $, $$, esc, cats, cover, thumb, srcset, inCategory } from "/js/shell2.js";
 
 const { site, projects, lenis, reveal } = await shell({ current: "work" });
 if (site.workIntro) $(".ph__foot p").textContent = site.workIntro;
@@ -75,7 +75,7 @@ function apply(key, { first = false } = {}) {
   const build = () => {
     list.innerHTML = items.map((p, i) => `<li data-reveal><a class="ix__row" href="/work/${esc(p.slug)}" data-cursor="View">
       <span class="ix__t up">${esc(p.title)}</span><span class="ix__s">${esc(p.subtitle)}</span><span class="ix__c">${cats(p)}</span><span class="ix__y">${esc(p.year)}</span>
-      <span class="ix__img"><img src="${thumb(p)}" alt="${esc(p.title)}, cover" loading="${i < 6 ? "eager" : "lazy"}" decoding="async"></span></a></li>`).join("");
+      <span class="ix__img"><img src="${thumb(p)}"${srcset(cover(p), "(max-width: 760px) 96px, (max-width: 960px) 50vw, 33vw")} alt="${esc(p.title)}, cover" loading="${i < 6 ? "eager" : "lazy"}" decoding="async"></span></a></li>`).join("");
     list.classList.remove("swap");
     reveal(list);
   };

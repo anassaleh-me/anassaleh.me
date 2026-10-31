@@ -4,7 +4,7 @@ import { mountHero } from "/js/hero2.js";
 import { mountPillNav } from "/js/nav.js";
 import { mountRingCursor } from "/js/cursors.js";
 import { mountWorksWheel } from "/js/works-wheel.js";
-import { navLinks, ctaLink, byDate, canHover } from "/js/shell2.js";
+import { navLinks, ctaLink, byDate, canHover, srcset } from "/js/shell2.js";
 import { getJSON, prefetchOnHover } from "/js/data.js";
 import { mountMailButton } from "/js/mailto.js";
 
@@ -43,6 +43,8 @@ const S = site.homeSections || {};
   .forEach(([k, sel]) => { if (S[k] === false) document.querySelector(sel)?.remove(); });
 // footer links to pages that are switched off
 const PAGES = site.pages || {};
+// links to the Services page go when that page is switched off
+if (PAGES.services === false) document.querySelectorAll("[data-services-link]").forEach((a) => a.remove());
 [["work", "/work"], ["about", "/about"], ["progress", "/in-progress"], ["contact", "/contact"]].forEach(([k, href]) => {
   if (PAGES[k] === false) document.querySelectorAll(`footer a[href="${href}"]`).forEach((a) => a.closest("li")?.remove());
 });
@@ -167,7 +169,8 @@ const discs = (h.disciplines || []).map((d) => ({ ...d, images: discImages(d.fil
 // the last word sits in its own span so the dot after it never wraps onto a line by itself
 const lastWord = (t) => { const s = String(t || "").trim(), k = s.lastIndexOf(" "); return `${esc(s.slice(0, k + 1))}<span class="disc__end">${esc(s.slice(k + 1))}</span>`; };
 disc.innerHTML = discs.map((d, i) => `<li data-reveal><a href="${discHref(d.filter)}" data-i="${i}" data-cursor="${isDrawing(d.filter) ? "Drawings" : "See work"}">${lastWord(d.title)}</a></li>`).join("");
-discs.forEach((d) => d.images.forEach((src) => { const i = new Image(); i.src = src; }));
+// the hover pictures are only for a mouse, so touch screens skip loading them
+if (canHover) discs.forEach((d) => d.images.forEach((src) => { const i = new Image(); i.src = src; }));
 float.insertAdjacentHTML("beforeend", '<span class="float-count" data-float-count></span>');
 let cycle = 0, cycleI = 0;
 addEventListener("pointermove", (e) => { fl.tx = e.clientX; fl.ty = e.clientY; }, { passive: true });
@@ -234,7 +237,7 @@ if (studioGrid) studioGrid.innerHTML = (site.studio || []).map((s) => {
   const href = `/in-progress#${String(s.title).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`;
   const tag = "a";
   return `<${tag} class="sc" data-reveal href="${href}" data-cursor="Open">
-    <div class="sc__img"><img src="${esc(s.image)}" alt="" loading="lazy"><span class="sc__status${live ? " live" : ""}"><i></i>${label}</span></div>
+    <div class="sc__img"><img src="${esc(s.image)}"${srcset(s.image, "(max-width: 760px) 100vw, 50vw")} alt="" loading="lazy"><span class="sc__status${live ? " live" : ""}"><i></i>${label}</span></div>
     <div class="sc__body"><h3 class="up">${esc(s.title)}</h3><p>${esc(s.text)}</p></div>
   </${tag}>`;
 }).join("");
@@ -253,7 +256,7 @@ const tilts = [-4, 3, -2, 4, -3, 2];
 // An endless strip: the set of drawings is repeated three times and wraps around, so every drawing comes by.
 // It drifts on its own, speeds up with the scroll, and can be dragged (with a little throw when you let go).
 const drawRepeat = drawSet.length ? Math.max(3, Math.ceil(12 / drawSet.length)) : 0;
-row.innerHTML = Array.from({ length: drawRepeat }, () => drawSet).flat().map((src, i) => `<figure class="paper" style="margin:0;transform:rotate(${tilts[i % drawSet.length % tilts.length]}deg)" data-tilt="${tilts[i % drawSet.length % tilts.length]}"><img src="${esc(src)}" alt="${i < drawSet.length ? `Pencil drawing by ${esc(site.fullName)}` : ""}" loading="lazy" draggable="false"></figure>`).join("");
+row.innerHTML = Array.from({ length: drawRepeat }, () => drawSet).flat().map((src, i) => `<figure class="paper" style="margin:0;transform:rotate(${tilts[i % drawSet.length % tilts.length]}deg)" data-tilt="${tilts[i % drawSet.length % tilts.length]}"><img src="${esc(src)}"${srcset(src, "(max-width: 900px) 200px, 22vw")} alt="${i < drawSet.length ? `Pencil drawing by ${esc(site.fullName)}` : ""}" loading="lazy" draggable="false"></figure>`).join("");
 row.addEventListener("pointerdown", (e) => { drag.down = true; drag.lastX = e.clientX; drag.moved = 0; row.setPointerCapture(e.pointerId); row.classList.add("dragging"); });
 row.addEventListener("pointermove", (e) => {
   if (!drag.down) return;

@@ -6,6 +6,8 @@
 //                  progress, film, journal), in the shape the pages read
 // - hidden pages   a page switched off in Pages CMS answers with the 404 page (add ?preview to see it anyway)
 // - /sitemap.xml   built from the content, so new pages are listed and hidden ones left out without touching code
+// - /img/<width>/images/...  a smaller copy of an uploaded image for smaller screens (Cloudflare Images binding),
+//                  kept in the edge cache; if resizing is unavailable the original is served, so an image never breaks
 // - /api/contact   receives the contact form, stores it (KV), adds it to the Notion database "Project requests"
 //                  (NOTION_TOKEN secret + NOTION_DB) and emails it (send_email binding)
 // Everything else falls through to the static assets in ./public.
@@ -23,8 +25,8 @@ async function content(env, url, name) {
 
 // The combined content the pages read. Every page file has a "show" switch; a missing switch means shown.
 async function buildSite(env, url) {
-  const names = ["settings", "home", "work", "about", "contact", "progress", "film", "journal"];
-  const [settings, home, work, about, contact, progress, film, journal, projectList] = (await Promise.all([...names.map((n) => content(env, url, n)), projects(env, url)])).map((x) => x || {});
+  const names = ["settings", "home", "work", "about", "contact", "progress", "film", "journal", "services"];
+  const [settings, home, work, about, contact, progress, film, journal, services, projectList] = (await Promise.all([...names.map((n) => content(env, url, n)), projects(env, url)])).map((x) => x || {});
   const on = (x) => x?.show !== false;
   const items = progress.items || [];
   return {
@@ -41,8 +43,9 @@ async function buildSite(env, url) {
     spider: home.spider || {}, drawings: home.drawings || {},
     about: { ...about, cv: settings.cv }, services: contact.services || [],
     contactPage: { headline: contact.headline, intro: contact.intro, replyNote: contact.replyNote, budgets: contact.budgets || [], sources: contact.sources || [] },
+    servicesPage: services,
     studio: items, inProduction: film, journal, workIntro: work.intro, workCategories: workCategories(work, Array.isArray(projectList) ? projectList : []),
-    pages: { work: on(work), about: on(about), contact: on(contact), progress: on(progress) && items.length > 0, film: film.show === true, journal: journal.show === true },
+    pages: { work: on(work), services: on(services) && (services.items || []).length > 0, about: on(about), contact: on(contact), progress: on(progress) && items.length > 0, film: film.show === true, journal: journal.show === true },
   };
 }
 
@@ -61,7 +64,7 @@ function workCategories(work, projectList) {
 }
 
 // which switch hides which address
-const PAGE_OF = { "/work": "work", "/about": "about", "/contact": "contact", "/in-progress": "progress", "/film": "film", "/journal": "journal" };
+const PAGE_OF = { "/work": "work", "/services": "services", "/about": "about", "/contact": "contact", "/in-progress": "progress", "/film": "film", "/journal": "journal" };
 
 async function notFound(env, url) {
   const res = await env.ASSETS.fetch(new Request(new URL("/404", url)));
@@ -73,9 +76,34 @@ async function projects(env, url) {
   return res.ok ? (await res.json()).filter((p) => !p.draft) : [];
 }
 
+// The widths the pages ask for (js/shell2.js srcset); anything else is refused so the copies stay few.
+const WIDTHS = [360, 720, 1080, 1440];
+
+async function resized(request, env, ctx, url) {
+  const m = url.pathname.match(/^\/img\/(\d+)(\/images\/.+\.(?:webp|jpe?g|png))$/i);
+  if (!m || !WIDTHS.includes(Number(m[1]))) return notFound(env, url);
+  const original = () => env.ASSETS.fetch(new Request(new URL(m[2], url)));
+  const cache = caches.default;
+  const hit = await cache.match(request);
+  if (hit) return hit;
+  const src = await original();
+  if (!src.ok || !env.IMAGES) return src;
+  try {
+    const out = await env.IMAGES.input(src.body).transform({ width: Number(m[1]), fit: "scale-down" }).output({ format: "image/webp", quality: 84 });
+    const res = new Response(out.image(), { headers: { "content-type": "image/webp", "cache-control": "public, max-age=604800" } });
+    ctx.waitUntil(cache.put(request, res.clone()));
+    return res;
+  } catch (err) {
+    console.error("resize failed", url.pathname, err);
+    return original();
+  }
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+
+    if (url.pathname.startsWith("/img/")) return resized(request, env, ctx, url);
 
     if (url.pathname === "/api/contact") {
       if (request.method !== "POST") return json({ ok: false, error: "method" }, 405);
@@ -98,7 +126,7 @@ export default {
     if (url.pathname === "/sitemap.xml") {
       const [list, site, blog] = await Promise.all([projects(env, url), buildSite(env, url), content(env, url, "blog")]);
       const journal = site.pages.journal ? ["/journal", ...(blog || []).filter((p) => !p.draft).map((p) => `/journal/${p.slug}`)] : [];
-      const pages = ["/", ...["work", "about", "progress", "contact"].filter((k) => site.pages[k]).map((k) => (k === "progress" ? "/in-progress" : `/${k}`)), ...(site.pages.film ? ["/film"] : []), ...journal, ...list.map((p) => `/work/${p.slug}`)];
+      const pages = ["/", ...["work", "services", "about", "progress", "contact"].filter((k) => site.pages[k]).map((k) => (k === "progress" ? "/in-progress" : `/${k}`)), ...(site.pages.film ? ["/film"] : []), ...journal, ...list.map((p) => `/work/${p.slug}`)];
       const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map((p) => `  <url><loc>${SITE}${p}</loc></url>`).join("\n")}\n</urlset>\n`;
       return new Response(xml, { headers: { "content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600" } });
     }

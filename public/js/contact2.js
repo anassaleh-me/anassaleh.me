@@ -31,6 +31,9 @@ $("[data-services]").innerHTML = (site.services || []).map((s, i) => `<label cla
     <input type="checkbox" name="services" value="${esc(s)}"${s.toLowerCase() === want ? " checked" : ""}${i === 0 ? ' id="f-services"' : ""}>
     <span>${esc(s)}</span>
   </label>`).join("");
+// arriving from a package on the Services page: the brief starts with that package's name
+const pkg = new URLSearchParams(location.search).get("package");
+if (pkg && !$("#f-brief").value) $("#f-brief").value = `I'm interested in this package: ${pkg.slice(0, 120)}.\n\n`;
 const opts = (list, placeholder) => `<option value="">${placeholder}</option>` + (list || []).map((v) => `<option>${esc(v)}</option>`).join("");
 $("[data-budgets]").innerHTML = opts(cp.budgets, "Select a range");
 $("[data-sources]").innerHTML = opts(cp.sources, "Select one");

@@ -61,6 +61,7 @@ content:
           - { name: show, label: Show this section, type: boolean, default: true }
           - { name: title, label: Title, type: string }
           - { name: text, label: Text, type: text }
+          - { name: model, label: "3D model (.glb from Blender with the head turns baked in). Empty = the rendered frames", type: file, options: { media: files } }
           - { name: poster, label: Still image, type: image, options: { media: images } }
           - { name: link, label: Link, type: string }
       - name: inProgress

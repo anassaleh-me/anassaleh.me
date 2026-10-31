@@ -8,9 +8,10 @@
 # Security basics for every page and file.
 # Content-Security-Policy: the browser only runs code from this site, the few small scripts written into the pages
 # (allowed by their sha256 fingerprint: when one of those inline scripts changes, its hash here must change too),
-# Cloudflare Web Analytics, and players from Vimeo and YouTube. Anything injected by an attacker is refused.
+# Cloudflare Web Analytics, three.js from jsDelivr for the 3D spider (its mesh decoder needs wasm-unsafe-eval),
+# and players from Vimeo and YouTube. Anything injected by an attacker is refused.
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-8s3u45SmubmzQ1UX3QwHhUkWKWi7WEtiFVnDX9TYBGU=' 'sha256-9LIaHrLSDG5+/Bv64LFX6j6gn4JiQYmXtFlepF9CNHw=' 'sha256-eN6IBdILNbHpAHE5BjmWNwjcRtD1VudSb+E1chR1ML8=' 'sha256-iWt1iVGsGm/9AZlApenvg3dgX+NHtE1XUqMpVddkPB0=' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'self' https://cloudflareinsights.com; frame-src https://player.vimeo.com https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://cdn.jsdelivr.net 'sha256-8s3u45SmubmzQ1UX3QwHhUkWKWi7WEtiFVnDX9TYBGU=' 'sha256-9LIaHrLSDG5+/Bv64LFX6j6gn4JiQYmXtFlepF9CNHw=' 'sha256-eN6IBdILNbHpAHE5BjmWNwjcRtD1VudSb+E1chR1ML8=' 'sha256-iWt1iVGsGm/9AZlApenvg3dgX+NHtE1XUqMpVddkPB0=' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self'; connect-src 'self' blob: https://cloudflareinsights.com; frame-src https://player.vimeo.com https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: SAMEORIGIN

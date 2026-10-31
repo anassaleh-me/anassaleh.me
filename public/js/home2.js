@@ -8,6 +8,7 @@ import { navLinks, ctaLink, byDate, canHover, srcset } from "/js/shell2.js";
 import { getJSON, prefetchOnHover } from "/js/data.js";
 import { mountMailButton } from "/js/mailto.js";
 import { mountSpider } from "/js/spider.js";
+import { mountSpider3D } from "/js/spider3d.js";
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -221,7 +222,10 @@ if (spStage) {
   if (spd.title) $("[data-spider-title]").innerHTML = accent(spd.title.replace(/spider/i, "[Spider]"));
   $("[data-spider-text]").textContent = spd.text || "";
   if (spd.link) $("[data-spider-link]").href = spd.link;
-  mountSpider(spStage, { reduce });
+  // the 3D model when there is one and the browser can draw it (?spider=frames shows the rendered frames instead)
+  const gl = (() => { try { return !!document.createElement("canvas").getContext("webgl2"); } catch { return false; } })();
+  if (spd.model && gl && !/spider=frames/.test(location.search)) mountSpider3D(spStage, { model: spd.model, poster: "/images/spider/1000/053.webp", reduce });
+  else mountSpider(spStage, { reduce });
 }
 
 /* ---------- in progress (teaser of the In progress page; the section and its links go away while it's empty) ---------- */

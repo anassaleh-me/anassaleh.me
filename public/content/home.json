@@ -49,6 +49,7 @@
     "show": true,
     "title": "Mechanical Spider",
     "text": "A creature I designed, modeled, rigged and animated in Blender. Move your cursor and it turns to watch you.",
+    "model": "/files/spider.glb",
     "poster": "/images/covers/mechanical-spider.webp",
     "link": "/work/mechanical-spider"
   },

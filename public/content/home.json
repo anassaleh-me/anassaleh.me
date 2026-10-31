@@ -48,7 +48,7 @@
   "spider": {
     "show": true,
     "title": "Mechanical Spider",
-    "text": "A creature I designed, modeled, rigged and animated in Blender. Soon you'll be able to turn it around right here.",
+    "text": "A creature I designed, modeled, rigged and animated in Blender. Move your cursor and it turns to watch you.",
     "poster": "/images/covers/mechanical-spider.webp",
     "link": "/work/mechanical-spider"
   },

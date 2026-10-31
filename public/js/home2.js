@@ -7,6 +7,7 @@ import { mountWorksWheel } from "/js/works-wheel.js";
 import { navLinks, ctaLink, byDate, canHover, srcset } from "/js/shell2.js";
 import { getJSON, prefetchOnHover } from "/js/data.js";
 import { mountMailButton } from "/js/mailto.js";
+import { mountSpider } from "/js/spider.js";
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -213,16 +214,14 @@ if ($("[data-works]")) mountWorksWheel($("[data-works]"), {
   meta: (p) => `${cats(p)} · ${p.year}`,
 });
 
-/* ---------- spider slot ---------- */
+/* ---------- spider: rendered frames that turn toward the pointer ---------- */
 const spd = site.spider || {};
-const spStage = $("[data-spider-stage]"), spHint = $("[data-spider-hint]");
-const sh = { x: 0, y: 0, tx: 0, ty: 0 };
+const spStage = $("[data-spider-stage]");
 if (spStage) {
   if (spd.title) $("[data-spider-title]").innerHTML = accent(spd.title.replace(/spider/i, "[Spider]"));
   $("[data-spider-text]").textContent = spd.text || "";
   if (spd.link) $("[data-spider-link]").href = spd.link;
-  spStage.addEventListener("pointermove", (e) => { const r = spStage.getBoundingClientRect(); sh.tx = (e.clientX - r.left) / r.width - 0.5; sh.ty = (e.clientY - r.top) / r.height - 0.5; });
-  spStage.addEventListener("pointerleave", () => { sh.tx = 0; sh.ty = 0; });
+  mountSpider(spStage, { reduce });
 }
 
 /* ---------- in progress (teaser of the In progress page; the section and its links go away while it's empty) ---------- */
@@ -338,10 +337,6 @@ function loop(t) {
   fl.x = lerp(fl.x, fl.tx, 0.16); fl.y = lerp(fl.y, fl.ty, 0.16);
   const vx = fl.tx - fl.x;
   if (float) float.style.transform = `translate(${fl.x}px, ${fl.y}px) translate(-50%, -50%) rotate(${clamp(vx * 0.08, -10, 10)}deg)`;
-
-  // spider stage: the hint and floor lean toward the pointer
-  sh.x = lerp(sh.x, sh.tx, 0.08); sh.y = lerp(sh.y, sh.ty, 0.08);
-  if (spHint) spHint.style.transform = `translate(${sh.x * 30}px, ${sh.y * 20}px)`;
 
   // drawings: endless strip that drifts, follows the scroll and can be dragged
   const dRect = drawSection?.getBoundingClientRect();

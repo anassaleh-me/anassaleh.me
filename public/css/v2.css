@@ -259,7 +259,9 @@ footer[data-footer]:empty { display: block; min-height: 520px; background-color:
 .foot ul a { color: var(--cream-soft); transition: color 0.3s; }
 .foot ul a:hover { color: var(--cream); }
 .foot p { color: var(--cream-soft); max-width: 30ch; }
-.foot__big { margin-top: 60px; font-size: min(12.4vw, 230px); line-height: 0.82; white-space: nowrap; color: var(--cream); }
+.foot > .wrap { container-type: inline-size; }
+/* sized to the footer column (cqi), so the name spans it and stays centred on any screen */
+.foot__big { margin-top: 60px; font-size: 13.6cqi; line-height: 0.82; white-space: nowrap; text-align: center; color: var(--cream); }
 .foot__bottom { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 26px; color: var(--cream-soft); font-size: 14px; }
 @media (max-width: 760px) { .foot__top { grid-template-columns: 1fr 1fr; } .foot__top > :first-child { grid-column: 1 / -1; } }
 

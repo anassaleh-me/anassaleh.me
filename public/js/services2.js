@@ -178,7 +178,7 @@ $("[data-pk]").innerHTML = groups.map((g, i) => `<div class="pk-group" id="pk-${
     ${c.text ? `<p class="pk-card__text">${esc(c.text)}</p>` : ""}
     ${(c.includes || []).length ? `<div class="pk-card__inc"><span class="pk-card__label">What's included</span><ul>${c.includes.map((t) => `<li>${CHECK}<span>${esc(t)}</span></li>`).join("")}</ul></div>` : ""}
     ${(c.terms || []).length ? `<div class="pk-card__terms"><span class="pk-card__label">Plans</span><div class="pk-terms">${c.terms.map((t) => `<span>${esc(t)}</span>`).join("")}</div>${c.termsNote ? `<p>${esc(c.termsNote)}</p>` : ""}</div>` : ""}
-    <a class="btn btn--line pk-card__btn" href="/contact?service=${encodeURIComponent(g.formService || g.name)}">Ask for a quote ${ARROW}</a>
+    <a class="btn btn--line pk-card__btn" href="/contact?service=${encodeURIComponent(g.formService || g.name)}&package=${encodeURIComponent(`${g.name}, ${c.name}`)}">Ask for a quote ${ARROW}</a>
   </article>`).join("")}</div>
 </div>`).join("");
 if (!groups.length) $(".pk").remove();

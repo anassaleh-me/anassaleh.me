@@ -1,7 +1,7 @@
 {
   "show": true,
   "headline": "What I can [make] for you",
-  "intro": "Design, 3D, drawing and video for brands, products and people. Start with the services below, or go straight to a ready-made package. Every project is quoted on request.",
+  "intro": "Whatever the service, every project is art directed by me from the first idea to the final file. Start with a service, or go straight to a ready-made package.",
   "items": [
     {
       "name": "Design",
@@ -35,7 +35,7 @@
     {
       "name": "3D design",
       "line": "Product visuals modeled, lit and rendered in Blender.",
-      "formService": "3D",
+      "formService": "3D design",
       "projects": [
         "g2-humanoid-robot",
         "product-3d-rendering",
@@ -60,7 +60,7 @@
     {
       "name": "Portrait drawing",
       "line": "Portraits drawn by hand in pencil or charcoal.",
-      "formService": "Drawing",
+      "formService": "Portrait drawing",
       "examples": "Traditional art",
       "images": [
         "/images/drawings/drawing-1.webp",
@@ -81,7 +81,7 @@
     {
       "name": "Video editing and motion",
       "line": "Edits and motion graphics for social media, brands and launches.",
-      "formService": "Video editing",
+      "formService": "Video editing and motion",
       "projects": [
         "mechanical-spider",
         "ugreen-animation",
@@ -106,7 +106,7 @@
     {
       "name": "Filming and photography",
       "line": "On-location filming and photography across the UAE.",
-      "formService": "Filming",
+      "formService": "Filming and photography",
       "projects": [
         "mangobot-production",
         "exoskeleton-film",
@@ -177,7 +177,7 @@
       {
         "name": "3D design",
         "line": "Your product, ready to sell before it is made.",
-        "formService": "3D",
+        "formService": "3D design",
         "note": "Pricing depends on the product's complexity and the amount of animation.",
         "cards": [
           {
@@ -205,7 +205,7 @@
       {
         "name": "Video editing",
         "line": "A steady flow of short videos, in one consistent style.",
-        "formService": "Video editing",
+        "formService": "Video editing and motion",
         "cards": [
           {
             "name": "Monthly short form",
@@ -223,7 +223,7 @@
       {
         "name": "Event coverage",
         "line": "Five hours at your event, delivered ready to share.",
-        "formService": "Filming",
+        "formService": "Filming and photography",
         "note": "More videos or hours can be added by agreement.",
         "cards": [
           {

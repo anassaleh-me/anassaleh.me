@@ -43,6 +43,8 @@ const S = site.homeSections || {};
   .forEach(([k, sel]) => { if (S[k] === false) document.querySelector(sel)?.remove(); });
 // footer links to pages that are switched off
 const PAGES = site.pages || {};
+// links to the Services page go when that page is switched off
+if (PAGES.services === false) document.querySelectorAll("[data-services-link]").forEach((a) => a.remove());
 [["work", "/work"], ["about", "/about"], ["progress", "/in-progress"], ["contact", "/contact"]].forEach(([k, href]) => {
   if (PAGES[k] === false) document.querySelectorAll(`footer a[href="${href}"]`).forEach((a) => a.closest("li")?.remove());
 });

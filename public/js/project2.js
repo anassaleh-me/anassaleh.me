@@ -1,6 +1,6 @@
 // Project page (stage 3), served at /work/<slug>. Dark opener with the title rising in, the cover that grows to
 // full width as you scroll (always whole, never cropped), the story, the film, the gallery, previous and next project.
-import { shell, $, $$, esc, lerp, clamp, cats, cover, thumb, rowsHTML, fitRows } from "/js/shell2.js";
+import { shell, $, $$, esc, lerp, clamp, cats, cover, thumb, srcset, rowsHTML, fitRows } from "/js/shell2.js";
 
 const { projects, reveal } = await shell({ current: "work" });
 const main = $("[data-project]");
@@ -49,7 +49,7 @@ function render(p, prev, next) {
       <h1 class="pj-title up">${words.map((w, n) => `<span class="ln"><span class="w${n === words.length - 1 && words.length > 1 ? " acc" : ""}">${esc(w)}</span></span>`).join(" ")}</h1>
       <div class="pj-sub" data-intro><p>${esc(p.subtitle)}</p><span>${cats(p)}</span></div>
     </div>
-    <div class="pj-cover" data-cover><img src="${cover(p)}" alt="${esc(p.title)}, cover" fetchpriority="high"></div>
+    <div class="pj-cover" data-cover><img src="${cover(p)}"${srcset(cover(p))} alt="${esc(p.title)}, cover" fetchpriority="high"></div>
   </section>
 
   <section class="pj-info wrap">

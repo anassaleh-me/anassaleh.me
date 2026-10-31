@@ -109,6 +109,62 @@ content:
           - { name: description, label: Short line, type: string }
           - { name: banner, label: "Banner image (wide, about 2000 x 700)", type: image, options: { media: images } }
 
+  # ---------------------------------------------------------------- Services
+  - name: services
+    label: "Services page"
+    type: file
+    path: public/content/services.json
+    format: json
+    fields:
+      - { name: show, label: Show this page, type: boolean, default: true }
+      - { name: headline, label: "Title (put [brackets] round the blue words)", type: string }
+      - { name: intro, label: Intro line, type: text }
+      - name: items
+        label: Services
+        type: object
+        list: true
+        fields:
+          - { name: name, label: Name, type: string, required: true }
+          - { name: line, label: Short line, type: text }
+          - { name: note, label: "Note under it (optional, e.g. how the price is set)", type: text }
+          - { name: formService, label: "Ticks this choice on the contact form (written the same as there: Design, 3D, Drawing, Video editing, Filming)", type: string }
+          - { name: examples, label: "Examples: the newest projects from these categories (names, separated by commas)", type: string }
+          - { name: images, label: "Or pick example images yourself (shown instead)", type: image, list: true, options: { media: images } }
+          - name: packages
+            label: Packages
+            type: object
+            list: true
+            fields:
+              - { name: name, label: Name, type: string, required: true }
+              - { name: text, label: Short line, type: text }
+              - { name: includes, label: "What's included (one per line)", type: string, list: true }
+      - name: process
+        label: How we work
+        type: object
+        fields:
+          - { name: title, label: "Title (put [brackets] round the blue words)", type: string }
+          - { name: intro, label: Intro line, type: text }
+          - name: steps
+            label: Steps
+            type: object
+            list: true
+            fields:
+              - { name: title, label: Step, type: string, required: true }
+              - { name: text, label: What happens, type: text }
+      - name: faq
+        label: Questions
+        type: object
+        fields:
+          - { name: title, label: Title, type: string }
+          - name: items
+            label: Questions
+            type: object
+            list: true
+            fields:
+              - { name: q, label: Question, type: string, required: true }
+              - { name: a, label: Answer, type: text }
+      - { name: cta, label: Line above the Start a project button, type: text }
+
   # ---------------------------------------------------------------- Projects
   - name: projects
     label: Projects

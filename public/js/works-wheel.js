@@ -4,6 +4,8 @@
 // One number drives it all: `turn` (0 = ring, 1 = drum with item 0 in front, +1 per item after that).
 // Every card carries its own perspective (the container is flat), so the 3D card planes never slice through each other.
 
+import { srcset } from "/js/shell2.js";
+
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const lerp = (a, b, t) => a + (b - a) * t;
 const rad = (d) => (d * Math.PI) / 180;
@@ -23,7 +25,7 @@ export function mountWorksWheel(root, { items, label, meta = () => "", cover }) 
   if (label && labelEl) labelEl.innerHTML = label;
   root.style.height = `${(items.length + 2) * 55}vh`;
 
-  wheel.innerHTML = items.map((p) => `<a class="ww-card" href="/work/${p.slug}" aria-label="${p.title}"><span class="face"><img src="${cover(p)}" alt="" loading="lazy" draggable="false"></span></a>`).join("");
+  wheel.innerHTML = items.map((p) => `<a class="ww-card" href="/work/${p.slug}" aria-label="${p.title}"><span class="face"><img src="${cover(p)}"${srcset(cover(p), "(max-width: 760px) 50vw, 34vw")} alt="" loading="lazy" draggable="false"></span></a>`).join("");
   index.innerHTML = items.map((p, i) => `<li><button type="button" data-i="${i}" data-cursor="Go">${p.title}</button></li>`).join("");
   const cards = [...wheel.children];
   const faces = cards.map((c) => c.firstElementChild);

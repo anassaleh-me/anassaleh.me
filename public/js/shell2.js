@@ -18,11 +18,17 @@ export const cats = (p) => (p.categories || []).map((c) => CAT[slug(c)] || c).jo
 export const inCategory = (p, key) => (p.categories || []).some((c) => slug(c) === key);
 // the menu links, in order, for the pages that are switched on
 export const navLinks = (site) => [
-  ["work", "/work", "Work"], ["about", "/about", "About"], ["progress", "/in-progress", "In progress"], ["journal", "/journal", "Journal"],
+  ["work", "/work", "Work"], ["services", "/services", "Services"], ["about", "/about", "About"], ["progress", "/in-progress", "In progress"], ["journal", "/journal", "Journal"],
 ].filter(([k]) => site.pages?.[k] !== false).map(([key, href, label]) => ({ key, href, label }));
 export const ctaLink = (site) => (site.pages?.contact !== false ? { href: "/contact", label: "Let's talk" } : { href: `mailto:${site.contact?.email || ""}`, label: "Email me" });
 // the cover set in Pages CMS; covers in /images/covers/ also have a small copy for hover previews
 export const cover = (p) => p.cover || `/images/covers/${p.slug}.webp`;
+// Smaller copies for smaller screens: the worker resizes an uploaded image on request (/img/<width>/images/...), and the
+// browser picks the smallest copy that is still sharp on that screen (pixel density included). The original is the
+// largest choice, so a big screen gets the full upload. `sizes` says how wide the picture shows.
+const WIDTHS = [360, 720, 1080, 1440];
+export const srcset = (src, sizes = "100vw") =>
+  /^\/images\/[^?#]+\.(webp|jpe?g|png)$/i.test(src || "") ? ` srcset="${WIDTHS.map((w) => `/img/${w}${esc(src)} ${w}w`).join(", ")}, ${esc(src)} 2400w" sizes="${sizes}"` : "";
 export const thumb = (p) => (cover(p).startsWith("/images/covers/") ? cover(p).replace("/images/covers/", "/images/covers/thumb/") : cover(p));
 
 export const LOGO = `<svg viewBox="0 0 226.08 342.55" aria-hidden="true"><defs><mask id="LMS"><rect width="226.08" height="342.55" fill="#fff"/><path transform="matrix(1,0,0,-1,113.045,265.925)" d="M0 0V65.23H43.11ZM-31.28 94.65H-62.55L-31.28 142.04ZM62.55 142.04H31.27V189.43L0 236.81-31.28 189.42-62.55 142.04-93.83 94.65-62.56 47.27V65.19H-31.28V-.12L0-47.51 93.82 94.65Z" fill="#000"/></mask></defs><g mask="url(#LMS)"><path transform="matrix(1,0,0,-1,113.04,.000091552738)" d="M0 0-17.83-27.01-26.26-39.79-49.1-74.4-57.53-87.169-80.37-121.78-88.81-134.57-111.65-169.17-113.04-171.28-88.81-207.99-83.16-216.55-57.53-255.38-51.88-263.94-26.26-302.76-20.61-311.33 0-342.55 5.02-334.94 20.61-311.33 36.29-287.57 51.88-263.94 67.57-240.169 83.16-216.55 98.84-192.79 113.04-171.28 111.65-169.17 98.84-149.76 80.37-121.78 67.57-102.38 49.1-74.4 36.29-54.99 17.83-27.01Z" fill="currentColor"/></g></svg>`;
@@ -32,19 +38,21 @@ export const LOGO = `<svg viewBox="0 0 226.08 342.55" aria-hidden="true"><defs><
 // `rich` rows carry formatted text from the CMS editor (journal); it is cleaned before it goes on the page.
 export function rowsHTML(rows = [], title = "", { rich = false } = {}) {
   let count = 0;
-  const media = (src) => {
+  // how wide one piece shows: the row's share of the column (phones put 4 or more pieces 2 to a line)
+  const sizes = (n) => `(max-width: 760px) ${n >= 4 ? 50 : Math.round(100 / n)}vw, (min-width: 1440px) ${Math.round(1330 / n)}px, ${Math.round(100 / n)}vw`;
+  const media = (src, n) => {
     count++;
     if (/\.(mp4|webm)$/i.test(src)) {
       const poster = src.replace(/\.(mp4|webm)$/i, "-poster.webp");
       // the poster sits underneath as a plain image and gives the piece its shape, so a loop is never cropped even
       // before (or without) the video loading; the video plays on top of it
-      return `<img class="pj-still" src="${esc(poster)}" alt="" loading="lazy" decoding="async"><video src="${esc(src)}" poster="${esc(poster)}" muted loop playsinline preload="none" aria-label="${esc(title)}, animation ${count}"></video>`;
+      return `<img class="pj-still" src="${esc(poster)}"${srcset(poster, sizes(n))} alt="" loading="lazy" decoding="async"><video src="${esc(src)}" poster="${esc(poster)}" muted loop playsinline preload="none" aria-label="${esc(title)}, animation ${count}"></video>`;
     }
-    return `<img src="${esc(src)}" alt="${esc(title)}, image ${count}" loading="lazy" decoding="async">`;
+    return `<img src="${esc(src)}"${srcset(src, sizes(n))} alt="${esc(title)}, image ${count}" loading="lazy" decoding="async">`;
   };
   return rows.filter((r) => r.images?.length || r.text).map((r) => `<div class="pj-row${rich ? " pj-row--rich" : ""}" data-n="${r.images?.length || 0}" data-reveal>
       ${r.text ? (rich ? `<div class="pj-row__rich">${cleanHTML(r.text)}</div>` : `<p class="pj-row__text">${esc(r.text)}</p>`) : ""}
-      ${r.images?.length ? `<div class="pj-row__items">${r.images.map((src) => `<figure>${media(src)}</figure>`).join("")}</div>` : ""}
+      ${r.images?.length ? `<div class="pj-row__items">${r.images.map((src) => `<figure>${media(src, r.images.length)}</figure>`).join("")}</div>` : ""}
       ${r.caption ? `<p class="pj-row__cap">${esc(r.caption)}</p>` : ""}
     </div>`).join("");
 }

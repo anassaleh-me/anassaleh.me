@@ -1,5 +1,5 @@
 // Mechanical Spider: 105 frames rendered in Blender on a 21 x 5 grid (head and body turned left to right, up to down).
-// The stage shows the frame that matches where the pointer is, so the spider turns its head toward the cursor.
+// The stage blends the frames around the pointer position, so the spider turns its head smoothly toward the cursor.
 // Each frame is rendered on the stage colour (soft shadows stay smooth). Frames load only when the section comes near, centre first, then a coarse grid, then the rest.
 const COLS = 21, ROWS = 5, CENTRE = 1 + 2 * COLS + 10;
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -40,7 +40,7 @@ export function mountSpider(stage, { base = "/images/spider", reduce = false } =
     for (let k = 0; k < 4; k++) next();
   }
 
-  // the loaded frame nearest to a grid point
+  // the loaded frame nearest to a grid point (used until the four frames around the point have arrived)
   function nearest(c, r) {
     const ci = Math.round(c), ri = Math.round(r);
     let best = 0, bd = 1e9;
@@ -53,22 +53,33 @@ export function mountSpider(stage, { base = "/images/spider", reduce = false } =
     return best;
   }
 
+  const mix = document.createElement("canvas"), mctx = mix.getContext("2d");
   function resize() {
     const r = stage.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
-    canvas.width = Math.round(r.width * dpr); canvas.height = Math.round(r.height * dpr);
+    canvas.width = mix.width = Math.round(r.width * dpr); canvas.height = mix.height = Math.round(r.height * dpr);
     shown = 0;
   }
 
-  function draw(i) {
-    const img = frames[i];
-    if (!img) return;
+  // fit the whole frame inside the stage, sitting slightly low like it stands on the floor
+  function put(c, img, alpha) {
     const W = canvas.width, H = canvas.height;
-    // fit the whole frame inside the stage, sitting slightly low like it stands on the floor
     const s = Math.min(W / img.width, H / img.height) * (W < H * 1.1 ? 1.16 : 1.08);
     const w = img.width * s, h = img.height * s;
-    ctx.clearRect(0, 0, W, H);
-    ctx.drawImage(img, (W - w) / 2, (H - h) * 0.62, w, h);
-    shown = i;
+    c.globalAlpha = alpha;
+    c.drawImage(img, (W - w) / 2, (H - h) * 0.62, w, h);
+  }
+
+  // the point between frames: the four frames around it are blended, so the turn is smooth instead of stepping
+  function draw(c, r) {
+    const c0 = Math.floor(c), r0 = Math.floor(r), c1 = Math.min(c0 + 1, COLS - 1), r1 = Math.min(r0 + 1, ROWS - 1);
+    const f = (cc, rr) => frames[1 + rr * COLS + cc];
+    const A = f(c0, r0), B = f(c1, r0), C = f(c0, r1), D = f(c1, r1);
+    if (!(A && B && C && D)) { const i = nearest(c, r); if (i) put(ctx, frames[i], 1); return; }
+    // rows are further apart than columns, so they cross over in a shorter window (less double image)
+    const fc = c - c0, q = clamp((r - r0 - 0.3) / 0.4, 0, 1), fr = q * q * (3 - 2 * q);
+    put(ctx, A, 1); if (fc > 0.01) put(ctx, B, fc);
+    if (fr > 0.01) { put(mctx, C, 1); if (fc > 0.01) put(mctx, D, fc); ctx.globalAlpha = fr; ctx.drawImage(mix, 0, 0); }
+    ctx.globalAlpha = 1;
   }
 
   // the pointer anywhere on the screen counts; the spider watches it from the middle of its stage
@@ -76,25 +87,29 @@ export function mountSpider(stage, { base = "/images/spider", reduce = false } =
     const r = stage.getBoundingClientRect();
     const dx = clamp((x - (r.left + r.width / 2)) / (innerWidth * 0.45), -1, 1);
     const dy = clamp((y - (r.top + r.height * 0.45)) / (innerHeight * 0.45), -1, 1);
-    at.tc = (1 - (dx + 1) / 2) * (COLS - 1); // column 0 looks to the right of the screen
-    at.tr = ((dy + 1) / 2) * (ROWS - 1);     // row 0 looks up
+    at.tc = ((dx + 1) / 2) * (COLS - 1); // column 0 looks to the left of the screen
+    at.tr = ((dy + 1) / 2) * (ROWS - 1); // row 0 looks up
     lastMove = performance.now();
   }
   addEventListener("pointermove", (e) => { if (visible) aim(e.clientX, e.clientY); }, { passive: true });
   // on touch screens a finger dragged across the stage steers it
   stage.addEventListener("pointerdown", (e) => aim(e.clientX, e.clientY));
 
+  let last = 0, drawn = "";
   function tick(t) {
     raf = visible ? requestAnimationFrame(tick) : 0;
+    const dt = Math.min((t - (last || t)) / 1000, 0.1); last = t;
     // nobody steering for a while: it looks around slowly by itself (not when the system asks for less motion)
     if (!reduce && t - lastMove > 2600) {
       const k = t / 1000;
       at.tc = 10 + Math.sin(k * 0.45) * 7 + Math.sin(k * 1.1) * 1.5;
       at.tr = 2 + Math.sin(k * 0.33 + 1) * 1.2;
     }
-    at.c = lerp(at.c, at.tc, 0.09); at.r = lerp(at.r, at.tr, 0.09);
-    const i = nearest(at.c, at.r);
-    if (i && i !== shown) draw(i);
+    // eased follow, the same speed at any screen refresh rate
+    const e = 1 - Math.exp(-dt * 5);
+    at.c = lerp(at.c, at.tc, e); at.r = lerp(at.r, at.tr, e);
+    const key = `${at.c.toFixed(3)} ${at.r.toFixed(3)}`;
+    if (frames[CENTRE] && (key !== drawn || !shown)) { draw(at.c, at.r); drawn = key; shown = 1; }
   }
 
   new IntersectionObserver(([e]) => {

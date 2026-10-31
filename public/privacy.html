@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>document.documentElement.classList.add("intro")</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Privacy, Anas Saleh</title>
+<meta name="description" content="How anassaleh.me handles your details: what the contact form collects, why, where it is kept, and how to have it deleted.">
+<meta property="og:title" content="Privacy, Anas Saleh">
+<meta property="og:image" content="https://anassaleh.me/images/og-v2.jpg">
+<meta name="theme-color" content="#1d1d1b">
+<link rel="canonical" href="https://anassaleh.me/privacy">
+<link rel="icon" href="/images/icon.svg" type="image/svg+xml">
+<link rel="icon" href="/images/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/images/icon-180.png">
+<link rel="preload" href="/fonts/archivo-black-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/barlow-semi-condensed-500-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/barlow-semi-condensed-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/fonts.css">
+<link rel="preload" href="/content/site.json" as="fetch" crossorigin>
+<link rel="preload" href="/content/projects.json" as="fetch" crossorigin>
+<link rel="stylesheet" href="/vendor/lenis-1.3.4.css">
+
+<link rel="modulepreload" href="/js/privacy2.js">
+<link rel="modulepreload" href="/js/shell2.js">
+<link rel="modulepreload" href="/js/nav.js">
+<link rel="modulepreload" href="/js/cursors.js">
+<link rel="modulepreload" href="/js/data.js">
+<link rel="stylesheet" href="/css/nav.css">
+<link rel="stylesheet" href="/css/v2.css">
+<link rel="stylesheet" href="/css/pages2.css">
+<script defer src="/vendor/lenis-1.3.4.min.js"></script>
+<script type="module" src="/js/privacy2.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main">
+  <header class="ph wrap">
+    <span class="label" data-intro>Privacy</span>
+    <h1 class="ph__title up pv-title"><span class="ln"><span class="w">Your</span></span> <span class="ln"><span class="w acc">details</span></span></h1>
+    <p class="pv-lead" data-intro>Short and plain: what this site collects, why, and what you can ask for. Last updated 31 October 2026.</p>
+  </header>
+  <article class="pv wrap">
+    <section data-reveal><h2 class="up">Who runs this site</h2><p>anassaleh.me belongs to Anas Al Shikh Saleh, a visual artist and art director based in Dubai, UAE. For anything about your details, email <a href="mailto:hello@anassaleh.me">hello@anassaleh.me</a>.</p></section>
+    <section data-reveal><h2 class="up">What the contact form collects</h2><p>Only what you type: your name, email, phone or WhatsApp number, company, the services you pick, budget, timing, how you found me, links and your brief. The time of the request and your country (from the network, not your exact location) are added.</p></section>
+    <section data-reveal><h2 class="up">Why</h2><p>To reply to your request, discuss your project and send a quotation. Your details are never sold, shared for advertising or added to a mailing list.</p></section>
+    <section data-reveal><h2 class="up">Where it is kept</h2><p>Each request arrives as an email in my inbox, is saved in my private Notion workspace, and a backup copy is stored with Cloudflare, which hosts this site. Only I have access.</p></section>
+    <section data-reveal><h2 class="up">How long</h2><p>As long as the conversation or project needs it, and for my business records after that. You can ask me to delete it at any time.</p></section>
+    <section data-reveal><h2 class="up">Visits and cookies</h2><p>This site sets no cookies. Visits are counted with Cloudflare Web Analytics, which uses no cookies and does not track you across sites. To load pages faster, your browser keeps a copy of the site's content for the current tab only, and it is cleared when you close it.</p></section>
+    <section data-reveal><h2 class="up">Videos</h2><p>Films play from Vimeo (with do not track on) or YouTube's privacy enhanced player. They only load when you press play, and from then on their own privacy policies apply.</p></section>
+    <section data-reveal><h2 class="up">Your rights</h2><p>You can ask to see, correct or delete the details you sent, or to stop being contacted. Email <a href="mailto:hello@anassaleh.me">hello@anassaleh.me</a> and I will handle it promptly.</p></section>
+  </article>
+</main>
+<footer data-footer></footer>
+<script>
+  // Title words rise and the intro lines come into focus as soon as the page is drawn (no waiting for content).
+  (function () {
+    var E = "cubic-bezier(.16,1,.3,1)";
+    document.querySelectorAll(".ph__title .w, .sv-title .w").forEach(function (w, i) {
+      w.animate([{ transform: "translateY(110%) rotate(3deg)" }, { transform: "none" }], { duration: 1200, delay: 80 + i * 110, easing: E, fill: "backwards" });
+    });
+    document.querySelectorAll("[data-intro]").forEach(function (el, i) {
+      el.animate([{ opacity: 0, transform: "translateY(20px)", filter: "blur(8px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }], { duration: 1000, delay: 450 + i * 120, easing: E, fill: "backwards" });
+    });
+    document.documentElement.classList.remove("intro");
+  })();
+</script>
+</body>
+</html>

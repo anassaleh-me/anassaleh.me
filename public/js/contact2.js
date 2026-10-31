@@ -94,9 +94,10 @@ form.addEventListener("submit", async (e) => {
     const done = $(".ff__done");
     done.animate([{ opacity: 0, transform: "translateY(30px)", filter: "blur(10px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }], { duration: 900, easing: E });
     done.focus();
-  } catch {
+  } catch (err) {
     submit.disabled = false;
     status.classList.add("is-error");
+    if (err.message === "busy") { status.textContent = "Too many requests in a row. Please wait a minute and try again."; return; }
     status.innerHTML = `Something went wrong. Please email me at <a href="mailto:${esc(c.email)}">${esc(c.email)}</a>.`;
   }
 });

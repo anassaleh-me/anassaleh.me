@@ -9,9 +9,14 @@ const i = projects.findIndex((p) => p.slug === slug);
 const ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 
 // Vimeo and YouTube links become their players. Other links (the old Adobe/Behance players stopped working) are skipped.
+// A plain link or Vimeo's whole embed code both work: only the video number and, for unlisted videos, its private
+// key (h=...) are taken from it, never the code itself.
 const embed = (u = "") => {
-  const vm = u.match(/vimeo\.com\/(?:video\/)?(\d+)/);
-  if (vm) return `https://player.vimeo.com/video/${vm[1]}?dnt=1&autoplay=1`;
+  const vm = u.match(/vimeo\.com\/(?:video\/)?(\d+)(?:\/([0-9a-f]{6,}))?/);
+  if (vm) {
+    const h = vm[2] || (u.match(/[?&](?:amp;)?h=([0-9a-f]{6,})/) || [])[1];
+    return `https://player.vimeo.com/video/${vm[1]}?dnt=1&autoplay=1${h ? `&h=${h}` : ""}`;
+  }
   const yt = u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([\w-]{6,})/);
   if (yt) return `https://www.youtube-nocookie.com/embed/${yt[1]}?rel=0&autoplay=1`;
   return "";
@@ -29,7 +34,8 @@ function render(p, prev, next) {
   $('meta[name="description"]').setAttribute("content", `${p.title}: ${p.subtitle}. ${p.description || ""}`.slice(0, 160));
   const meta = [["Client", p.client], ["Year", p.year], ["Role", p.role], ["Tools", p.tools], ["Format", p.format]].filter(([, v]) => v);
   const words = p.title.split(/\s+/);
-  const tall = /9:16/.test(p.format || "");
+  // a portrait film: the format says 9:16, or Vimeo's embed code is taller than wide
+  const tall = /9:16/.test(p.format || "") || Number((String(p.video || "").match(/padding:\s*([\d.]+)%/) || [])[1]) > 100;
   const film = embed(p.video);
   const PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>';
   // layout rows from the CMS (older entries with a flat `images` list show one per row)

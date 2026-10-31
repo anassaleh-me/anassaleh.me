@@ -21,12 +21,7 @@ export function getJSON(url) {
   return fresh;
 }
 
-// When the pointer rests on a link to another page of the site, the browser fetches that page ahead of the click,
-// so it opens straight away (supported in Chrome and Edge; other browsers simply skip it).
-export function prefetchOnHover() {
-  if (!HTMLScriptElement.supports?.("speculationrules") || document.querySelector('script[type="speculationrules"]')) return;
-  const s = document.createElement("script");
-  s.type = "speculationrules";
-  s.textContent = JSON.stringify({ prefetch: [{ where: { and: [{ href_matches: "/*" }, { not: { href_matches: "/api/*" } }] }, eagerness: "moderate" }] });
-  document.head.append(s);
-}
+// Pages open straight away when the pointer rests on a link: every page sends a Speculation-Rules header
+// (public/_headers) pointing at /speculation-rules.json, so the browser fetches the page ahead of the click
+// (Chrome and Edge; other browsers skip it). Kept as a no-op so pages that call it need no change.
+export function prefetchOnHover() {}

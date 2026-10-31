@@ -163,7 +163,7 @@ function footerHTML(site) {
         <div><h3>Say hi</h3><ul><li><a href="mailto:${esc(c.email)}">${esc(c.email)}</a></li><li><a href="${esc(site.about?.cv || "/Anas_Al_Shikh_Saleh_CV.pdf")}" target="_blank" rel="noopener">Download CV</a></li></ul></div>
       </div>
       <p class="foot__big up" aria-hidden="true">Anas <span class="acc">Saleh</span></p>
-      <div class="foot__bottom"><span>&copy; ${new Date().getFullYear()} ${esc(site.fullName)}</span><span>anassaleh.me</span></div>
+      <div class="foot__bottom"><span>&copy; ${new Date().getFullYear()} ${esc(site.fullName)}</span><span><a href="/privacy">Privacy</a> &middot; anassaleh.me</span></div>
     </div>
   </footer>`;
 }

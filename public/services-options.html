@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Services options</title>
+<link rel="icon" href="/images/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/fonts.css">
+<link rel="stylesheet" href="/css/v2.css">
+<style>
+  /* Options board for the Services page: three ways to show the services, three ways to show the process. */
+  .ob-tag { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 14px; padding: 14px var(--g); background: var(--accent); color: var(--char); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; font-size: 14px; }
+  .ob-tag b { font-family: var(--display); font-weight: 400; font-size: 22px; letter-spacing: 0.02em; }
+  .ob-intro { padding: 60px var(--g) 40px; max-width: var(--max); margin-inline: auto; }
+  .ob-intro h1 { font-family: var(--display); text-transform: uppercase; font-weight: 400; font-size: clamp(36px, 6vw, 90px); line-height: 0.9; margin: 16px 0; }
+  .ob-intro p { color: var(--ink-soft); max-width: 60ch; }
+  .opt { padding-block: clamp(60px, 8vw, 120px); }
+  .up { font-family: var(--display); text-transform: uppercase; font-weight: 400; }
+  .muted { color: var(--ink-soft); }
+  .dark .muted { color: var(--cream-soft); }
+  .pk-line { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; padding: 0; list-style: none; color: var(--ink-soft); font-size: 0.95em; }
+  .pk-line li::before { content: "+ "; color: var(--acc-t); font-weight: 700; }
+  .btn-s { display: inline-flex; align-items: center; gap: 10px; height: 46px; padding: 0 22px; border-radius: 99px; background: var(--char); color: var(--cream); font-weight: 700; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; }
+  .btn-s:hover { background: var(--accent); color: var(--char); }
+  img { display: block; }
+
+  /* ---------- A: index list, one row per service, the picture follows the row you point at ---------- */
+  .a-wrap { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(30px, 5vw, 80px); align-items: start; }
+  .a-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(29, 29, 27, 0.15); }
+  .a-row { border-bottom: 1px solid rgba(29, 29, 27, 0.15); }
+  .a-row button { all: unset; box-sizing: border-box; cursor: pointer; display: grid; grid-template-columns: 48px 1fr 40px; align-items: center; gap: 12px; width: 100%; padding: 26px 0; }
+  .a-row button:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+  .a-n { font-family: var(--display); color: var(--acc-t); font-size: 15px; }
+  .a-name { font-family: var(--display); text-transform: uppercase; font-size: clamp(26px, 3.4vw, 54px); line-height: 0.95; transition: transform 0.5s var(--ease), color 0.3s; }
+  .a-row:hover .a-name, .a-row.on .a-name { transform: translateX(12px); color: var(--acc-g); }
+  .a-plus { justify-self: end; width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(29, 29, 27, 0.25); position: relative; transition: background-color 0.3s, transform 0.5s var(--ease); }
+  .a-plus::before, .a-plus::after { content: ""; position: absolute; left: 50%; top: 50%; width: 12px; height: 1.5px; margin: -0.75px 0 0 -6px; background: currentColor; }
+  .a-plus::after { transform: rotate(90deg); transition: transform 0.5s var(--ease); }
+  .a-row.on .a-plus { background: var(--accent); border-color: var(--accent); }
+  .a-row.on .a-plus::after { transform: none; }
+  .a-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.6s var(--ease); }
+  .a-row.on .a-body { grid-template-rows: 1fr; }
+  .a-body > div { overflow: hidden; }
+  .a-inner { padding: 0 0 30px 60px; display: grid; gap: 16px; }
+  .a-inner .a-pk { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.3fr); gap: 16px; padding-top: 14px; border-top: 1px dashed rgba(29, 29, 27, 0.18); }
+  .a-inner .a-pk b { font-weight: 700; }
+  .a-pic { position: sticky; top: 90px; aspect-ratio: 4 / 5; border-radius: 18px; overflow: hidden; background: var(--cream-2); }
+  .a-pic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.08); transition: opacity 0.6s, transform 1.2s var(--ease); }
+  .a-pic img.on { opacity: 1; transform: none; }
+  .a-pic span { position: absolute; left: 16px; bottom: 16px; padding: 8px 14px; border-radius: 99px; background: rgba(241, 236, 226, 0.92); font-weight: 700; font-size: 14px; }
+  @media (max-width: 860px) { .a-wrap { grid-template-columns: 1fr; } .a-pic { display: none; } .a-inner { padding-left: 0; } .a-inner .a-pk { grid-template-columns: 1fr; gap: 4px; } .a-row button { grid-template-columns: 36px 1fr 36px; } }
+  .a-thumb { display: none; }
+  @media (max-width: 860px) { .a-thumb { display: block; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; } .a-thumb img { width: 100%; height: 100%; object-fit: cover; } }
+
+  /* ---------- B: switcher, one service at a time ---------- */
+  .b-tabs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 6px; border-radius: 99px; background: rgba(29, 29, 27, 0.06); width: max-content; max-width: 100%; }
+  .b-tabs button { all: unset; cursor: pointer; flex: none; padding: 12px 20px; border-radius: 99px; font-weight: 700; font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; transition: background-color 0.3s, color 0.3s; }
+  .b-tabs button[aria-selected="true"] { background: var(--char); color: var(--cream); }
+  .b-tabs button:focus-visible { outline: 2px solid var(--accent); }
+  .b-panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(30px, 5vw, 80px); margin-top: clamp(30px, 4vw, 50px); align-items: center; }
+  .b-img { aspect-ratio: 5 / 4; border-radius: 20px; overflow: hidden; }
+  .b-img img { width: 100%; height: 100%; object-fit: cover; animation: b-in 0.9s var(--ease); }
+  .b-txt > * { animation: b-up 0.8s var(--ease) backwards; }
+  .b-txt > :nth-child(2) { animation-delay: 0.06s; } .b-txt > :nth-child(3) { animation-delay: 0.12s; } .b-txt > :nth-child(4) { animation-delay: 0.18s; }
+  @keyframes b-in { from { opacity: 0; transform: scale(1.06); filter: blur(10px); } }
+  @keyframes b-up { from { opacity: 0; transform: translateY(18px); filter: blur(6px); } }
+  .b-name { font-size: clamp(34px, 4.4vw, 70px); line-height: 0.92; margin: 0 0 14px; }
+  .b-pks { list-style: none; margin: 26px 0 30px; padding: 0; border-top: 1px solid rgba(29, 29, 27, 0.15); }
+  .b-pks li { display: flex; justify-content: space-between; gap: 20px; padding: 16px 0; border-bottom: 1px solid rgba(29, 29, 27, 0.15); }
+  .b-pks b { font-weight: 700; }
+  .b-pks span { color: var(--ink-soft); text-align: right; max-width: 30ch; }
+  @media (max-width: 860px) { .b-panel { grid-template-columns: 1fr; } .b-pks li { flex-direction: column; gap: 2px; } .b-pks span { text-align: left; } }
+
+  /* ---------- C: chapters, a wide picture per service with the packages in columns ---------- */
+  .c-item { padding-block: clamp(40px, 5vw, 70px); }
+  .c-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; margin-bottom: 22px; }
+  .c-head h3 { font-size: clamp(34px, 5vw, 84px); line-height: 0.9; margin: 8px 0 0; }
+  .c-banner { position: relative; aspect-ratio: 21 / 8; border-radius: 20px; overflow: hidden; }
+  .c-banner img { width: 100%; height: 118%; object-fit: cover; will-change: transform; }
+  .c-banner p { position: absolute; left: clamp(16px, 2vw, 28px); bottom: clamp(16px, 2vw, 28px); max-width: 34ch; margin: 0; padding: 12px 18px; border-radius: 14px; background: rgba(29, 29, 27, 0.72); color: var(--cream); backdrop-filter: blur(8px); }
+  .c-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: clamp(20px, 3vw, 44px); margin-top: 26px; }
+  .c-cols div { border-top: 2px solid var(--char); padding-top: 14px; }
+  .c-cols b { display: block; font-family: var(--display); text-transform: uppercase; font-weight: 400; font-size: 18px; margin-bottom: 6px; }
+  @media (max-width: 760px) { .c-banner { aspect-ratio: 4 / 3; } }
+
+  /* ---------- process timelines ---------- */
+  .tl-head { margin-bottom: clamp(30px, 4vw, 60px); }
+  .tl-head h2 { font-size: clamp(36px, 5vw, 84px); line-height: 0.9; margin: 14px 0 0; }
+  .pay { display: inline-block; margin-top: 10px; padding: 4px 10px; border-radius: 99px; background: var(--accent); color: var(--char); font-weight: 700; font-size: 13px; letter-spacing: 0.06em; }
+
+  /* 1: horizontal track pinned while you scroll, the line fills as the steps pass */
+  .t1 { position: relative; }
+  .t1-sticky { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+  .t1-track { display: flex; gap: clamp(20px, 3vw, 40px); padding-inline: var(--g); will-change: transform; }
+  .t1-step { flex: none; width: min(380px, 78vw); }
+  .t1-dot { display: block; width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--accent); background: var(--char); margin-bottom: 26px; position: relative; z-index: 2; transition: background-color 0.4s, transform 0.4s var(--ease); }
+  .t1-step.on .t1-dot { background: var(--accent); transform: scale(1.3); }
+  .t1-n { font-family: var(--display); font-size: clamp(54px, 6vw, 96px); line-height: 1; color: rgba(241, 236, 226, 0.12); transition: color 0.5s; }
+  .t1-step.on .t1-n { color: var(--accent); }
+  .t1-step h3 { font-size: clamp(22px, 2vw, 30px); margin: 10px 0 8px; }
+  .t1-line { position: absolute; left: 0; right: 0; height: 2px; background: rgba(241, 236, 226, 0.14); }
+  .t1-line i { position: absolute; inset: 0; background: var(--accent); transform-origin: 0 50%; transform: scaleX(0); }
+  .t1-rail { position: relative; }
+
+  /* 2: vertical line down the middle, steps on alternate sides, the line fills as you read */
+  .t2 { position: relative; max-width: 1000px; margin-inline: auto; }
+  .t2-line { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: rgba(29, 29, 27, 0.14); }
+  .t2-line i { position: absolute; inset: 0; background: var(--accent); transform-origin: 50% 0; transform: scaleY(0); }
+  .t2-step { position: relative; width: 50%; padding: 0 clamp(30px, 5vw, 70px) clamp(50px, 6vw, 80px); opacity: 0.25; filter: blur(4px); transform: translateY(20px); transition: opacity 0.8s var(--ease), filter 0.8s var(--ease), transform 0.8s var(--ease); }
+  .t2-step.on { opacity: 1; filter: none; transform: none; }
+  .t2-step:nth-child(odd) { text-align: right; }
+  .t2-step:nth-child(even) { margin-left: 50%; }
+  .t2-step::before { content: ""; position: absolute; top: 6px; width: 16px; height: 16px; border-radius: 50%; background: var(--cream); border: 2px solid var(--accent); transition: background-color 0.4s; }
+  .t2-step:nth-child(odd)::before { right: -9px; }
+  .t2-step:nth-child(even)::before { left: -9px; }
+  .t2-step.on::before { background: var(--accent); }
+  .t2-n { font-family: var(--display); color: var(--acc-t); font-size: 15px; letter-spacing: 0.1em; }
+  .t2-step h3 { font-size: clamp(26px, 2.6vw, 42px); margin: 6px 0 8px; line-height: 0.95; }
+  .t2-step p { margin: 0; color: var(--ink-soft); }
+  @media (max-width: 760px) {
+    .t2-line { left: 8px; }
+    .t2-step, .t2-step:nth-child(even) { width: auto; margin-left: 0; padding: 0 0 44px 40px; text-align: left; }
+    .t2-step:nth-child(odd)::before, .t2-step:nth-child(even)::before { left: 0; right: auto; }
+  }
+
+  /* 3: a stepper bar; pick a step (or let it play) and its card shows below, payments marked on the bar */
+  .t3-bar { position: relative; display: grid; grid-template-columns: repeat(6, 1fr); }
+  .t3-bar::before { content: ""; position: absolute; left: calc(100% / 12); right: calc(100% / 12); top: 23px; height: 2px; background: rgba(241, 236, 226, 0.14); }
+  .t3-fill { position: absolute; left: 0; top: 23px; height: 2px; background: var(--accent); transition: width 0.7s var(--ease); }
+  .t3-bar button { all: unset; cursor: pointer; position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
+  .t3-bar button:focus-visible .t3-c { outline: 2px solid var(--cream); outline-offset: 3px; }
+  .t3-c { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; background: var(--char); border: 2px solid rgba(241, 236, 226, 0.25); font-family: var(--display); font-size: 15px; transition: background-color 0.4s, border-color 0.4s, color 0.4s, transform 0.4s var(--ease); }
+  .t3-bar button.done .t3-c { border-color: var(--accent); color: var(--accent); }
+  .t3-bar button.on .t3-c { background: var(--accent); border-color: var(--accent); color: var(--char); transform: scale(1.15); }
+  .t3-l { font-weight: 700; font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cream-soft); transition: color 0.3s; }
+  .t3-bar button.on .t3-l { color: var(--cream); }
+  .t3-card { display: grid; grid-template-columns: auto 1fr; gap: clamp(20px, 4vw, 60px); align-items: center; margin-top: clamp(40px, 5vw, 70px); padding: clamp(26px, 3vw, 46px); border-radius: 22px; border: 1px solid rgba(241, 236, 226, 0.12); background: rgba(241, 236, 226, 0.04); min-height: 210px; }
+  .t3-big { font-family: var(--display); font-size: clamp(80px, 11vw, 170px); line-height: 0.8; color: var(--accent); }
+  .t3-card h3 { font-size: clamp(28px, 3vw, 48px); margin: 0 0 10px; }
+  .t3-card > div > * { animation: b-up 0.6s var(--ease) backwards; }
+  .t3-big { animation: b-in 0.6s var(--ease); }
+  @media (max-width: 760px) { .t3-l { display: none; } .t3-card { grid-template-columns: 1fr; } .t3-big { font-size: 72px; } }
+</style>
+</head>
+<body>
+<main>
+  <div class="ob-intro">
+    <span class="label">Services page, stage 1</span>
+    <h1>Pick one layout and one timeline</h1>
+    <p>Three ways to show the services, then three ways to show how we work. Same content in each, with your real work. Hover or tap to try them. Tell me a letter and a number, for example A + 2.</p>
+  </div>
+
+  <div class="ob-tag"><b>A</b> Index list: one row per service, opens on tap, picture follows</div>
+  <section class="opt wrap"><div class="a-wrap"><ul class="a-list" data-a></ul><div class="a-pic" data-a-pic></div></div></section>
+
+  <div class="ob-tag"><b>B</b> Switcher: one service at a time</div>
+  <section class="opt wrap"><div class="b-tabs" role="tablist" data-b-tabs></div><div class="b-panel" data-b></div></section>
+
+  <div class="ob-tag"><b>C</b> Chapters: a wide picture per service, packages in columns</div>
+  <section class="opt wrap" data-c></section>
+
+  <div class="ob-tag"><b>1</b> Horizontal timeline that moves as you scroll</div>
+  <section class="t1 dark" data-t1>
+    <div class="t1-sticky">
+      <div class="wrap tl-head"><span class="label">Process</span><h2 class="up">How we <span class="acc">work</span></h2></div>
+      <div class="t1-rail"><div class="t1-line" data-t1-line style="top:8px"><i></i></div><div class="t1-track" data-t1-track></div></div>
+    </div>
+  </section>
+
+  <div class="ob-tag"><b>2</b> Vertical timeline, steps light up as you read</div>
+  <section class="opt wrap">
+    <div class="tl-head" style="text-align:center"><span class="label">Process</span><h2 class="up">How we <span class="acc">work</span></h2></div>
+    <div class="t2" data-t2><div class="t2-line"><i data-t2-fill></i></div></div>
+  </section>
+
+  <div class="ob-tag"><b>3</b> Stepper: tap a step or let it play</div>
+  <section class="opt dark">
+    <div class="wrap">
+      <div class="tl-head"><span class="label">Process</span><h2 class="up">How we <span class="acc">work</span></h2></div>
+      <div class="t3-bar" data-t3-bar><span class="t3-fill" data-t3-fill></span></div>
+      <div class="t3-card" data-t3-card></div>
+    </div>
+  </section>
+</main>
+<script type="module">
+  const esc = (s = "") => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+  const pad = (n) => String(n).padStart(2, "0");
+  const s = await (await fetch("/content/services.json")).json();
+  const pics = ["/images/covers/mangobot-brand-identity.webp", "/images/covers/mechanical-spider.webp", "/images/drawings/drawing-1.webp", "/images/covers/exoskeleton-film.webp", "/images/covers/mangobot-production.webp"];
+  const items = s.items.map((x, i) => ({ ...x, pic: pics[i] }));
+  const steps = s.process.steps;
+  const payAt = { 2: "50% deposit", 5: "50% on delivery" };
+  const ARROW = '<svg width="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+  const quote = (x) => `<a class="btn-s" href="/contact?service=${encodeURIComponent(x.formService)}">Ask for a quote ${ARROW}</a>`;
+
+  // A
+  const aList = document.querySelector("[data-a]"), aPic = document.querySelector("[data-a-pic]");
+  aPic.innerHTML = items.map((x, i) => `<img src="${x.pic}" alt="" class="${i ? "" : "on"}">`).join("") + `<span data-a-cap>${esc(items[0].name)}</span>`;
+  aList.innerHTML = items.map((x, i) => `<li class="a-row${i ? "" : " on"}">
+    <button type="button" aria-expanded="${!i}"><span class="a-n">${pad(i + 1)}</span><span class="a-name">${esc(x.name)}</span><span class="a-plus" aria-hidden="true"></span></button>
+    <div class="a-body"><div><div class="a-inner">
+      <span class="a-thumb"><img src="${x.pic}" alt="" loading="lazy"></span>
+      <p class="muted" style="margin:0">${esc(x.line)}</p>
+      ${x.packages.map((k) => `<div class="a-pk"><b>${esc(k.name)}</b><span class="muted">${esc(k.text)}</span></div>`).join("")}
+      <div>${quote(x)}</div>
+    </div></div></div></li>`).join("");
+  const aRows = [...aList.children];
+  const show = (i) => { [...aPic.querySelectorAll("img")].forEach((im, j) => im.classList.toggle("on", j === i)); aPic.querySelector("[data-a-cap]").textContent = items[i].name; };
+  aRows.forEach((r, i) => {
+    r.addEventListener("pointerenter", () => show(i));
+    r.querySelector("button").addEventListener("click", () => {
+      const open = !r.classList.contains("on");
+      aRows.forEach((o) => { o.classList.remove("on"); o.querySelector("button").setAttribute("aria-expanded", "false"); });
+      if (open) { r.classList.add("on"); r.querySelector("button").setAttribute("aria-expanded", "true"); show(i); }
+    });
+  });
+
+  // B
+  const bTabs = document.querySelector("[data-b-tabs]"), bPanel = document.querySelector("[data-b]");
+  bTabs.innerHTML = items.map((x, i) => `<button type="button" role="tab" aria-selected="${!i}">${esc(x.name.replace(/ and .*/, ""))}</button>`).join("");
+  const bShow = (i) => {
+    const x = items[i];
+    [...bTabs.children].forEach((b, j) => b.setAttribute("aria-selected", String(j === i)));
+    bPanel.innerHTML = `<div class="b-img"><img src="${x.pic}" alt=""></div><div class="b-txt">
+      <span class="label">${pad(i + 1)} / ${pad(items.length)}</span>
+      <h3 class="up b-name">${esc(x.name)}</h3>
+      <p class="muted" style="margin:0">${esc(x.line)}</p>
+      <div><ul class="b-pks">${x.packages.map((k) => `<li><b>${esc(k.name)}</b><span>${esc(k.text)}</span></li>`).join("")}</ul>${quote(x)}</div></div>`;
+  };
+  [...bTabs.children].forEach((b, i) => b.addEventListener("click", () => bShow(i)));
+  bShow(0);
+
+  // C
+  const c = document.querySelector("[data-c]");
+  c.innerHTML = items.map((x, i) => `<article class="c-item">
+    <div class="c-head"><div><span class="label">${pad(i + 1)}</span><h3 class="up">${esc(x.name)}</h3></div>${quote(x)}</div>
+    <div class="c-banner"><img src="${x.pic}" alt="" loading="lazy"><p>${esc(x.line)}</p></div>
+    <div class="c-cols">${x.packages.map((k) => `<div><b>${esc(k.name)}</b><span class="muted">${esc(k.text)}</span></div>`).join("")}</div>
+  </article>`).join("");
+  const banners = [...c.querySelectorAll(".c-banner img")];
+
+  // 1
+  const t1 = document.querySelector("[data-t1]"), track = document.querySelector("[data-t1-track]");
+  track.innerHTML = steps.map((st, i) => `<div class="t1-step"><span class="t1-dot"></span><span class="t1-n">${pad(i + 1)}</span><h3 class="up">${esc(st.title)}</h3><p class="muted" style="margin:0">${esc(st.text)}</p>${payAt[i] ? `<span class="pay">${payAt[i]}</span>` : ""}</div>`).join("");
+  const t1Steps = [...track.children], t1Fill = document.querySelector("[data-t1-line] i");
+
+  // 2
+  const t2 = document.querySelector("[data-t2]");
+  t2.insertAdjacentHTML("beforeend", steps.map((st, i) => `<div class="t2-step"><span class="t2-n">Step ${pad(i + 1)}</span><h3 class="up">${esc(st.title)}</h3><p>${esc(st.text)}</p>${payAt[i] ? `<span class="pay">${payAt[i]}</span>` : ""}</div>`).join(""));
+  const t2Steps = [...t2.querySelectorAll(".t2-step")], t2Fill = document.querySelector("[data-t2-fill]");
+
+  // 3
+  const bar = document.querySelector("[data-t3-bar]"), card = document.querySelector("[data-t3-card]"), fill = document.querySelector("[data-t3-fill]");
+  bar.insertAdjacentHTML("beforeend", steps.map((st, i) => `<button type="button"><span class="t3-c">${pad(i + 1)}</span><span class="t3-l">${esc(st.title)}</span></button>`).join(""));
+  const t3B = [...bar.querySelectorAll("button")];
+  let t3i = 0, t3timer;
+  const t3Show = (i) => {
+    t3i = i;
+    t3B.forEach((b, j) => { b.classList.toggle("on", j === i); b.classList.toggle("done", j < i); });
+    fill.style.width = `${(i / (steps.length - 1)) * (100 - 100 / steps.length)}%`;
+    card.innerHTML = `<span class="t3-big">${pad(i + 1)}</span><div><h3 class="up">${esc(steps[i].title)}</h3><p class="muted" style="margin:0;max-width:52ch">${esc(steps[i].text)}</p>${payAt[i] ? `<span class="pay">${payAt[i]}</span>` : ""}</div>`;
+  };
+  const t3Play = () => { clearInterval(t3timer); t3timer = setInterval(() => t3Show((t3i + 1) % steps.length), 3200); };
+  t3B.forEach((b, i) => b.addEventListener("click", () => { t3Show(i); t3Play(); }));
+  fill.style.left = `${50 / steps.length}%`;
+  t3Show(0); t3Play();
+
+  // scroll-driven parts
+  t1.style.height = `${100 + steps.length * 40}vh`;
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  (function loop() {
+    requestAnimationFrame(loop);
+    const vh = innerHeight;
+    // 1: progress through the tall section moves the track left
+    const r1 = t1.getBoundingClientRect();
+    const p1 = clamp(-r1.top / (r1.height - vh), 0, 1);
+    const max = track.scrollWidth - innerWidth + 120;
+    track.style.transform = `translateX(${-p1 * Math.max(0, max)}px)`;
+    t1Fill.style.transform = `scaleX(${p1})`;
+    t1Steps.forEach((el, i) => el.classList.toggle("on", p1 >= i / steps.length - 0.02));
+    // 2: the line fills down to the reading line at 65% of the screen
+    const r2 = t2.getBoundingClientRect();
+    const p2 = clamp((vh * 0.65 - r2.top) / r2.height, 0, 1);
+    t2Fill.style.transform = `scaleY(${p2})`;
+    t2Steps.forEach((el) => el.classList.toggle("on", el.getBoundingClientRect().top < vh * 0.7));
+    // C: pictures drift a little inside their frames
+    banners.forEach((im) => { const r = im.parentElement.getBoundingClientRect(); if (r.bottom > 0 && r.top < vh) im.style.transform = `translateY(${((r.top + r.height / 2 - vh / 2) / vh) * -8}%)`; });
+  })();
+</script>
+</body>
+</html>

@@ -35,24 +35,22 @@
 <a class="skip" href="#main">Skip to content</a>
 <main id="main">
 
-  <header class="ph wrap">
+  <header class="ph wrap sv-head">
     <span class="label" data-intro>Services</span>
     <h1 class="ph__title sv-title up" data-sv-title><span class="ln"><span class="w">What</span></span> <span class="ln"><span class="w">I</span></span> <span class="ln"><span class="w">can</span></span> <span class="ln"><span class="w acc">make</span></span> <span class="ln"><span class="w">for</span></span> <span class="ln"><span class="w">you</span></span></h1>
-    <div class="ph__foot sv-intro">
-      <p data-intro data-sv-intro></p>
-      <nav class="chips sv-jump" aria-label="Jump to a service" data-sv-jump data-intro></nav>
-    </div>
+    <p class="sv-intro" data-intro data-sv-intro></p>
   </header>
 
-  <!-- One block per service: what it is on the left (stays in view), its packages on the right, examples under them -->
-  <section class="sv wrap" aria-label="Services" data-sv></section>
+  <!-- The services as a list: open one to see its packages; on wide screens a frame beside the list shows that service's work -->
+  <section class="sv wrap" aria-label="Services">
+    <ol class="sv-list" data-sv></ol>
+    <aside class="sv-frame" data-sv-frame aria-label="Examples"></aside>
+  </section>
 
-  <!-- How a project runs, from request to delivery -->
-  <section class="sv-process dark" data-dark aria-labelledby="process-title">
-    <div class="wrap">
-      <div class="ab-head"><span class="label" data-reveal>Process</span><h2 class="up" id="process-title" data-reveal data-process-title></h2><p class="sv-process__intro" data-reveal data-process-intro></p></div>
-      <ol class="sv-steps" data-steps></ol>
-    </div>
+  <!-- How a project runs: a line down the middle fills as you read, each step lights up when you reach it -->
+  <section class="sv-process wrap" aria-labelledby="process-title">
+    <div class="ab-head sv-process__head"><span class="label" data-reveal>Process</span><h2 class="up" id="process-title" data-reveal data-process-title></h2><p class="sv-process__intro" data-reveal data-process-intro></p></div>
+    <div class="sv-tl"><span class="sv-tl__line" aria-hidden="true"><i data-tl-fill></i></span><ol class="sv-tl__list" data-steps></ol></div>
   </section>
 
   <section class="sv-faq wrap" aria-labelledby="faq-title">

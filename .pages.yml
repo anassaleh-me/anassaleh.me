@@ -151,6 +151,7 @@ content:
             fields:
               - { name: title, label: Step, type: string, required: true }
               - { name: text, label: What happens, type: text }
+              - { name: tag, label: "Highlight (optional, e.g. 50% deposit)", type: string }
       - name: faq
         label: Questions
         type: object

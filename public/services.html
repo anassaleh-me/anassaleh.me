@@ -41,10 +41,18 @@
     <p class="sv-intro" data-intro data-sv-intro></p>
   </header>
 
-  <!-- The services as a list: open one to see its packages; on wide screens a frame beside the list shows that service's work -->
+  <!-- The services as a list: open one to see what it covers; on wide screens a frame beside the list shows that service's work -->
   <section class="sv wrap" aria-label="Services">
     <ol class="sv-list" data-sv></ol>
     <aside class="sv-frame" data-sv-frame aria-label="Examples"></aside>
+  </section>
+
+  <!-- Ready-made packages, grouped by service -->
+  <section class="pk dark" data-dark id="packages" aria-labelledby="pk-title">
+    <div class="wrap">
+      <div class="ab-head pk__head"><span class="label" data-reveal>Packages</span><h2 class="up" id="pk-title" data-reveal data-pk-title></h2><p class="pk__intro" data-reveal data-pk-intro></p></div>
+      <div class="pk__groups" data-pk></div>
+    </div>
   </section>
 
   <!-- How a project runs: a line down the middle fills as you read, each step lights up when you reach it -->

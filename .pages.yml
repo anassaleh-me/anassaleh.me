@@ -120,24 +120,48 @@ content:
       - { name: headline, label: "Title (put [brackets] round the blue words)", type: string }
       - { name: intro, label: Intro line, type: text }
       - name: items
-        label: Services
+        label: "Service areas (the list you open on the page)"
         type: object
         list: true
         fields:
           - { name: name, label: Name, type: string, required: true }
           - { name: line, label: Short line, type: text }
-          - { name: note, label: "Note under it (optional, e.g. how the price is set)", type: text }
           - { name: formService, label: "Ticks this choice on the contact form (written the same as there: Design, 3D, Drawing, Video editing, Filming)", type: string }
           - { name: examples, label: "Examples: the newest projects from these categories (names, separated by commas)", type: string }
           - { name: images, label: "Or pick example images yourself (shown instead)", type: image, list: true, options: { media: images } }
-          - name: packages
-            label: Packages
+          - name: services
+            label: Services in this area
             type: object
             list: true
             fields:
-              - { name: name, label: Name, type: string, required: true }
-              - { name: text, label: Short line, type: text }
-              - { name: includes, label: "What's included (one per line)", type: string, list: true }
+              - { name: name, label: Service, type: string, required: true }
+              - { name: text, label: One line about it, type: text }
+      - name: packages
+        label: Packages
+        type: object
+        fields:
+          - { name: title, label: "Title (put [brackets] round the blue words)", type: string }
+          - { name: intro, label: Intro line, type: text }
+          - name: groups
+            label: "Groups (one per service; the name should match a service area to link them)"
+            type: object
+            list: true
+            fields:
+              - { name: name, label: Group name, type: string, required: true }
+              - { name: line, label: Short line, type: text }
+              - { name: note, label: "Note (optional, e.g. how the price is set)", type: text }
+              - { name: formService, label: "Ticks this choice on the contact form", type: string }
+              - name: cards
+                label: Packages
+                type: object
+                list: true
+                fields:
+                  - { name: name, label: Name, type: string, required: true }
+                  - { name: tag, label: "Label on the card (optional, e.g. Most complete)", type: string }
+                  - { name: text, label: Short line, type: text }
+                  - { name: includes, label: "What's included (one per line)", type: string, list: true }
+                  - { name: terms, label: "Plans (optional, one per line, e.g. Monthly)", type: string, list: true }
+                  - { name: termsNote, label: Line under the plans, type: string }
       - name: process
         label: How we work
         type: object

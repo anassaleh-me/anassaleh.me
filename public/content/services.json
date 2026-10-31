@@ -1,137 +1,299 @@
 {
   "show": true,
   "headline": "What I can [make] for you",
-  "intro": "Design, 3D, drawing and video for brands, products and people. Open a service to see what each package includes. Every project is quoted on request.",
+  "intro": "Design, 3D, drawing and video for brands, products and people. Start with the services below, or go straight to a ready-made package. Every project is quoted on request.",
   "items": [
     {
       "name": "Design",
-      "line": "Brand identities and social content that look consistent everywhere your brand appears.",
+      "line": "Identity and graphic design that make a brand easy to recognise.",
       "formService": "Design",
       "examples": "Branding & graphic design",
-      "packages": [
+      "services": [
         {
           "name": "Logo design",
-          "text": "A distinctive logo built around your name and what your business stands for.",
-          "includes": ["Initial concepts to choose from", "Refinement of the chosen direction", "Final logo in full colour, black and white", "Files ready for print, web and social"]
+          "text": "A distinctive mark built around your name and what you stand for."
         },
         {
           "name": "Visual identity",
-          "text": "A complete brand system, ready to use across every touchpoint.",
-          "includes": ["Logo with alternate versions", "Colour palette and typography", "Brand patterns and graphic elements", "Business cards and stationery", "Social media templates", "Brand guidelines document"]
+          "text": "Logo, colour, type and the rules that hold them together."
         },
         {
           "name": "Social media design",
-          "text": "On-brand posts, stories and carousels, planned and designed every month.",
-          "includes": ["Monthly content plan", "Posts, stories and carousels", "Designed in your brand style", "Plans of 1, 3, 6 or 12 months, with better rates for longer plans"]
+          "text": "Posts, stories and carousels designed in your brand style."
+        },
+        {
+          "name": "Packaging and print",
+          "text": "Boxes, labels, billboards and print ready artwork."
         }
       ]
     },
     {
       "name": "3D design",
-      "line": "Photoreal 3D visuals of your product, ready even before it is manufactured.",
+      "line": "Product visuals modeled, lit and rendered in Blender.",
       "formService": "3D",
       "examples": "3D design",
-      "note": "Pricing depends on the product's complexity and the amount of animation.",
-      "packages": [
+      "services": [
         {
-          "name": "Product renders",
-          "text": "A detailed 3D model of your product with studio quality images.",
-          "includes": ["Accurate 3D model of the product", "10 high resolution renders", "Angles, lighting and backgrounds agreed with you"]
+          "name": "Product modeling",
+          "text": "Accurate 3D models built from drawings, photos or samples."
         },
         {
-          "name": "Product launch pack",
-          "text": "Everything you need to present a new product online.",
-          "includes": ["Accurate 3D model of the product", "10 high resolution renders", "25 second promo animation", "Cuts sized for social media"]
+          "name": "Product renders",
+          "text": "Studio quality images for online stores, ads and launches."
+        },
+        {
+          "name": "3D animation",
+          "text": "Short product animations and promo videos."
         }
       ]
     },
     {
       "name": "Portrait drawing",
-      "line": "Hand drawn portraits in pencil or charcoal, made from your photo.",
+      "line": "Portraits drawn by hand in pencil or charcoal.",
       "formService": "Drawing",
       "examples": "Traditional art",
-      "images": ["/images/drawings/drawing-1.webp", "/images/drawings/drawing-2.webp", "/images/drawings/drawing-3.webp"],
-      "packages": [
+      "images": [
+        "/images/drawings/drawing-1.webp",
+        "/images/drawings/drawing-2.webp",
+        "/images/drawings/drawing-3.webp"
+      ],
+      "services": [
         {
           "name": "Portrait commission",
-          "text": "A portrait drawn by hand from a photo you provide.",
-          "includes": ["Pencil or charcoal, your choice", "Drawn on fine art paper", "High resolution scan of the finished piece"]
+          "text": "A portrait drawn from your photo on fine art paper, with a high resolution scan."
         }
       ]
     },
     {
       "name": "Video editing and motion",
-      "line": "Edits with pace, sound and motion graphics that hold attention to the last second.",
+      "line": "Edits and motion graphics for social media, brands and launches.",
       "formService": "Video editing",
       "examples": "Animation",
-      "packages": [
+      "services": [
         {
-          "name": "Short form edit",
-          "text": "Vertical videos for Reels, TikTok and Shorts.",
-          "includes": ["Editing, music and sound design", "Captions and titles", "Colour correction"]
+          "name": "Short form editing",
+          "text": "Reels, TikTok and Shorts edited with pace, music and captions."
         },
         {
-          "name": "Edit with motion graphics",
-          "text": "Editing combined with animated titles, graphics and your logo in motion.",
-          "includes": ["Everything in the short form edit", "Custom motion graphics", "Animated logo"]
-        },
-        {
-          "name": "Monthly video plan",
-          "text": "A set number of edited videos every month, in one consistent style.",
-          "includes": ["Monthly content planning", "Vertical and horizontal formats", "Plans of 1, 3, 6 or 12 months"]
+          "name": "Motion graphics",
+          "text": "Animated titles, graphics and logo animation."
         },
         {
           "name": "Brand and long form video",
-          "text": "Brand films, interviews and product videos with a clear story.",
-          "includes": ["Story structure and pacing", "Editing, sound and colour", "Motion graphics where they add value"]
+          "text": "Brand films, interviews and product videos with a clear story."
         }
       ]
     },
     {
       "name": "Filming and photography",
-      "line": "Professional coverage of your event, product or brand, delivered ready to post.",
+      "line": "On-location filming and photography across the UAE.",
       "formService": "Filming",
       "examples": "Video production",
-      "packages": [
+      "services": [
         {
           "name": "Event coverage",
-          "text": "Filming and photography at your event, for up to five hours.",
-          "includes": ["Up to 5 hours on location", "Highlight video", "Vertical cut for social media", "Edited photo selection"]
+          "text": "Launches, conferences and private events, filmed and photographed."
         },
         {
-          "name": "Video production",
-          "text": "Filming and editing in landscape, portrait or both.",
-          "includes": ["Filming on location", "Edited videos in the formats you need"]
-        },
-        {
-          "name": "Video and photo package",
-          "text": "One shoot that delivers both videos and photos.",
-          "includes": ["Filming and photography on location", "Edited videos, landscape and portrait", "Edited photo selection"]
+          "name": "Product and brand shoots",
+          "text": "Video and photos of your product, space or team."
         }
       ]
     }
   ],
+  "packages": {
+    "title": "Ready-made [packages]",
+    "intro": "Clear scopes for the projects I'm asked for most. Each one can be adjusted to fit, and every price is quoted on request.",
+    "groups": [
+      {
+        "name": "Design",
+        "line": "From a first logo to content every month.",
+        "formService": "Design",
+        "cards": [
+          {
+            "name": "Brand starter",
+            "text": "The essentials for a new business that needs to look professional from day one.",
+            "includes": [
+              "Logo in colour, black and white",
+              "Colour palette and typography",
+              "Social media profile kit",
+              "One page brand sheet"
+            ]
+          },
+          {
+            "name": "Complete identity",
+            "text": "A full brand system for a business ready to grow.",
+            "includes": [
+              "Logo suite with alternate versions",
+              "Colour palette and typography",
+              "Brand patterns and graphic elements",
+              "Business cards and stationery",
+              "Social media templates",
+              "Brand guidelines document"
+            ]
+          },
+          {
+            "name": "Social media plan",
+            "text": "On-brand content, planned and designed every month.",
+            "includes": [
+              "Monthly content plan",
+              "12 designs a month across posts, stories and carousels",
+              "Sized and ready to post for each platform"
+            ],
+            "terms": [
+              "Monthly",
+              "Quarterly",
+              "Half-yearly",
+              "Yearly"
+            ],
+            "termsNote": "Longer plans come at a better monthly rate."
+          }
+        ]
+      },
+      {
+        "name": "3D design",
+        "line": "Your product, ready to sell before it is made.",
+        "formService": "3D",
+        "note": "Pricing depends on the product's complexity and the amount of animation.",
+        "cards": [
+          {
+            "name": "Product renders",
+            "text": "A detailed 3D model of your product with studio quality images.",
+            "includes": [
+              "Accurate 3D model of the product",
+              "10 high resolution renders",
+              "Angles, lighting and backgrounds agreed with you"
+            ]
+          },
+          {
+            "name": "Product launch",
+            "text": "Everything you need to present a new product online.",
+            "tag": "Most complete",
+            "includes": [
+              "Accurate 3D model of the product",
+              "10 high resolution renders",
+              "25 second promo animation",
+              "Cuts sized for social media"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Video editing",
+        "line": "A steady flow of short videos, in one consistent style.",
+        "formService": "Video editing",
+        "cards": [
+          {
+            "name": "Monthly short form",
+            "text": "Short videos for Reels, TikTok and Shorts, edited every month.",
+            "includes": [
+              "8 videos a month, 15 to 60 seconds each",
+              "Editing, music and sound design",
+              "Captions and titles in your brand style",
+              "Colour correction",
+              "More videos can be added by agreement"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Event coverage",
+        "line": "Five hours at your event, delivered ready to share.",
+        "formService": "Filming",
+        "note": "More videos or hours can be added by agreement.",
+        "cards": [
+          {
+            "name": "Essential",
+            "text": "A highlight video for your website and YouTube.",
+            "includes": [
+              "Up to 5 hours of filming",
+              "Highlight video in landscape"
+            ]
+          },
+          {
+            "name": "Social",
+            "text": "The highlight video, plus a cut made for social media.",
+            "includes": [
+              "Up to 5 hours of filming",
+              "Highlight video in landscape",
+              "Vertical video for Reels and TikTok"
+            ]
+          },
+          {
+            "name": "Complete",
+            "text": "Video and photos from one booking.",
+            "tag": "Most complete",
+            "includes": [
+              "Up to 5 hours of filming and photography",
+              "Highlight video in landscape",
+              "Vertical video for Reels and TikTok",
+              "Edited photo selection"
+            ]
+          }
+        ]
+      }
+    ]
+  },
   "process": {
     "title": "How we [work]",
     "intro": "A clear process from the first message to the final files. Every step below is written into the quotation before work begins.",
     "steps": [
-      { "title": "Brief", "text": "Send a request with a short brief. We discuss your goals, timing and the details of the project." },
-      { "title": "Quotation", "text": "You receive a written quotation covering scope, deliverables, timeline, price and payment terms." },
-      { "title": "Deposit", "text": "Work begins once the quotation is approved and a 50% deposit is paid.", "tag": "50% deposit" },
-      { "title": "First draft", "text": "I present the first results for your feedback and approval." },
-      { "title": "Revisions", "text": "Three rounds of revisions are included. Additional rounds are charged at the rate stated in the quotation.", "tag": "3 rounds included" },
-      { "title": "Delivery", "text": "After final approval and the remaining 50% payment, the final files are delivered in full.", "tag": "50% on delivery" }
+      {
+        "title": "Brief",
+        "text": "Send a request with a short brief. We discuss your goals, timing and the details of the project."
+      },
+      {
+        "title": "Quotation",
+        "text": "You receive a written quotation covering scope, deliverables, timeline, price and payment terms."
+      },
+      {
+        "title": "Deposit",
+        "text": "Work begins once the quotation is approved and a 50% deposit is paid.",
+        "tag": "50% deposit"
+      },
+      {
+        "title": "First draft",
+        "text": "I present the first results for your feedback and approval."
+      },
+      {
+        "title": "Revisions",
+        "text": "Three rounds of revisions are included. Additional rounds are charged at the rate stated in the quotation.",
+        "tag": "3 rounds included"
+      },
+      {
+        "title": "Delivery",
+        "text": "After final approval and the remaining 50% payment, the final files are delivered in full.",
+        "tag": "50% on delivery"
+      }
     ]
   },
   "faq": {
     "title": "Questions",
     "items": [
-      { "q": "How much does a project cost?", "a": "Every project is different, so pricing follows a short conversation about your needs. Send a request with your brief and you will receive a clear quotation with no hidden costs." },
-      { "q": "How long does a project take?", "a": "It depends on the scope. The quotation states the timeline, which starts once the deposit is paid and all the materials needed from you are received." },
-      { "q": "What counts as a revision?", "a": "A round of changes to the approved direction. A new idea or a change of direction is treated as a new request." },
-      { "q": "Do you work with clients outside the UAE?", "a": "Yes. Design, 3D, drawing and editing are delivered fully online. Filming and photography are available in the UAE." },
-      { "q": "Who owns the final work?", "a": "You receive full rights to use the final files once the last payment is made. I may show the work in my portfolio unless we agree otherwise." },
-      { "q": "Can I combine services?", "a": "Yes. Many projects combine design, 3D and video. Tell me what you need and I will put together one package." }
+      {
+        "q": "How much does a project cost?",
+        "a": "Every project is different, so pricing follows a short conversation about your needs. Send a request with your brief and you will receive a clear quotation with no hidden costs."
+      },
+      {
+        "q": "How long does a project take?",
+        "a": "It depends on the scope. The quotation states the timeline, which starts once the deposit is paid and all the materials needed from you are received."
+      },
+      {
+        "q": "What counts as a revision?",
+        "a": "A round of changes to the approved direction. A new idea or a change of direction is treated as a new request."
+      },
+      {
+        "q": "Do you work with clients outside the UAE?",
+        "a": "Yes. Design, 3D, drawing and editing are delivered fully online. Filming and photography are available in the UAE."
+      },
+      {
+        "q": "Who owns the final work?",
+        "a": "You receive full rights to use the final files once the last payment is made. I may show the work in my portfolio unless we agree otherwise."
+      },
+      {
+        "q": "Can I combine services?",
+        "a": "Yes. Many projects combine design, 3D and video. Tell me what you need and I will put together one package."
+      }
     ]
   },
   "cta": "Tell me about your project and I will reply with next steps and a quotation."

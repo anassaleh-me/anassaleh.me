@@ -8,6 +8,9 @@
 // - /sitemap.xml   built from the content, so new pages are listed and hidden ones left out without touching code
 // - /img/<width>/images/...  a smaller copy of an uploaded image for smaller screens (Cloudflare Images binding),
 //                  kept in the edge cache; if resizing is unavailable the original is served, so an image never breaks
+// - /llms.txt     a plain text summary of who Anas is, his services and work, for AI assistants (built from the content)
+// - readable pages  home, Work, Services, About and project pages also carry their real text and links inside
+//                  <noscript>, for search and AI crawlers that don't run JavaScript, plus structured data about Anas
 // - /api/contact   receives the contact form, stores it (KV), adds it to the Notion database "Project requests"
 //                  (NOTION_TOKEN secret + NOTION_DB) and emails it (send_email binding)
 // Everything else falls through to the static assets in ./public.
@@ -76,6 +79,78 @@ async function projects(env, url) {
   return res.ok ? (await res.json()).filter((p) => !p.draft) : [];
 }
 
+// ---------- readable without JavaScript ----------
+const h = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const plain = (s) => String(s ?? "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+const ul = (items) => (items.length ? `<ul>${items.join("")}</ul>` : "");
+const projectItem = (p) => `<li><a href="/work/${p.slug}">${h(p.title)}</a>${p.subtitle ? `, ${h(p.subtitle)}` : ""}</li>`;
+
+// structured data about Anas (schema.org Person), so search engines and assistants connect the name to this site
+function personLD(site, page) {
+  const c = site.contact || {};
+  const person = {
+    "@type": "Person", "@id": `${SITE}/#person`, name: site.fullName || "Anas Al Shikh Saleh",
+    alternateName: [site.name || "Anas Saleh", "Anas Al Sheikh Saleh", "أنس صالح", "أنس الشيخ صالح"],
+    url: `${SITE}/`, image: `${SITE}/images/og-v2.jpg`, jobTitle: "Visual artist and art director",
+    description: "Visual artist and art director in Dubai. Art direction, design, 3D, motion, film and drawing.",
+    address: { "@type": "PostalAddress", addressLocality: "Dubai", addressCountry: "AE" },
+    email: c.email ? `mailto:${c.email}` : undefined,
+    knowsAbout: ["Art direction", "Brand identity", "Graphic design", "3D design", "Blender", "Animation", "Motion graphics", "Video production", "Portrait drawing"],
+    sameAs: [c.linkedin, c.behance, c.instagram].filter(Boolean),
+  };
+  const graph = [person, { "@type": "WebSite", "@id": `${SITE}/#website`, url: `${SITE}/`, name: site.name || "Anas Saleh", publisher: { "@id": `${SITE}/#person` } }];
+  if (page === "/about") graph.push({ "@type": "ProfilePage", url: `${SITE}/about`, mainEntity: { "@id": `${SITE}/#person` } });
+  return `<script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(/</g, "\\u003c")}</script>`;
+}
+
+// the page's real content as plain HTML, shown only where JavaScript doesn't run
+async function readable(env, url, path, project) {
+  const [site, list] = await Promise.all([buildSite(env, url), projects(env, url)]);
+  const a = site.about || {}, sv = site.servicesPage || {};
+  let body = "";
+  if (path === "/") {
+    body = `<h2>${h(site.home?.headline)}</h2><p>${h(site.home?.intro)}</p>${(a.bio || []).slice(0, 1).map((t) => `<p>${h(t)}</p>`).join("")}
+      <h2>Services</h2>${ul((sv.items || []).map((x) => `<li><a href="/services">${h(x.name)}</a>: ${h(x.line)}</li>`))}
+      <h2>Selected work</h2>${ul(list.filter((p) => p.featured).map(projectItem))}<p><a href="/work">All work</a> · <a href="/about">About</a> · <a href="/contact">Contact</a></p>`;
+  } else if (path === "/work") {
+    body = `<p>${h(site.workIntro)}</p>${ul(list.map(projectItem))}`;
+  } else if (path === "/about") {
+    body = `${(a.bio || []).map((t) => `<p>${h(t)}</p>`).join("")}
+      <h2>Experience</h2>${ul((a.experience || []).map((x) => `<li>${h(x.role)}, ${h(x.company)} (${h(x.period)})${x.note ? `. ${h(x.note)}` : ""}</li>`))}
+      <h2>Tools</h2><p>${h([...(a.tools || []), ...(a.workflowTools || [])].join(", "))}</p>${a.cv ? `<p><a href="${h(a.cv)}">Download CV</a></p>` : ""}`;
+  } else if (path === "/services") {
+    const pk = sv.packages || {}, pr = sv.process || {}, fq = sv.faq || {};
+    body = `<p>${h(sv.intro)}</p>${(sv.items || []).map((x) => `<h2>${h(x.name)}</h2><p>${h(x.line)}</p>${ul((x.services || []).map((k) => `<li>${h(k.name)}: ${h(k.text)}</li>`))}`).join("")}
+      <h2>Packages</h2><p>${h(pk.intro)}</p>${(pk.groups || []).map((g) => `<h3>${h(g.name)}</h3>${ul((g.cards || []).map((c) => `<li>${h(c.name)}: ${h(c.text)} Includes: ${h((c.includes || []).join("; "))}.</li>`))}`).join("")}
+      <h2>How we work</h2><ol>${(pr.steps || []).map((s) => `<li>${h(s.title)}: ${h(s.text)}</li>`).join("")}</ol>
+      <h2>Questions</h2>${(fq.items || []).map((q) => `<h3>${h(q.q)}</h3><p>${h(q.a)}</p>`).join("")}<p><a href="/contact">Ask for a quote</a></p>`;
+  } else if (project) {
+    const p = project;
+    const meta = [["Client", p.client], ["Year", p.year], ["Role", p.role], ["Tools", p.tools], ["Format", p.format]].filter(([, v]) => v);
+    body = `<h1>${h(p.title)}</h1><p>${h(p.subtitle)}</p><p>${h(p.description)}</p>${ul(meta.map(([k, v]) => `<li>${k}: ${h(v)}</li>`))}
+      ${(p.blocks || []).filter((r) => r.text).map((r) => `<p>${h(plain(r.text))}</p>`).join("")}<p><a href="/work">All work</a></p>`;
+  }
+  return { html: body ? `<noscript><div class="wrap ssr">${body}</div></noscript>` : "", site };
+}
+
+// /llms.txt: a short, plain summary for AI assistants
+async function llms(env, url) {
+  const [site, list] = await Promise.all([buildSite(env, url), projects(env, url)]);
+  const a = site.about || {}, sv = site.servicesPage || {}, c = site.contact || {};
+  const lines = [
+    `# ${site.fullName} (${site.name})`, "",
+    `> Visual artist and art director based in ${site.location || "Dubai, UAE"}. Art direction, brand identity and graphic design, 3D design in Blender, animation, video production and portrait drawing.`, "",
+    ...(a.bio || []), "",
+    "## Experience", ...(a.experience || []).map((x) => `- ${x.role}, ${x.company} (${x.period})`), "",
+    "## Services", ...(sv.items || []).map((x) => `- ${x.name}: ${x.line} (${(x.services || []).map((k) => k.name).join(", ")})`),
+    `- Packages and process: ${SITE}/services`, "",
+    "## Work", ...list.map((p) => `- [${p.title}](${SITE}/work/${p.slug}): ${p.subtitle || ""}${p.client ? `, ${p.client}` : ""}${p.year ? `, ${p.year}` : ""}`), "",
+    "## Links", `- Website: ${SITE}`, `- About: ${SITE}/about`, `- Contact: ${SITE}/contact (${c.email || ""})`,
+    ...[["LinkedIn", c.linkedin], ["Behance", c.behance], ["Instagram", c.instagram]].filter(([, u]) => u).map(([n, u]) => `- ${n}: ${u}`), "",
+  ];
+  return new Response(lines.join("\n"), { headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "public, max-age=3600" } });
+}
+
 // The widths the pages ask for (js/shell2.js srcset); anything else is refused so the copies stay few.
 const WIDTHS = [360, 720, 1080, 1440];
 
@@ -123,10 +198,22 @@ export default {
       if (!site.pages[pageKey]) return notFound(env, url);
     }
 
+    if (url.pathname === "/llms.txt") return llms(env, url);
+
+    // home, Work, Services and About: the static page plus its readable copy and structured data
+    const path = url.pathname.replace(/\/$/, "") || "/";
+    if (["/", "/work", "/services", "/about"].includes(path) && request.method === "GET") {
+      const [res, { html, site }] = await Promise.all([env.ASSETS.fetch(request), readable(env, url, path)]);
+      if (!res.ok || !(res.headers.get("content-type") || "").includes("text/html")) return res;
+      const rw = new HTMLRewriter().on("main", { element: (el) => el.append(html, { html: true }) });
+      if (path === "/" || path === "/about") rw.on("head", { element: (el) => el.append(personLD(site, path), { html: true }) });
+      return rw.transform(res);
+    }
+
     if (url.pathname === "/sitemap.xml") {
       const [list, site, blog] = await Promise.all([projects(env, url), buildSite(env, url), content(env, url, "blog")]);
       const journal = site.pages.journal ? ["/journal", ...(blog || []).filter((p) => !p.draft).map((p) => `/journal/${p.slug}`)] : [];
-      const pages = ["/", ...["work", "services", "about", "progress", "contact"].filter((k) => site.pages[k]).map((k) => (k === "progress" ? "/in-progress" : `/${k}`)), ...(site.pages.film ? ["/film"] : []), ...journal, ...list.map((p) => `/work/${p.slug}`)];
+      const pages = ["/", ...["work", "services", "about", "progress", "contact"].filter((k) => site.pages[k]).map((k) => (k === "progress" ? "/in-progress" : `/${k}`)), "/privacy", ...(site.pages.film ? ["/film"] : []), ...journal, ...list.map((p) => `/work/${p.slug}`)];
       const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map((p) => `  <url><loc>${SITE}${p}</loc></url>`).join("\n")}\n</urlset>\n`;
       return new Response(xml, { headers: { "content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600" } });
     }
@@ -143,7 +230,9 @@ export default {
       const c = p.cover || `/images/covers/${p.slug}.webp`;
       const image = SITE + (c.startsWith("/images/covers/") ? c.replace("/images/covers/", "/images/covers/og/").replace(/\.webp$/, ".jpg") : c);
       const set = (content) => ({ element: (el) => el.setAttribute("content", content) });
+      const { html } = await readable(env, url, null, p);
       return new HTMLRewriter()
+        .on("main", { element: (el) => el.append(html, { html: true }) })
         .on("title", { element: (el) => el.setInnerContent(title) })
         .on('meta[name="description"]', set(desc))
         .on('meta[property="og:image"]', set(image))
@@ -175,9 +264,16 @@ export default {
 const clean = (v, max = 500) => String(v ?? "").replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, "").trim().slice(0, max);
 
 async function handleContact(request, env, ctx) {
+  // only the site's own pages may send the form (browsers always say where a request comes from)
   const origin = request.headers.get("origin");
-  if (origin && !/^https:\/\/(www\.)?anassaleh\.me$|^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$|\.workers\.dev$/.test(origin)) {
+  if (!origin || !/^https:\/\/(www\.)?anassaleh\.me$|^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$|-anassaleh\.anassors-200\.workers\.dev$/.test(origin)) {
     return json({ ok: false, error: "origin" }, 403);
+  }
+  if (Number(request.headers.get("content-length") || 0) > 20000) return json({ ok: false, error: "too_large" }, 413);
+  // a few requests a minute per visitor at most, so nobody can flood the inbox, Notion or the store
+  if (env.FORM_LIMIT) {
+    const { success } = await env.FORM_LIMIT.limit({ key: request.headers.get("cf-connecting-ip") || "unknown" });
+    if (!success) return json({ ok: false, error: "busy" }, 429);
   }
   let body;
   try {

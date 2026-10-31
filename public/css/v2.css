@@ -268,3 +268,4 @@ footer[data-footer]:empty { display: block; min-height: 520px; background-color:
 .foot__bottom { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 26px; color: var(--cream-soft); font-size: 14px; }
 @media (max-width: 760px) { .foot__top { grid-template-columns: 1fr 1fr; } .foot__top > :first-child { grid-column: 1 / -1; } }
 
+.foot__bottom a { color: inherit; transition: color 0.3s; } .foot__bottom a:hover { color: var(--cream); }

@@ -597,3 +597,12 @@
 .sv-q[open] p { animation: sv-in 0.6s var(--ease); }
 @keyframes sv-in { from { opacity: 0; transform: translateY(12px); filter: blur(5px); } }
 .sv-cta__text { max-width: 44ch; margin: -14px auto 34px; color: var(--ink-soft); }
+
+/* ---------- privacy ---------- */
+.pv-title { font-size: clamp(46px, 8.6vw, 150px); }
+.pv-lead { max-width: 54ch; color: var(--ink-soft); }
+.pv { max-width: 860px; padding-block: clamp(20px, 3vw, 40px) clamp(90px, 12vw, 160px); }
+.pv section { padding: 26px 0; border-top: 1px solid rgba(29, 29, 27, 0.14); }
+.pv h2 { font-size: clamp(20px, 1.8vw, 28px); margin: 0 0 10px; }
+.pv p { margin: 0; color: var(--ink-soft); max-width: 66ch; }
+.pv a { color: var(--acc-t); border-bottom: 1px solid currentColor; }

@@ -8,7 +8,6 @@ import { shell, $, $$, esc, accent, pad, slug, cover, srcset, inCategory, canHov
 const { site, projects, lenis, reveal } = await shell({ current: "services" });
 const s = site.servicesPage || {};
 const items = s.items || [];
-const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg>';
 const words = (t) => accent(t).replace(/<span class="acc">(.*?)<\/span>|(\S+)/g, (m, a, w) => (a ? a.split(" ").map((x) => `<span class="ln"><span class="w acc">${x}</span></span>`).join(" ") : `<span class="ln"><span class="w">${w}</span></span>`));
@@ -18,19 +17,64 @@ const title = $("[data-sv-title]");
 if (s.headline && title.textContent.replace(/\s+/g, " ").trim().toLowerCase() !== s.headline.replace(/[[\]]/g, "").toLowerCase()) title.innerHTML = words(s.headline);
 $("[data-sv-intro]").textContent = s.intro || "";
 
-// what a service shows: a few projects (cover, title, link), or its own images (drawings, shown side by side)
+// what a service shows: the projects picked for it in Pages CMS (by page address or title), else the newest projects
+// in its categories; or its own images (drawings, shown side by side)
+const findProject = (ref) => { const k = slug(ref); return projects.find((p) => p.slug === k || slug(p.title) === k); };
 const shows = items.map((x) => {
   if ((x.images || []).length) return { art: true, list: x.images.slice(0, 3).map((src) => ({ src })) };
-  const keys = String(x.examples || "").split(",").map((c) => slug(c)).filter(Boolean);
-  const list = projects.filter((p) => keys.some((k) => inCategory(p, k)))
-    .sort((a, b) => (b.featured === true) - (a.featured === true)).slice(0, 3)
-    .map((p) => ({ src: cover(p), title: p.title, href: `/work/${p.slug}` }));
-  return { art: false, list };
+  let picked = (x.projects || []).map(findProject).filter(Boolean);
+  if (!picked.length) {
+    const keys = String(x.examples || "").split(",").map((c) => slug(c)).filter(Boolean);
+    picked = projects.filter((p) => keys.some((k) => inCategory(p, k))).sort((a, b) => (b.featured === true) - (a.featured === true)).slice(0, 3);
+  }
+  return { art: false, list: picked.slice(0, 6).map((p) => ({ src: cover(p), title: p.title, href: `/work/${p.slug}` })) };
 });
 const SIZES = "(max-width: 960px) 100vw, 40vw";
-const slidesHTML = (sh, alt) => sh.art
-  ? `<div class="sv-slide sv-slide--art on">${sh.list.map((x) => `<span><img src="${esc(x.src)}"${srcset(x.src, "(max-width: 960px) 33vw, 14vw")} alt="Pencil drawing by ${esc(site.fullName)}" loading="lazy"></span>`).join("")}</div>`
-  : sh.list.map((x, j) => `<a class="sv-slide${j ? "" : " on"}" href="${x.href}" data-cursor="View" tabindex="${j ? -1 : 0}"><img src="${esc(x.src)}"${srcset(x.src, SIZES)} alt="${esc(x.title)}, ${esc(alt)} example" loading="lazy"><span class="sv-slide__t">${esc(x.title)}</span></a>`).join("");
+const PREV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>';
+// a carousel of a service's examples: slides cross-fade on their own, a line along the bottom shows the time to the next,
+// arrows and a counter underneath, and a swipe works on touch screens
+const carouselHTML = (sh, name) => {
+  const slides = sh.art
+    ? `<div class="sv-slide sv-slide--art on">${sh.list.map((x) => `<span><img src="${esc(x.src)}"${srcset(x.src, "(max-width: 960px) 33vw, 14vw")} alt="Pencil drawing by ${esc(site.fullName)}" loading="lazy"></span>`).join("")}</div>`
+    : sh.list.map((x, j) => `<a class="sv-slide${j ? "" : " on"}" href="${x.href}" data-cursor="View" tabindex="${j ? -1 : 0}" aria-hidden="${j ? "true" : "false"}"><img src="${esc(x.src)}"${srcset(x.src, SIZES)} alt="${esc(x.title)}, ${esc(name)} example" loading="lazy"><span class="sv-slide__t">${esc(x.title)}</span></a>`).join("");
+  const n = sh.art ? 1 : sh.list.length;
+  return `<div class="cr" data-cr data-n="${n}">
+    <div class="cr__box">${slides}${n > 1 ? '<span class="cr__time" aria-hidden="true"><i></i></span>' : ""}</div>
+    <div class="cr__ui"><span class="cr__name">${esc(name)}</span>${n > 1 ? `<span class="cr__count" aria-live="polite"><b>01</b> / ${pad(n)}</span><button type="button" class="cr__btn" data-prev aria-label="Previous example">${PREV}</button><button type="button" class="cr__btn" data-next aria-label="Next example">${ARROW}</button>` : ""}</div>
+  </div>`;
+};
+const DELAY = 4200;
+function carousel(root) {
+  const slides = $$(".sv-slide", root), n = slides.length, time = $(".cr__time i", root), count = $(".cr__count b", root);
+  let i = 0, timer = 0, playing = false, hover = false;
+  const go = (k) => {
+    i = (k + n) % n;
+    slides.forEach((el, j) => { el.classList.toggle("on", j === i); el.tabIndex = j === i ? 0 : -1; el.setAttribute("aria-hidden", String(j !== i)); });
+    if (count) count.textContent = pad(i + 1);
+    tick();
+  };
+  // the time line restarts with every slide and runs while the carousel plays
+  const tick = () => {
+    clearTimeout(timer);
+    if (!time) return;
+    time.style.animation = "none"; void time.offsetWidth;
+    if (!playing || hover) return;
+    time.style.animation = `cr-time ${DELAY}ms linear forwards`;
+    timer = setTimeout(() => go(i + 1), DELAY);
+  };
+  if (n > 1) {
+    $("[data-prev]", root).addEventListener("click", () => go(i - 1));
+    $("[data-next]", root).addEventListener("click", () => go(i + 1));
+    const box = $(".cr__box", root);
+    box.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") { hover = true; tick(); } });
+    box.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") { hover = false; tick(); } });
+    let x0 = null, swiped = false;
+    box.addEventListener("pointerdown", (e) => { if (e.pointerType !== "mouse") { x0 = e.clientX; swiped = false; } });
+    box.addEventListener("pointerup", (e) => { if (x0 === null) return; const dx = e.clientX - x0; x0 = null; if (Math.abs(dx) > 40) { swiped = true; go(i + (dx < 0 ? 1 : -1)); } });
+    box.addEventListener("click", (e) => { if (swiped) { e.preventDefault(); swiped = false; } }, true);
+  }
+  return { play() { playing = true; go(0); }, stop() { playing = false; tick(); } };
+}
 
 $("[data-sv]").innerHTML = items.map((x, i) => {
   const ask = `/contact?service=${encodeURIComponent(x.formService || x.name)}`;
@@ -44,7 +88,7 @@ $("[data-sv]").innerHTML = items.map((x, i) => {
       <span class="pm" aria-hidden="true"><i></i></span>
     </button></h2>
     <div class="sv-row__body" id="sv-body-${i}" role="region" aria-labelledby="sv-btn-${i}"><div><div class="sv-row__inner">
-      <div class="sv-row__pic">${shows[i].list.length ? slidesHTML({ ...shows[i], list: shows[i].list.slice(0, shows[i].art ? 3 : 1) }, x.name) : ""}</div>
+      ${shows[i].list.length ? `<div class="sv-row__pic">${carouselHTML(shows[i], x.name)}</div>` : ""}
       <p class="sv-row__line">${esc(x.line || "")}</p>
       <ul class="sv-svcs">${list.map((k) => `<li><h3 class="sv-svc__name">${esc(k.name)}</h3><p>${esc(k.text || "")}</p></li>`).join("")}</ul>
       <div class="sv-row__foot">
@@ -55,32 +99,28 @@ $("[data-sv]").innerHTML = items.map((x, i) => {
   </li>`;
 }).join("");
 
-// the frame beside the list (wide screens): each service's work, cross-fading through its examples
+// the frame beside the list (wide screens) holds one carousel per service and shows the current one; on narrow screens
+// each open row has its own carousel instead
 const frame = $("[data-sv-frame]");
-frame.innerHTML = `<div class="sv-frame__box">${items.map((x, i) => `<div class="sv-set${shows[i].art ? " sv-set--art" : ""}" data-set="${i}">${slidesHTML(shows[i], x.name)}</div>`).join("")}</div>
-  <div class="sv-frame__bar"><span class="sv-frame__name" data-frame-name></span><span class="sv-frame__dots" data-frame-dots></span></div>`;
+frame.innerHTML = items.map((x, i) => `<div class="sv-set" data-set="${i}">${shows[i].list.length ? carouselHTML(shows[i], x.name) : ""}</div>`).join("");
 const sets = $$(".sv-set", frame);
-let cur = -1, slide = 0, timer;
-const dots = $("[data-frame-dots]");
-const showSlide = (j) => {
-  const list = $$(".sv-slide", sets[cur]);
-  if (shows[cur].art || !list.length) return;
-  slide = (j + list.length) % list.length;
-  list.forEach((el, k) => { el.classList.toggle("on", k === slide); el.tabIndex = k === slide ? 0 : -1; });
-  $$("button", dots).forEach((d, k) => d.setAttribute("aria-current", String(k === slide)));
-};
-const play = () => { clearInterval(timer); if (!reduce && !shows[cur].art && shows[cur].list.length > 1) timer = setInterval(() => showSlide(slide + 1), 3400); };
+const wide = matchMedia("(min-width: 961px)");
+const frameCr = sets.map((el) => (el.firstElementChild ? carousel(el.firstElementChild) : null));
+const rowCr = $$(".sv-row").map((row) => { const el = $(".sv-row__pic [data-cr]", row); return el ? carousel(el) : null; });
+let cur = -1, openI = -1;
 const showSet = (i) => {
   if (i === cur || !sets[i]) return;
+  frameCr[cur]?.stop();
   cur = i;
   sets.forEach((el, k) => el.classList.toggle("on", k === i));
-  $("[data-frame-name]").textContent = items[i].name;
-  const n = shows[i].art ? 0 : shows[i].list.length;
-  dots.innerHTML = n > 1 ? Array.from({ length: n }, (_, k) => `<button type="button" aria-label="Example ${k + 1}"></button>`).join("") : "";
-  $$("button", dots).forEach((d, k) => d.addEventListener("click", () => { showSlide(k); play(); }));
-  showSlide(0);
-  play();
+  if (wide.matches) frameCr[i]?.play();
 };
+// only the carousel in view plays: the frame's on wide screens, the open row's on narrow ones
+const sync = () => {
+  frameCr.forEach((c, k) => (wide.matches && k === cur ? c?.play() : c?.stop()));
+  rowCr.forEach((c, k) => (!wide.matches && k === openI ? c?.play() : c?.stop()));
+};
+wide.addEventListener("change", sync);
 
 // open one service at a time; pointing at a row (with a mouse) also shows its work in the frame
 const rows = $$(".sv-row");
@@ -93,17 +133,30 @@ rows.forEach((row, i) => {
     const open = !row.classList.contains("open");
     rows.forEach((r) => setOpen(r, false));
     setOpen(row, open);
+    openI = open ? i : -1;
     if (open) showSet(i);
+    sync();
     // the page height changes while the row opens, so smooth scroll measures again afterwards
     setTimeout(() => lenis?.resize(), 750);
   });
   if (canHover) row.addEventListener("pointerenter", () => showSet(i));
 });
 setOpen(rows[0], true);
+openI = 0;
 showSet(0);
 // an address like /services#3d-design opens that service
-const hashRow = location.hash && rows.find((r) => `#${r.id}` === location.hash);
-if (hashRow) { rows.forEach((r) => setOpen(r, false)); setOpen(hashRow, true); showSet(rows.indexOf(hashRow)); }
+const fromHash = () => {
+  const row = location.hash && rows.find((r) => `#${r.id}` === location.hash);
+  if (!row) return;
+  rows.forEach((r) => setOpen(r, false));
+  setOpen(row, true);
+  openI = rows.indexOf(row);
+  showSet(openI);
+  sync();
+};
+fromHash();
+addEventListener("hashchange", fromHash);
+sync();
 
 // packages: ready-made scopes, grouped by service
 const pk = s.packages || {};

@@ -7,6 +7,11 @@
       "name": "Design",
       "line": "Identity and graphic design that make a brand easy to recognise.",
       "formService": "Design",
+      "projects": [
+        "mangobot-brand-identity",
+        "promate-packaging",
+        "dubai-sports-council-logo"
+      ],
       "examples": "Branding & graphic design",
       "services": [
         {
@@ -31,6 +36,11 @@
       "name": "3D design",
       "line": "Product visuals modeled, lit and rendered in Blender.",
       "formService": "3D",
+      "projects": [
+        "g2-humanoid-robot",
+        "product-3d-rendering",
+        "lzs-love-architecture"
+      ],
       "examples": "3D design",
       "services": [
         {
@@ -59,8 +69,12 @@
       ],
       "services": [
         {
-          "name": "Portrait commission",
-          "text": "A portrait drawn from your photo on fine art paper, with a high resolution scan."
+          "name": "Portrait drawing",
+          "text": "A portrait of one person, drawn from your photo in pencil or charcoal."
+        },
+        {
+          "name": "Couple portrait",
+          "text": "Two people in one drawing, a personal gift for weddings, anniversaries and special days."
         }
       ]
     },
@@ -68,6 +82,11 @@
       "name": "Video editing and motion",
       "line": "Edits and motion graphics for social media, brands and launches.",
       "formService": "Video editing",
+      "projects": [
+        "mechanical-spider",
+        "ugreen-animation",
+        "animation-studies"
+      ],
       "examples": "Animation",
       "services": [
         {
@@ -88,6 +107,11 @@
       "name": "Filming and photography",
       "line": "On-location filming and photography across the UAE.",
       "formService": "Filming",
+      "projects": [
+        "mangobot-production",
+        "exoskeleton-film",
+        "intro-video"
+      ],
       "examples": "Video production",
       "services": [
         {

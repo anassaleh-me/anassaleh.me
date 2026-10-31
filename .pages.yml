@@ -127,8 +127,12 @@ content:
           - { name: name, label: Name, type: string, required: true }
           - { name: line, label: Short line, type: text }
           - { name: formService, label: "Ticks this choice on the contact form (written the same as there: Design, 3D, Drawing, Video editing, Filming)", type: string }
-          - { name: examples, label: "Examples: the newest projects from these categories (names, separated by commas)", type: string }
-          - { name: images, label: "Or pick example images yourself (shown instead)", type: image, list: true, options: { media: images } }
+          - name: projects
+            label: "Projects shown as examples, in this order (type each project's page address, the part after /work/, or its title; one per line, up to 6)"
+            type: string
+            list: true
+          - { name: examples, label: "If no projects are listed above: show the newest from these categories (names, separated by commas)", type: string }
+          - { name: images, label: "Or show these images instead (used for the drawings)", type: image, list: true, options: { media: images } }
           - name: services
             label: Services in this area
             type: object

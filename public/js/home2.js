@@ -168,6 +168,8 @@ const lastWord = (t) => { const s = String(t || "").trim(), k = s.lastIndexOf(" 
 disc.innerHTML = discs.map((d, i) => `<li data-reveal><a href="${discHref(d.filter)}" data-i="${i}" data-cursor="${isDrawing(d.filter) ? "Drawings" : "See work"}">${lastWord(d.title)}</a></li>`).join("");
 // the hover pictures are only for a mouse, so touch screens skip loading them
 if (canHover) discs.forEach((d) => d.images.forEach((src) => { const i = new Image(); i.src = src; }));
+// touch screens can't hover: a tap opens that work
+else if ($("[data-disc-hint]")) $("[data-disc-hint]").textContent = "Tap a word to see the work behind it.";
 float.insertAdjacentHTML("beforeend", '<span class="float-count" data-float-count></span>');
 let cycle = 0, cycleI = 0;
 addEventListener("pointermove", (e) => { fl.tx = e.clientX; fl.ty = e.clientY; }, { passive: true });

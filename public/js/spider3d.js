@@ -12,24 +12,6 @@ const ease = (t) => 1 - Math.pow(1 - t, 3);
 const lerp = (a, b, t) => a + (b - a) * t;
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
-function studio(THREE, renderer) {
-  const s = new THREE.Scene();
-  s.add(new THREE.Mesh(new THREE.BoxGeometry(30, 30, 30), new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.BackSide })));
-  const box = (w, h, x, y, z, v) => {
-    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(v, v, v), side: THREE.DoubleSide }));
-    m.position.set(x, y, z); m.lookAt(0, 0, 0); s.add(m);
-  };
-  box(12, 4, 0, 10, 11, 2.6);  // softbox above the camera
-  box(2.5, 12, -11, 4, 8, 3.2); // tall strip on the left
-  box(2.5, 12, 11, 4, 8, 2.2);  // tall strip on the right
-  box(16, 5, 0, 14, -2, 2);     // big softbox overhead
-  box(10, 2, 0, 2, -13, 1.5);   // rim from behind
-  // a plain cube map (the unlit material can't read the blurred kind), sharp like a mirror
-  const rt = new THREE.WebGLCubeRenderTarget(256, { type: THREE.HalfFloatType });
-  new THREE.CubeCamera(0.1, 100, rt).update(renderer, s);
-  return rt.texture;
-}
-
 export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
   const still = new Image();
   still.className = "spider__still"; still.alt = ""; still.src = poster;
@@ -89,9 +71,6 @@ export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
       cam.lookAt(0, ty, lerp(1.5, 0, k));
     }
 
-    // a black studio with bright softboxes, added on top of the baked colours: only the highlights show, crisp like
-    // chrome, and they slide over the metal as the head turns
-    const env = studio(THREE, renderer);
     const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(model);
     const root = gltf.scene; scene.add(root);
     root.traverse((o) => {
@@ -99,9 +78,8 @@ export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
       if (o.isSkinnedMesh) { o.visible = false; return; }
       if (!o.isMesh) return;
       o.castShadow = true; o.frustumCulled = false;
-      const map = o.material.map, name = o.material.name;
-      const chrome = /Steel|Cable/.test(name) ? 0.5 : /Metal|metal/.test(name) ? 0.38 : 0.15;
-      o.material = new THREE.MeshBasicMaterial({ map, color: map ? 0xffffff : /Cable/.test(name) ? 0x8c8c8a : 0x2a2a28, envMap: env, combine: THREE.AddOperation, reflectivity: chrome });
+      const map = o.material.map;
+      o.material = new THREE.MeshBasicMaterial({ map, color: map ? 0xffffff : /Cable/.test(o.material.name) ? 0x8c8c8a : 0x2a2a28 });
     });
     // two copies of every clip: one plays the row above the pointer, one the row below, blended by weight
     const mixer = new THREE.AnimationMixer(root);

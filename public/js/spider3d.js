@@ -1,13 +1,12 @@
 // Mechanical Spider as a real 3D model (.glb exported from Blender with its head and body turns baked in).
 // The file holds the same 21 x 5 grid of poses as the rendered frames; between grid points the bones are blended,
-// so the head follows the cursor smoothly while the feet stay planted. three.js loads from jsDelivr only when the
-// section comes near; until the model is ready the stage shows the rendered centre frame.
+// so the head follows the cursor smoothly while the feet stay planted. Its colours are the Cycles lighting baked into
+// one texture, drawn unlit, so it looks like the render and stays light to draw. three.js loads from jsDelivr only
+// when the section comes near; until the model is ready the stage shows the rendered centre frame.
 const V = "0.170.0", CDN = `https://cdn.jsdelivr.net/npm/three@${V}`;
 const COLS = 21, ROWS = 5, FPS = 24;
 const lerp = (a, b, t) => a + (b - a) * t;
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
-// the look of each Blender material on the web (colour comes from the baked texture)
-const LOOK = { MetalCorrodedHeavy001_2K: [0.85, 0.45], "Main metal": [0.85, 0.42], Poliigon_MetalSteelBrushed_7174_2K: [1, 0.28] };
 
 export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
   const still = new Image();
@@ -29,26 +28,22 @@ export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
   stage.addEventListener("pointerdown", (e) => aim(e.clientX, e.clientY));
 
   async function load() {
-    const [THREE, { GLTFLoader }, { MeshoptDecoder }, { RoomEnvironment }] = await Promise.all([
+    const [THREE, { GLTFLoader }, { MeshoptDecoder }] = await Promise.all([
       import(`${CDN}/+esm`),
       import(`${CDN}/examples/jsm/loaders/GLTFLoader.js/+esm`),
       import(`${CDN}/examples/jsm/libs/meshopt_decoder.module.js/+esm`),
-      import(`${CDN}/examples/jsm/environments/RoomEnvironment.js/+esm`),
     ]);
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.75));
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.VSMShadowMap;
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
+    // the floor shadow is drawn once (the feet never move), not on every frame
+    renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.VSMShadowMap; renderer.shadowMap.autoUpdate = false;
     const canvas = renderer.domElement;
     canvas.className = "spider__canvas";
     canvas.setAttribute("role", "img");
     canvas.setAttribute("aria-label", "Mechanical spider, a 3D model by Anas, turning its head toward the pointer");
 
     const scene = new THREE.Scene();
-    const pm = new THREE.PMREMGenerator(renderer);
-    scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture;
-    scene.environmentIntensity = 1.1;
-    const sun = new THREE.DirectionalLight(0xffffff, 2.4);
+    const sun = new THREE.DirectionalLight(0xffffff, 1);
     sun.position.set(25, 40, 20); sun.castShadow = true;
     sun.shadow.mapSize.set(2048, 2048); sun.shadow.radius = 10; sun.shadow.blurSamples = 16; sun.shadow.bias = -0.0005;
     Object.assign(sun.shadow.camera, { left: -16, right: 16, top: 16, bottom: -16, near: 1, far: 120 });
@@ -66,8 +61,8 @@ export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
     root.traverse((o) => {
       if (!o.isMesh) return;
       o.castShadow = true; o.frustumCulled = false;
-      const l = LOOK[o.material.name];
-      if (l) { o.material.metalness = l[0]; o.material.roughness = l[1]; }
+      const map = o.material.map;
+      o.material = new THREE.MeshBasicMaterial({ map, color: map ? 0xffffff : 0x2a2a28 });
     });
     // two copies of every clip: one plays the row above the pointer, one the row below, blended by weight
     const mixer = new THREE.AnimationMixer(root);
@@ -85,13 +80,14 @@ export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
     let drawn = "";
     function pose(c, r) {
       const r0 = Math.min(Math.floor(r), ROWS - 2), fr = r - r0;
-      rows.forEach((set, k) => set.forEach((a) => { a.time = ((r0 + k) * COLS + c) / FPS; a.setEffectiveWeight(k ? fr : 1 - fr); }));
+      // Blender frame 1 sits at time 1/24
+      rows.forEach((set, k) => set.forEach((a) => { a.time = ((r0 + k) * COLS + c + 1) / FPS; a.setEffectiveWeight(k ? fr : 1 - fr); }));
       mixer.update(0);
       renderer.render(scene, cam);
     }
     stage.prepend(canvas);
     new ResizeObserver(size).observe(stage);
-    size(); pose(at.c, at.r);
+    size(); renderer.shadowMap.needsUpdate = true; pose(at.c, at.r);
     stage.classList.add("is-3d");
     return { draw: () => { const key = `${at.c.toFixed(3)} ${at.r.toFixed(3)}`; if (key !== drawn) { pose(at.c, at.r); drawn = key; } } };
   }

@@ -9,6 +9,7 @@ const COLS = 21, ROWS = 5, FPS = 24;
 // after the grid, frames 106 to 130 hold one breath: the body sinks and rises while the feet stay planted
 const BREATH = [106, 130];
 const ease = (t) => 1 - Math.pow(1 - t, 3);
+const CLAWS = ["Cube020", "Cube022", "Cylinder107", "Cylinder109", "Cylinder115", "Cylinder117", "Cylinder104", "Cylinder105", "Cylinder110", "Cylinder112", "Cylinder113", "Cylinder118"];
 const lerp = (a, b, t) => a + (b - a) * t;
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
@@ -38,10 +39,11 @@ export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
   stage.addEventListener("pointerdown", (e) => aim(e.clientX, e.clientY));
 
   async function load() {
-    const [THREE, { GLTFLoader }, { MeshoptDecoder }] = await Promise.all([
+    const [THREE, { GLTFLoader }, { MeshoptDecoder }, { RoomEnvironment }] = await Promise.all([
       import(`${CDN}/+esm`),
       import(`${CDN}/examples/jsm/loaders/GLTFLoader.js/+esm`),
       import(`${CDN}/examples/jsm/libs/meshopt_decoder.module.js/+esm`),
+      import(`${CDN}/examples/jsm/environments/RoomEnvironment.js/+esm`),
     ]);
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
@@ -71,13 +73,17 @@ export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
       cam.lookAt(0, ty, lerp(1.5, 0, k));
     }
 
+    // a soft studio reflected on top of the baked colours, so the metal catches light as the head turns
+    const env = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
     const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(model);
     const root = gltf.scene; scene.add(root);
     root.traverse((o) => {
+      // the mandible claws and their pistons and springs read as loose parts on the web: left out
+      if (CLAWS.includes(o.name) || (o.isSkinnedMesh && /^Cylinder(128|1[5-9]\d|20\d|21[0-4])$/.test(o.name))) { o.visible = false; return; }
       if (!o.isMesh) return;
       o.castShadow = true; o.frustumCulled = false;
-      const map = o.material.map;
-      o.material = new THREE.MeshBasicMaterial({ map, color: map ? 0xffffff : 0x2a2a28 });
+      const map = o.material.map, metal = /Metal|metal/.test(o.material.name);
+      o.material = new THREE.MeshBasicMaterial({ map, color: map ? 0xffffff : 0x2a2a28, envMap: env, combine: THREE.AddOperation, reflectivity: metal ? 0.32 : 0.1 });
     });
     // two copies of every clip: one plays the row above the pointer, one the row below, blended by weight
     const mixer = new THREE.AnimationMixer(root);

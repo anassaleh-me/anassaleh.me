@@ -74,6 +74,36 @@ export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
       cam.lookAt(0, ty, lerp(1.5, 0, k));
     }
 
+    // the eye glass came out dark in the bake: drawn instead like the render, grey glass catching the studio light
+    function glassMap() {
+      const c = document.createElement("canvas"); c.width = c.height = 256;
+      const g = c.getContext("2d");
+      let r = g.createRadialGradient(128, 128, 0, 128, 128, 128);
+      r.addColorStop(0, "#5e5e5a"); r.addColorStop(0.45, "#7a7a75"); r.addColorStop(0.8, "#55554f"); r.addColorStop(1, "#262624");
+      g.fillStyle = r; g.fillRect(0, 0, 256, 256);
+      // soft reflection of the light up and to the left, and a small sharp highlight inside it
+      r = g.createRadialGradient(96, 90, 0, 96, 90, 64);
+      r.addColorStop(0, "rgba(255,255,255,0.3)"); r.addColorStop(1, "rgba(255,255,255,0)");
+      g.fillStyle = r; g.fillRect(0, 0, 256, 256);
+      g.fillStyle = "rgba(255,255,255,0.7)"; g.beginPath(); g.ellipse(88, 80, 9, 6, -0.6, 0, Math.PI * 2); g.fill();
+      const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+      return t;
+    }
+    function lens(o) {
+      // flat UVs across the disc (the baked UVs don't fit a picture of a lens)
+      const geo = o.geometry.clone(), pos = geo.attributes.position;
+      geo.computeBoundingBox();
+      const { min, max } = geo.boundingBox, uv = new Float32Array(pos.count * 2);
+      for (let i = 0; i < pos.count; i++) {
+        uv[i * 2] = (pos.getX(i) - min.x) / (max.x - min.x);
+        uv[i * 2 + 1] = 1 - (pos.getZ(i) - min.z) / (max.z - min.z);
+      }
+      geo.setAttribute("uv", new THREE.BufferAttribute(uv, 2));
+      o.geometry = geo;
+      o.material = new THREE.MeshBasicMaterial({ map: glass ||= glassMap() });
+    }
+    let glass = null;
+
     const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(model);
     const root = gltf.scene; scene.add(root);
     root.traverse((o) => {
@@ -83,6 +113,7 @@ export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
       o.castShadow = true; o.frustumCulled = false;
       const map = o.material.map;
       o.material = new THREE.MeshBasicMaterial({ map, color: map ? 0xffffff : /Cable/.test(o.material.name) ? 0x8c8c8a : 0x2a2a28 });
+      if (/^Plane00[67]$/.test(o.name)) lens(o);
     });
     // two copies of every clip: one plays the row above the pointer, one the row below, blended by weight
     const mixer = new THREE.AnimationMixer(root);

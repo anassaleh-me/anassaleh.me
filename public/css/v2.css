@@ -166,13 +166,14 @@ footer[data-footer]:empty { display: block; min-height: 520px; background-color:
 .ww-card img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
 .ww-label { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; font-size: clamp(30px, 4vw, 70px); white-space: nowrap; }
 .ww-title { position: absolute; left: 6%; top: 50%; transform: translateY(-50%); max-width: 22vw; pointer-events: none; opacity: 0; }
-.ww-title .n { display: block; color: var(--acc-t); font-weight: 700; letter-spacing: 0.14em; font-size: 14px; margin-bottom: 14px; }
+.ww-title .n { display: block; color: var(--accent); font-weight: 700; letter-spacing: 0.14em; font-size: 14px; margin-bottom: 14px; }
 .ww-title .up { display: block; font-size: clamp(28px, 3.2vw, 56px); transition: opacity 0.2s, transform 0.4s var(--ease); }
 .ww-title .cat { display: block; margin-top: 12px; color: var(--cream-soft); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; font-size: 13px; }
 .ww-index { position: absolute; top: 12vh; right: 2.5%; list-style: none; margin: 0; padding: 0; text-align: right; line-height: 1.85; z-index: 5; }
-.ww-index button { color: rgba(241, 236, 226, 0.38); font-weight: 600; font-size: 14px; letter-spacing: 0.04em; transition: color 0.3s, transform 0.4s var(--ease); }
+.ww-index button { color: rgba(241, 236, 226, 0.6); font-weight: 600; font-size: 14px; letter-spacing: 0.04em; transition: color 0.3s, transform 0.4s var(--ease); }
 .ww-index button:hover { color: var(--cream); }
-.ww-index button.on { color: var(--acc-t); transform: translateX(-8px); }
+/* on charcoal the blue is the real accent (the darker text blue is for cream) */
+.ww-index button.on { color: var(--accent); transform: translateX(-8px); }
 .progress { position: absolute; left: var(--g); right: var(--g); bottom: 30px; height: 2px; background: rgba(241, 236, 226, 0.12); z-index: 5; }
 .progress i { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--accent); }
 @media (max-width: 760px) {
@@ -202,8 +203,9 @@ footer[data-footer]:empty { display: block; min-height: 520px; background-color:
 .spider__still { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: 50% 62%; transform: scale(1.08); transition: opacity 0.8s var(--ease);
   -webkit-mask-image: radial-gradient(120% 95% at 50% 55%, #000 55%, transparent 100%); mask-image: radial-gradient(120% 95% at 50% 55%, #000 55%, transparent 100%); }
 .spider__stage.is-3d .spider__still { opacity: 0; }
+/* a deeper blue than usual: the hint sits on the darker cream of the stage and still needs AA contrast */
 .spider__hint { position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 2; display: inline-flex; align-items: center; gap: 10px;
-  color: var(--acc-t); font-weight: 700; letter-spacing: 0.14em; font-size: 13px; text-transform: uppercase; white-space: nowrap; }
+  color: #3f5f7f; font-weight: 700; letter-spacing: 0.14em; font-size: 13px; text-transform: uppercase; white-space: nowrap; }
 .spider__hint::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: pulse 1.6s ease-in-out infinite; }
 .spider__hint-touch { display: none; }
 @media (hover: none) { .spider__hint-mouse { display: none; } .spider__hint-touch { display: inline; } }

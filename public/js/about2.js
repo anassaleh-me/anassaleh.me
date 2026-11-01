@@ -1,5 +1,5 @@
 // About page (stage 4): role title rising in beside the depth portrait, a story whose words light up while you read,
-// experience, tools and the CV. Content comes from site.json (about).
+// a few quiet lines on where I've been, and tools. Content comes from site.json (about).
 import { shell, $, $$, esc, lerp, clamp } from "/js/shell2.js";
 import { mountHero } from "/js/hero2.js";
 import { toolIcon } from "/js/tool-icons.js";
@@ -8,12 +8,27 @@ const { site, reveal } = await shell({ current: "about" });
 const a = site.about || {};
 const E = "cubic-bezier(.16,1,.3,1)";
 
-if (a.cv) $("[data-cv]").href = a.cv;
-
 // portrait: the same depth portrait as the home page, turning toward the pointer
 const stage = $("[data-ab-stage]");
 mountHero(stage, { image: a.portrait || site.home?.heroImage || "/images/portrait-v2.webp", depth: site.home?.heroDepth || "/images/portrait-v2-depth.png", alt: `Portrait of ${site.fullName}`, mode: 0, reduceMotion: matchMedia("(prefers-reduced-motion: reduce)").matches, fit: [0.07, 0.1, 0.86, 0.9] })
   .then(() => stage.animate([{ opacity: 0, transform: "scale(1.2)", filter: "blur(18px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }], { duration: 1800, delay: 200, easing: E, fill: "backwards" }));
+
+// the portrait lines up with the text: the top of the head level with the label, the chin level with the buttons,
+// and the face centred in the right part of the page grid (so wide screens don't open a gap between them).
+// In the stage, the head starts 13.9% down and the chin sits 90.3% down; the face is centred left to right.
+const heroText = $(".ab-hero__text"), heroWrap = $(".ab-hero__grid"), wide = matchMedia("(min-width: 861px)");
+function placePortrait() {
+  if (!wide.matches) { stage.style.cssText = ""; return; }
+  const hero = stage.offsetParent.getBoundingClientRect(), t = heroText.getBoundingClientRect(), w = heroWrap.getBoundingClientRect();
+  const pad = parseFloat(getComputedStyle(heroWrap).paddingLeft) || 0;
+  const h = (t.height) / (0.903 - 0.139);
+  const top = t.top - hero.top - 0.139 * h;
+  const centre = w.left + pad + (w.width - 2 * pad) * 0.72 - hero.left;
+  stage.style.cssText = `top:${top}px; height:${h}px; left:${centre - (h * 1.268) / 2}px; right:auto; bottom:auto;`;
+}
+placePortrait();
+new ResizeObserver(placePortrait).observe(heroText);
+addEventListener("resize", placePortrait);
 
 // (the title and intro lines animate from a small script in the page itself, so they don't wait for content)
 
@@ -22,12 +37,11 @@ const story = $("[data-story]");
 story.innerHTML = (a.bio || []).map((para) => `<p>${para.split(/\s+/).map((w) => `<span>${esc(w)}</span>`).join(" ")}</p>`).join("");
 const words = $$("span", story);
 
-// experience
+// along the way: company, role and years on one quiet line each
 $("[data-exp]").innerHTML = (a.experience || []).map((x) => `<li data-reveal>
-  <span class="ab-exp__period">${esc(x.period)}</span>
-  <span class="ab-exp__role up">${esc(x.role)}</span>
   <span class="ab-exp__co">${esc(x.company)}</span>
-  <span class="ab-exp__note">${esc(x.note || "")}</span>
+  <span class="ab-exp__role">${esc(x.role)}</span>
+  <span class="ab-exp__period">${esc(x.period)}</span>
 </li>`).join("");
 
 // tools: each tile shows the app's mark in white with its name under it, and tilts toward the pointer

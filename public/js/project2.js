@@ -1,5 +1,6 @@
 // Project page (stage 3), served at /work/<slug>. Dark opener with the title rising in, the cover that grows to
-// full width as you scroll (always whole, never cropped), the story, the film, the gallery, previous and next project.
+// full width as you scroll (always whole, never cropped; a project with a film plays it right there), the story,
+// the gallery, previous and next project.
 import { shell, $, $$, esc, lerp, clamp, cats, cover, thumb, srcset, rowsHTML, fitRows } from "/js/shell2.js";
 
 const { projects, reveal } = await shell({ current: "work" });
@@ -55,7 +56,7 @@ function render(p, prev, next) {
       <h1 class="pj-title up">${words.map((w, n) => `<span class="ln"><span class="w${n === words.length - 1 && words.length > 1 ? " acc" : ""}">${esc(w)}</span></span>`).join(" ")}</h1>
       <div class="pj-sub" data-intro><p>${esc(p.subtitle)}</p><span>${cats(p)}</span></div>
     </div>
-    <div class="pj-cover" data-cover><img src="${cover(p)}"${srcset(cover(p))} alt="${esc(p.title)}, cover" fetchpriority="high"></div>
+    <div class="pj-cover" data-cover><img src="${cover(p)}"${srcset(cover(p))} alt="${esc(p.title)}, cover" fetchpriority="high">${film ? `<button type="button" class="pj-cover__play" data-film="${esc(film)}" data-cursor="Play" aria-label="Play the ${esc(p.title)} film"><span class="pj-play">${PLAY}</span></button>` : ""}</div>
   </section>
 
   <section class="pj-info wrap">
@@ -66,23 +67,15 @@ function render(p, prev, next) {
     <dl class="pj-meta">${meta.map(([k, v]) => `<div data-reveal><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
   </section>
 
-  ${film ? `<section class="pj-film dark" data-dark aria-label="Film">
-    <div class="wrap"><span class="label" data-reveal>Watch</span>
-      <button type="button" class="pj-player${tall ? " tall" : ""}" data-film="${esc(film)}" data-cursor="Play" aria-label="Play the ${esc(p.title)} film" data-reveal>
-        <img src="${cover(p)}" alt="" loading="lazy"><span class="pj-play">${PLAY}</span>
-      </button>
-    </div>
-  </section>` : ""}
-
   ${gallery ? `<section class="pj-gallery wrap" aria-label="Project images">${gallery}</section>` : ""}
 
   <nav class="pj-nav dark" data-dark aria-label="More projects">${side(prev, "prev")}${side(next, "next")}</nav>`;
 
-  // the film loads only when asked for: a still cover with a play button until then
+  // the film loads only when asked for: the cover with a play button until then, then the player takes its place
   $("[data-film]")?.addEventListener("click", (e) => {
-    const b = e.currentTarget;
-    b.innerHTML = `<iframe src="${esc(b.dataset.film)}" title="${esc(p.title)}, film" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe>`;
-    b.removeAttribute("data-cursor"); b.classList.add("on");
+    const c = e.currentTarget.parentElement;
+    c.classList.add("playing"); if (tall) c.classList.add("tall");
+    c.innerHTML = `<iframe src="${esc(e.currentTarget.dataset.film)}" title="${esc(p.title)}, film" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe>`;
   }, { once: true });
 
   // opening: title words rise one after another, the cover comes into focus from below
@@ -107,7 +100,7 @@ function render(p, prev, next) {
   (function loop() {
     requestAnimationFrame(loop);
     const r = coverEl.getBoundingClientRect();
-    if (r.top < innerHeight && r.bottom > 0) {
+    if (r.top < innerHeight && r.bottom > 0 && !coverEl.classList.contains("playing")) {
       const target = clamp(1 - (r.top - innerHeight * 0.12) / (innerHeight * 0.7), 0, 1);
       open = lerp(open, target, 0.12);
       // the whole picture is always visible: it grows from a framed size to the full width

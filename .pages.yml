@@ -225,6 +225,7 @@ content:
       - { name: featured, label: Show on homepage (in the works wheel), type: boolean }
       - { name: draft, label: Hide from site (draft), type: boolean }
       - { name: cover, label: "Cover image (about 1600 x 1250, used on the cards, the project page and link previews)", type: image, options: { media: images } }
+      - { name: coverClean, label: "Clean cover, optional (the same picture with no text on it, same size as the cover). The site shows it instead of the cover; link previews keep the cover", type: image, options: { media: images } }
       - { name: description, label: Description, type: text }
       - { name: video, label: "Film link (Vimeo, or YouTube). Shown with a play button", type: string }
       - name: blocks

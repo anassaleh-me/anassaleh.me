@@ -236,7 +236,7 @@ export default {
         .on("title", { element: (el) => el.setInnerContent(title) })
         .on('meta[name="description"]', set(desc))
         .on('meta[property="og:image"]', set(image))
-        .on("head", { element: (el) => el.append(`<link rel="preload" as="image" href="${attr(c)}" fetchpriority="high"><meta property="og:title" content="${attr(title)}"><meta property="og:description" content="${attr(desc)}"><meta property="og:type" content="article"><meta property="og:url" content="${SITE}/work/${p.slug}"><meta name="twitter:card" content="summary_large_image"><link rel="canonical" href="${SITE}/work/${p.slug}">`, { html: true }) })
+        .on("head", { element: (el) => el.append(`<link rel="preload" as="image" href="${attr(p.coverClean || c)}" fetchpriority="high"><meta property="og:title" content="${attr(title)}"><meta property="og:description" content="${attr(desc)}"><meta property="og:type" content="article"><meta property="og:url" content="${SITE}/work/${p.slug}"><meta name="twitter:card" content="summary_large_image"><link rel="canonical" href="${SITE}/work/${p.slug}">`, { html: true }) })
         .transform(out);
     }
 

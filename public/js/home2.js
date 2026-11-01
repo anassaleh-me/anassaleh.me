@@ -204,7 +204,8 @@ new IntersectionObserver(([e]) => { if (!e.isIntersecting) hideFloat(); }).obser
 
 /* ---------- works wheel ---------- */
 if ($("[data-works]")) mountWorksWheel($("[data-works]"), {
-  items: projects.some((p) => p.featured) ? projects.filter((p) => p.featured) : projects,
+  // the project that has its own spider section below is left out, so it doesn't show twice in a row
+  items: (projects.some((p) => p.featured) ? projects.filter((p) => p.featured) : projects).filter((p) => !(S.spider !== false && site.spider?.link === `/work/${p.slug}`)),
   label: esc(h.worksLabel || "Works '26").replace(/&#39;(\d+)/, '<span class="acc">&#39;$1</span>'),
   cover,
   meta: (p) => `${cats(p)} · ${p.year}`,

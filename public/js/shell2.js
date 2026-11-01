@@ -22,7 +22,8 @@ export const navLinks = (site) => [
 ].filter(([k]) => site.pages?.[k] !== false).map(([key, href, label]) => ({ key, href, label }));
 export const ctaLink = (site) => (site.pages?.contact !== false ? { href: "/contact", label: "Let's talk" } : { href: `mailto:${site.contact?.email || ""}`, label: "Email me" });
 // the cover set in Pages CMS; covers in /images/covers/ also have a small copy for hover previews
-export const cover = (p) => p.cover || `/images/covers/${p.slug}.webp`;
+// a clean cover (the same picture with no text on it) shows on the site when there is one; link previews keep the cover
+export const cover = (p) => p.coverClean || p.cover || `/images/covers/${p.slug}.webp`;
 // Smaller copies for smaller screens: the worker resizes an uploaded image on request (/img/<width>/images/...), and the
 // browser picks the smallest copy that is still sharp on that screen (pixel density included). The original is the
 // largest choice, so a big screen gets the full upload. `sizes` says how wide the picture shows.

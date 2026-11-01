@@ -139,10 +139,10 @@ footer[data-footer]:empty { display: block; min-height: 520px; background-color:
 .disc__more { display: inline-flex; align-items: center; gap: 10px; margin-top: clamp(30px, 4vw, 50px); padding-bottom: 4px; font-weight: 700; font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--acc-t); border-bottom: 1.5px solid rgba(76, 108, 140, 0.35); transition: border-color 0.3s, gap 0.4s var(--ease); }
 .disc__more svg { width: 18px; height: 18px; }
 .disc__more:hover { border-color: var(--acc-t); gap: 14px; }
-.disc__words { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.08em 0.32em; font-size: clamp(46px, 8.2vw, 150px); }
+.disc__words { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.08em 0.32em; font-size: clamp(34px, 5.2vw, 92px); }
 /* words stay inline so a long one ("Branding & graphic design") wraps and its dot follows the last line */
 .disc__words a, .disc__words span.word { display: inline; transition: color 0.4s; }
-.disc__words li { display: block; }
+.disc__words li { display: block; flex-basis: 100%; }
 .disc__end { white-space: nowrap; }
 .disc__words li:not(:last-child) .disc__end::after { content: ""; display: inline-block; width: 0.14em; height: 0.14em; margin-left: 0.32em; border-radius: 50%; background: var(--accent); vertical-align: 0.21em; }
 .disc__words:hover a, .disc__words:hover span.word { color: rgba(29, 29, 27, 0.18); }
@@ -186,7 +186,7 @@ footer[data-footer]:empty { display: block; min-height: 520px; background-color:
 /* ---------- spider: rendered frames that turn toward the pointer (js/spider.js) ---------- */
 .spider { padding-block: clamp(90px, 12vw, 170px); }
 .spider__grid { display: grid; grid-template-columns: 0.62fr 1.6fr; gap: clamp(28px, 4vw, 64px); align-items: center; }
-.spider__text h2 { font-size: clamp(40px, 4.4vw, 82px); margin: 18px 0 22px; }
+.spider__text h2 { font-size: clamp(36px, 3.8vw, 66px); margin: 18px 0 22px; }
 .spider__text p { color: var(--ink-soft); max-width: 40ch; margin-bottom: 30px; }
 .spider__stage { position: relative; height: 74vh; min-height: 460px; border-radius: 24px; overflow: hidden; background: var(--cream-2); touch-action: pan-y;
   /* gallery frame: a fine line floating around the stage like a mounted print, so the cream stage reads on the cream page */
@@ -215,7 +215,7 @@ footer[data-footer]:empty { display: block; min-height: 520px; background-color:
 /* ---------- studio ---------- */
 .studio { padding-block: clamp(70px, 10vw, 150px); }
 .studio__head { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; margin-bottom: clamp(30px, 4vw, 56px); }
-.studio__head h2 { font-size: clamp(44px, 6vw, 104px); margin-top: 18px; }
+.studio__head h2 { font-size: clamp(34px, 4.2vw, 72px); margin-top: 18px; }
 .studio__head p { max-width: 36ch; color: var(--ink-soft); }
 .studio__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 2vw, 28px); }
 .sc { display: block; border-radius: 16px; overflow: hidden; background: var(--cream-2); transition: transform 0.7s var(--ease), box-shadow 0.7s var(--ease); }
@@ -235,7 +235,7 @@ footer[data-footer]:empty { display: block; min-height: 520px; background-color:
 /* ---------- drawings ---------- */
 .draw { padding-block: clamp(70px, 10vw, 150px); overflow: hidden; }
 .draw__head { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: end; margin-bottom: clamp(36px, 5vw, 70px); }
-.draw__head h2 { font-size: clamp(44px, 6vw, 104px); margin-top: 18px; }
+.draw__head h2 { font-size: clamp(34px, 4.2vw, 72px); margin-top: 18px; }
 .draw__head p { color: var(--ink-soft); max-width: 40ch; justify-self: end; }
 .draw__row { display: flex; gap: clamp(14px, 2vw, 30px); align-items: center; padding-block: 24px; will-change: transform; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
 .draw__row.dragging { cursor: grabbing; }

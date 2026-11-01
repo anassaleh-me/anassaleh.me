@@ -88,7 +88,8 @@
 .pj-sub p { font-size: clamp(20px, 1.8vw, 28px); color: var(--cream); }
 .pj-sub span { font-weight: 700; font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--acc-t); }
 .pj-cover { margin-top: clamp(40px, 5vw, 70px); width: 100%; overflow: hidden; transform: scale(0.8); transform-origin: 50% 0; border-radius: 26px; will-change: transform; }
-.pj-cover img { width: 100%; height: auto; }
+/* covers are Behance covers (808 x 632): the space is held before the picture arrives, so the text below never jumps */
+.pj-cover img { width: 100%; height: auto; aspect-ratio: 808 / 632; object-fit: cover; }
 
 .pj-info { display: grid; grid-template-columns: 1.5fr 1fr; gap: clamp(36px, 6vw, 110px); padding-block: clamp(80px, 10vw, 150px); }
 .pj-lead { margin-top: 22px; font-size: clamp(22px, 2vw, 32px); line-height: 1.35; font-weight: 500; max-width: 34ch; }
@@ -413,6 +414,8 @@
 .sv-title { font-size: clamp(46px, 8.6vw, 150px); }
 .sv-intro { max-width: 54ch; color: var(--ink-soft); font-size: clamp(18px, 1.3vw, 21px); }
 .sv { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: clamp(30px, 4.5vw, 80px); align-items: start; padding-block: clamp(30px, 4vw, 60px) clamp(90px, 12vw, 160px); }
+/* until the services list is filled, it holds a screen's height, so the sections below never jump up and back down */
+.sv:has(.sv-list:empty) { min-height: 100vh; }
 .sv-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(29, 29, 27, 0.15); }
 .sv-row { border-bottom: 1px solid rgba(29, 29, 27, 0.15); scroll-margin-top: 90px; }
 .sv-row__h { margin: 0; font: inherit; }

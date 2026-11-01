@@ -4,7 +4,7 @@ import { mountHero } from "/js/hero2.js";
 import { mountPillNav } from "/js/nav.js";
 import { mountRingCursor } from "/js/cursors.js";
 import { mountWorksWheel } from "/js/works-wheel.js";
-import { navLinks, ctaLink, byDate, canHover, srcset } from "/js/shell2.js";
+import { navLinks, ctaLink, byDate, canHover, srcset, footerHTML } from "/js/shell2.js";
 import { getJSON, prefetchOnHover } from "/js/data.js";
 import { mountMailButton } from "/js/mailto.js";
 import { mountSpider } from "/js/spider.js";
@@ -43,13 +43,8 @@ const projects = byDate(all.filter((p) => !p.draft));
 const S = site.homeSections || {};
 [["disciplines", "section.disc"], ["works", "[data-works]"], ["spider", "section.spider"], ["inProgress", "#in-progress"], ["drawings", "#drawings"], ["contact", "section.contact"]]
   .forEach(([k, sel]) => { if (S[k] === false) document.querySelector(sel)?.remove(); });
-// footer links to pages that are switched off
-const PAGES = site.pages || {};
 // links to the Services page go when that page is switched off
-if (PAGES.services === false) document.querySelectorAll("[data-services-link]").forEach((a) => a.remove());
-[["work", "/work"], ["about", "/about"], ["progress", "/in-progress"], ["contact", "/contact"]].forEach(([k, href]) => {
-  if (PAGES[k] === false) document.querySelectorAll(`footer a[href="${href}"]`).forEach((a) => a.closest("li")?.remove());
-});
+if (site.pages?.services === false) document.querySelectorAll("[data-services-link]").forEach((a) => a.remove());
 const h = site.home || {};
 const c = site.contact || {};
 
@@ -291,10 +286,8 @@ if ($("[data-mail]")) {
   // the Start a project button needs the Contact page; without it, it writes an email instead
   if (site.pages?.contact === false) { const start = $('.contact a[href="/contact"]'); if (start) { start.href = `mailto:${c.email}`; start.firstChild.textContent = "Email me "; } }
 }
-$("[data-logo]").innerHTML = LOGO;
-$("[data-socials]").innerHTML = [["Instagram", c.instagram], ["Behance", c.behance], ["LinkedIn", c.linkedin], ["WhatsApp", c.whatsapp]]
-  .filter(([, u]) => u).map(([n, u]) => `<li><a href="${esc(u)}" target="_blank" rel="noopener">${n}</a></li>`).join("");
-$("[data-year]").textContent = `© ${new Date().getFullYear()} ${site.fullName}`;
+// the same footer as every other page (pages that are switched off are left out there)
+$("footer[data-footer]").outerHTML = footerHTML(site);
 
 watchReveals();
 

@@ -151,7 +151,7 @@ const revealIO = new IntersectionObserver((es) => es.forEach((e) => {
 }), { threshold: 0.12, rootMargin: "0px 0px 4% 0px" });
 export function reveal(root = document) { $$("[data-reveal]:not(.in)", root).forEach((el) => revealIO.observe(el)); }
 
-function footerHTML(site) {
+export function footerHTML(site) {
   const c = site.contact || {};
   const socials = [["Instagram", c.instagram], ["Behance", c.behance], ["LinkedIn", c.linkedin], ["WhatsApp", c.whatsapp]].filter(([, u]) => u);
   return `<footer class="foot dark" data-dark>

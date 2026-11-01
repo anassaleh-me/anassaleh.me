@@ -87,7 +87,7 @@ $("[data-intro]").textContent = h.intro || "";
 const heroReady = mountHero(stage, { image: h.heroImage || "/images/portrait-v2.webp", depth: h.heroDepth || "/images/portrait-v2-depth.png", alt: `Portrait of ${site.fullName}`, mode: 0, reduceMotion: reduce, fit: [0.07, 0.1, 0.86, 0.9] });
 
 // statement: each word is its own mask, so the words rise into place one after another
-$("[data-statement-text]").innerHTML = (h.statement || "").split(/\s+/).map((w) => `<span class="ln" style="display:inline-block;margin-right:.24em"><span>${accent(w)}</span></span>`).join("");
+$("[data-statement-text]").innerHTML = (h.statement || "").split(/\s+/).map((w) => `<span class="ln" style="display:inline-block;margin-inline:.12em"><span>${accent(w)}</span></span>`).join("");
 $("[data-statement-sub]").textContent = h.statementSub || "";
 
 // The soft white glow is drawn once from the portrait's own silhouette (white, blurred) and kept still behind it,

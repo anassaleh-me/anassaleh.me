@@ -83,7 +83,8 @@ function render(p, prev, next) {
   $$(".pj-title .w").forEach((w, n) => w.animate([{ transform: "translateY(110%) rotate(4deg)" }, { transform: "none" }], { duration: 1300, delay: 200 + n * 120, easing: E, fill: "backwards" }));
   $$("[data-intro]").forEach((el, n) => el.animate([{ opacity: 0, transform: "translateY(20px)", filter: "blur(8px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }], { duration: 1100, delay: 500 + n * 160, easing: E, fill: "backwards" }));
   const coverEl = $("[data-cover]");
-  coverEl.animate([{ opacity: 0, transform: "translateY(80px)", filter: "blur(18px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }], { duration: 1600, delay: 450, easing: E, fill: "backwards" });
+  // quick enough that the main picture is fully in view in about a second
+  coverEl.animate([{ opacity: 0, transform: "translateY(60px)", filter: "blur(14px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }], { duration: 1000, delay: 150, easing: E, fill: "backwards" });
   document.documentElement.classList.remove("intro");
 
   fitRows(main);

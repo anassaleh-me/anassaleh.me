@@ -172,6 +172,9 @@
 @media (max-width: 860px) {
   .ab-hero { display: block; min-height: 0; padding-bottom: 0; }
   .ab-hero__text { max-width: none; }
+  /* "art director" stays on one line on phones; the title shrinks just enough for it to fit */
+  .ab-title { font-size: min(44px, calc((100vw - 32px) / 8.6)); }
+  .ab-title .nw { white-space: nowrap; }
   .ab-stage { position: relative; right: auto; height: auto; width: 150%; margin: 10px 0 0 -25%; }
 }
 

@@ -211,6 +211,18 @@ footer[data-footer]:empty { display: block; min-height: 520px; background-color:
 .spider__corner.bl { left: 20px; bottom: 20px; border-right: 0; border-top: 0; }
 .spider__corner.br { right: 20px; bottom: 20px; border-left: 0; border-top: 0; }
 @media (max-width: 860px) { .spider__grid { grid-template-columns: 1fr; } .spider__stage { height: auto; min-height: 0; aspect-ratio: 1 / 1; } }
+/* TEMP edge options for Anas to compare (?frame=a|b|c|d); the chosen one replaces the default above */
+/* a: gallery frame, a fine line floating around the stage like a mounted print */
+.spider__stage[data-frame="a"] { border: 0; overflow: visible; box-shadow: 0 30px 70px -40px rgba(29, 29, 27, 0.45); outline: 1px solid rgba(29, 29, 27, 0.4); outline-offset: 12px; }
+.spider__stage[data-frame="a"] .spider__canvas, .spider__stage[data-frame="a"] .spider__still { border-radius: 24px; }
+/* b: studio light, brighter in the middle and darker toward the edges, no line */
+.spider__stage[data-frame="b"] { border: 0; background: radial-gradient(110% 85% at 50% 40%, #f6f2ea 0%, #e7e0d3 58%, #d3c9b8 100%);
+  box-shadow: inset 0 0 0 1px rgba(29, 29, 27, 0.08), 0 30px 70px -38px rgba(29, 29, 27, 0.45); }
+/* c: blue line, the accent as a thin border with blue corner marks */
+.spider__stage[data-frame="c"] { border: 1.5px solid var(--acc-l); box-shadow: 0 0 0 7px rgba(111, 143, 175, 0.12), 0 26px 60px -34px rgba(29, 29, 27, 0.35); }
+.spider__stage[data-frame="c"] .spider__corner { border-color: var(--acc-t); border-width: 2px; width: 30px; height: 30px; }
+/* d: charcoal frame, a dark band around the cream like a framed print */
+.spider__stage[data-frame="d"] { border: 12px solid var(--char); box-shadow: 0 30px 70px -36px rgba(29, 29, 27, 0.55); border-radius: 28px; }
 
 /* ---------- studio ---------- */
 .studio { padding-block: clamp(70px, 10vw, 150px); }

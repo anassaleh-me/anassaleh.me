@@ -162,7 +162,7 @@
 .ab-hero { position: relative; min-height: 100vh; min-height: 100svh; display: flex; align-items: center; padding-block: clamp(110px, 12vw, 150px) clamp(50px, 7vw, 100px); overflow: hidden; isolation: isolate; }
 .ab-hero__grid { position: static; display: block; }
 .ab-hero__text { position: relative; z-index: 2; max-width: 46%; }
-.ab-title { font-size: clamp(48px, 6.6vw, 124px); line-height: 0.86; margin: 24px 0 26px; }
+.ab-title { font-size: clamp(44px, min(6.6vw, 12vh), 124px); line-height: 0.86; margin: 24px 0 26px; }
 .ab-title .ln { display: inline-block; overflow: hidden; padding-bottom: 0.05em; vertical-align: top; }
 .ab-title .w { display: inline-block; }
 .ab-hero__sub { color: var(--cream-soft); font-size: clamp(18px, 1.5vw, 23px); max-width: 34ch; margin-bottom: 34px; }

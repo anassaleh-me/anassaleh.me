@@ -13,6 +13,23 @@ const stage = $("[data-ab-stage]");
 mountHero(stage, { image: a.portrait || site.home?.heroImage || "/images/portrait-v2.webp", depth: site.home?.heroDepth || "/images/portrait-v2-depth.png", alt: `Portrait of ${site.fullName}`, mode: 0, reduceMotion: matchMedia("(prefers-reduced-motion: reduce)").matches, fit: [0.07, 0.1, 0.86, 0.9] })
   .then(() => stage.animate([{ opacity: 0, transform: "scale(1.2)", filter: "blur(18px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }], { duration: 1800, delay: 200, easing: E, fill: "backwards" }));
 
+// the portrait lines up with the text: the top of the head level with the label, the chin level with the buttons,
+// and the face centred in the right part of the page grid (so wide screens don't open a gap between them).
+// In the stage, the head starts 13.9% down and the chin sits 90.3% down; the face is centred left to right.
+const heroText = $(".ab-hero__text"), heroWrap = $(".ab-hero__grid"), wide = matchMedia("(min-width: 861px)");
+function placePortrait() {
+  if (!wide.matches) { stage.style.cssText = ""; return; }
+  const hero = stage.offsetParent.getBoundingClientRect(), t = heroText.getBoundingClientRect(), w = heroWrap.getBoundingClientRect();
+  const pad = parseFloat(getComputedStyle(heroWrap).paddingLeft) || 0;
+  const h = (t.height) / (0.903 - 0.139);
+  const top = t.top - hero.top - 0.139 * h;
+  const centre = w.left + pad + (w.width - 2 * pad) * 0.72 - hero.left;
+  stage.style.cssText = `top:${top}px; height:${h}px; left:${centre - (h * 1.268) / 2}px; right:auto; bottom:auto;`;
+}
+placePortrait();
+new ResizeObserver(placePortrait).observe(heroText);
+addEventListener("resize", placePortrait);
+
 // (the title and intro lines animate from a small script in the page itself, so they don't wait for content)
 
 // story: every word is its own span so it can brighten as the paragraph moves up the screen

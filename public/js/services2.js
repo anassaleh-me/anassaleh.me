@@ -15,7 +15,9 @@ const words = (t) => accent(t).replace(/<span class="acc">(.*?)<\/span>|(\S+)/g,
 // the title is already in the page (so it rises at once); it only changes if the CMS headline is different
 const title = $("[data-sv-title]");
 if (s.headline && title.textContent.replace(/\s+/g, " ").trim().toLowerCase() !== s.headline.replace(/[[\]]/g, "").toLowerCase()) title.innerHTML = words(s.headline);
-$("[data-sv-intro]").textContent = s.intro || "";
+// the intro is in the page too, so nothing below it jumps when the content arrives; it changes only if the CMS text differs
+const intro = $("[data-sv-intro]");
+if (s.intro && intro.textContent.trim() !== s.intro.trim()) intro.textContent = s.intro;
 
 // what a service shows: the projects picked for it in Pages CMS (by page address or title), else the newest projects
 // in its categories; or its own images (drawings, shown side by side)

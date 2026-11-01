@@ -123,7 +123,7 @@ footer[data-footer]:empty { display: block; min-height: 520px; background-color:
 .hero .scroll i::after { content: ""; position: absolute; left: 0; top: -40%; width: 100%; height: 40%; background: var(--accent); animation: cue 2s var(--ease) infinite; }
 @keyframes cue { to { top: 100%; } }
 .hero .statement { position: absolute; inset: 0; z-index: 4; display: grid; place-items: center; text-align: center; padding-inline: var(--g); pointer-events: none; }
-.hero .statement h2 { font-size: clamp(40px, 6.6vw, 118px); max-width: 15ch; }
+.hero .statement h2 { font-size: clamp(40px, 6.6vw, 118px); max-width: 15ch; margin-inline: auto; }
 .hero .statement h2 .ln { display: block; overflow: hidden; padding-bottom: 0.05em; }
 .hero .statement h2 .ln > span { display: inline-block; transform: translateY(110%); will-change: transform; }
 .hero .statement p { margin-top: 26px; color: var(--cream-soft); font-size: clamp(18px, 1.4vw, 22px); opacity: 0; }

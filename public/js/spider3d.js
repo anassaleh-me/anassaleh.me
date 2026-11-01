@@ -13,10 +13,13 @@ const lerp = (a, b, t) => a + (b - a) * t;
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
 export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
+  // the still and everything after it load only when the section comes near, so the top of the page never waits on it
   const still = new Image();
-  still.className = "spider__still"; still.alt = ""; still.src = poster;
+  still.className = "spider__still"; still.alt = ""; still.decoding = "async";
   stage.prepend(still);
-  still.decode().then(() => stage.classList.add("is-ready"), () => {});
+  // data saver, slow connections and low-memory devices keep the still: the page stays fast for them
+  const net = navigator.connection || {};
+  const light = net.saveData || /(^|-)2g/.test(net.effectiveType || "") || (navigator.deviceMemory || 8) < 4;
   const at = { c: 10, r: 2, tc: 10, tr: 2 };
   let lastMove = 0, visible = false, raf = 0, api = null, speed = 0, px = 0, py = 0;
 
@@ -43,7 +46,7 @@ export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
       import(`${CDN}/examples/jsm/loaders/GLTFLoader.js/+esm`),
       import(`${CDN}/examples/jsm/libs/meshopt_decoder.module.js/+esm`),
     ]);
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "low-power" });
     renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
     renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.shadowMap.autoUpdate = false;
     const canvas = renderer.domElement;
@@ -103,8 +106,11 @@ export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
     new ResizeObserver(size).observe(stage);
     size();
 
-    let t0 = 0, frame = 0, life = 0;
+    let t0 = 0, frame = 0, life = 0, slow = 0, lite = false;
     function draw(dt, t) {
+      // a slow device draws fewer pixels and fewer shadow updates instead of slowing the page
+      slow = dt > 0.024 ? slow + 1 : Math.max(0, slow - 1);
+      if (slow > 40 && !lite) { lite = true; renderer.setPixelRatio(1); size(); }
       // opening: starts close on the face and pulls back to the full spider
       t0 = t0 || t;
       place(ease(clamp((t - t0) / 2600, 0, 1)));
@@ -115,10 +121,12 @@ export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
       life = lerp(life, Math.min(speed * 4, 1), 1 - Math.exp(-dt * 3));
       breath.forEach((a) => { a.setEffectiveWeight(0.5 + life * 0.9); a.setEffectiveTimeScale(0.28 + life * 0.5); });
       mixer.update(dt);
-      // the floor shadow follows the body every other frame (half the cost, the eye doesn't see the difference)
-      if (frame++ % 2 === 0) renderer.shadowMap.needsUpdate = true;
+      // the floor shadow follows the body every other frame (every fourth on a slow device); the eye doesn't see the difference
+      if (frame++ % (lite ? 4 : 2) === 0) renderer.shadowMap.needsUpdate = true;
       renderer.render(scene, cam);
     }
+    // shaders compile in the background (where the browser allows it) instead of freezing the first frame
+    await renderer.compileAsync(scene, cam);
     stage.classList.add("is-3d");
     return { draw };
   }
@@ -143,7 +151,12 @@ export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
   new IntersectionObserver(([e]) => {
     if (!e.isIntersecting || started) return;
     started = true;
-    load().then((a) => (api = a), (err) => console.warn("spider 3D unavailable, keeping the still", err));
+    still.src = poster;
+    still.decode().then(() => stage.classList.add("is-ready"), () => {});
+    if (light) return;
+    // three.js and the model start when the browser is idle, never in the middle of a scroll frame
+    const go = () => load().then((a) => (api = a), (err) => console.warn("spider 3D unavailable, keeping the still", err));
+    "requestIdleCallback" in window ? requestIdleCallback(go, { timeout: 1500 }) : setTimeout(go, 200);
   }, { rootMargin: "100% 0px" }).observe(stage);
   new IntersectionObserver(([e]) => {
     visible = e.isIntersecting;

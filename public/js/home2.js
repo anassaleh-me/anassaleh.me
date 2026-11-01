@@ -222,12 +222,8 @@ if (spStage) {
   if (spd.title) $("[data-spider-title]").innerHTML = accent(spd.title.replace(/spider/i, "[Spider]"));
   $("[data-spider-text]").textContent = spd.text || "";
   if (spd.link) $("[data-spider-link]").href = spd.link;
-  // TEMP: ?frame=a|b|c|d shows one of the edge options to compare
-  const frame = new URLSearchParams(location.search).get("frame");
-  if (frame) spStage.dataset.frame = frame;
-  // the 3D model when there is one and the browser can draw it (?spider=frames shows the rendered frames instead)
-  const gl = (() => { try { return !!document.createElement("canvas").getContext("webgl2"); } catch { return false; } })();
-  if (spd.model && gl && !/spider=frames/.test(location.search)) mountSpider3D(spStage, { model: spd.model, poster: "/images/spider/1000/053.webp", reduce });
+  // the 3D model when there is one (?spider=frames shows the rendered frames instead); a browser that can't draw it keeps the still
+  if (spd.model && !/spider=frames/.test(location.search)) mountSpider3D(spStage, { model: spd.model, poster: "/images/spider/1000/053.webp", reduce });
   else mountSpider(spStage, { reduce });
 }
 

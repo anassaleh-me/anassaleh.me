@@ -188,7 +188,9 @@ footer[data-footer]:empty { display: block; min-height: 520px; background-color:
 .spider__grid { display: grid; grid-template-columns: 0.62fr 1.6fr; gap: clamp(28px, 4vw, 64px); align-items: center; }
 .spider__text h2 { font-size: clamp(40px, 4.4vw, 82px); margin: 18px 0 22px; }
 .spider__text p { color: var(--ink-soft); max-width: 40ch; margin-bottom: 30px; }
-.spider__stage { position: relative; height: 74vh; min-height: 460px; border-radius: 24px; overflow: hidden; background: var(--cream-2); touch-action: pan-y; }
+.spider__stage { position: relative; height: 74vh; min-height: 460px; border-radius: 24px; overflow: hidden; background: var(--cream-2); touch-action: pan-y;
+  /* a clear edge so the cream stage reads against the cream page */
+  border: 1px solid rgba(29, 29, 27, 0.18); box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 24px 60px -30px rgba(29, 29, 27, 0.35); }
 /* frames are rendered on the stage colour; their edges fade into it */
 .spider__canvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; filter: blur(14px); transform: scale(1.04);
   transition: opacity 1.2s var(--ease), filter 1.2s var(--ease), transform 1.4s var(--ease);

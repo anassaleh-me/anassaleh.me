@@ -400,7 +400,9 @@ export async function buildPortfolio({ site, projects, onProgress = () => {} }) 
     T(pg, "THANK YOU", { x: (W - width("THANK YOU", F.display, 110)) / 2, top: 246, size: 110, f: F.display });
     const sub = "Let's make something together.";
     T(pg, sub, { x: (W - width(sub, F.mid, 24)) / 2, top: 384, size: 24, f: F.mid, color: C.blueT });
-    const items = [[c.email, c.email && `mailto:${c.email}`], ["anassaleh.me", SITE], ["Instagram", c.instagram], ["Behance", c.behance], ["LinkedIn", c.linkedin], ["WhatsApp", c.whatsapp]].filter(([a, b]) => a && b);
+    // the email Anas set for the PDF (the one on his CV), or the site's
+    const email = (c.pdfEmail || c.email || "").trim();
+    const items = [[email, email && `mailto:${email}`], ["anassaleh.me", SITE], ["Instagram", c.instagram], ["Behance", c.behance], ["LinkedIn", c.linkedin], ["WhatsApp", c.whatsapp]].filter(([a, b]) => a && b);
     const size = 15, pad = 20, gap = 10, ws = items.map(([a]) => width(a, F.bold, size) + pad * 2), total = ws.reduce((a, b) => a + b, 0) + gap * (items.length - 1);
     let x = (W - total) / 2;
     items.forEach(([a, href], i) => {

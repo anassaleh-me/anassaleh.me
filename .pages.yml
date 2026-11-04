@@ -392,6 +392,7 @@ content:
         type: object
         fields:
           - { name: email, label: Email, type: string }
+          - { name: pdfEmail, label: "Email on the portfolio PDF, optional (write the one on your CV so they match). Empty = the email above", type: string }
           - { name: linkedin, label: LinkedIn URL, type: string }
           - { name: behance, label: Behance URL, type: string }
           - { name: instagram, label: Instagram URL, type: string }

@@ -69,21 +69,24 @@ export async function buildPortfolio({ site, projects, onProgress = () => {} }) 
     .replace(/\s+/g, " ").trim().split("").filter((c) => chars.get(f).has(c.codePointAt(0))).join("");
 
   /* ---------- the plan: which pages, in which order ---------- */
-  const order = (site.workCategories || []).filter((c) => c.key && c.key !== "all");
+  const all = (site.workCategories || []).filter((c) => c.key && c.key !== "all");
+  // a category switched off in the CMS (Work > Categories) has no section; its projects move to their next category
+  const off = new Set(all.filter((c) => c.show === false).map((c) => c.key));
+  const order = all.filter((c) => !off.has(c.key));
   const groups = new Map(order.map((c) => [c.key, []]));
-  // each project sits once, under the first category typed on it (its main one)
+  // each project sits once, under the first category typed on it (its main one) that is switched on
   for (const p of projects.filter((p) => p.inPdf !== false)) {
-    const key = slug((p.categories || [])[0]) || "other";
+    const key = (p.categories || []).map(slug).find((k) => k && !off.has(k)) || "more-work";
     if (!groups.has(key)) groups.set(key, []);
     groups.get(key).push(p);
   }
   const drawings = site.drawings?.show !== false && site.drawings?.images?.length ? site.drawings : null;
   const drawKey = [...groups.keys()].find((k) => /traditional|drawing/.test(k)) || "traditional-art";
   const sections = [...groups].filter(([key, list]) => list.length || (drawings && key === drawKey)).map(([key, list]) => ({
-    key, name: order.find((c) => c.key === key)?.label || (list[0]?.categories || [])[0] || "Other",
+    key, name: order.find((c) => c.key === key)?.label || (key === "more-work" ? "More work" : (list[0]?.categories || []).find((c) => slug(c) === key)) || "More work",
     line: order.find((c) => c.key === key)?.description || "", projects: list, drawings: drawings && key === drawKey,
   }));
-  if (drawings && !sections.some((s) => s.drawings)) sections.push({ key: drawKey, name: "Traditional art", line: "", projects: [], drawings: true });
+  if (drawings && !sections.some((s) => s.drawings) && !off.has(drawKey)) sections.push({ key: drawKey, name: "Traditional art", line: "", projects: [], drawings: true });
 
   /* ---------- pictures: fetched at a sensible size, then re-encoded inside the budget ---------- */
   const poster = (src) => (/\.mp4$/i.test(src) ? src.replace(/\.mp4$/i, "-poster.webp") : src);
@@ -326,8 +329,8 @@ export async function buildPortfolio({ site, projects, onProgress = () => {} }) 
     {
       const pg = newPage();
       at.set(`s:${s.key}`, pages.length);
+      ghost(pg, s.name, { top: 46 }); // starts under the band
       band(pg, s.name);
-      ghost(pg, s.name, { top: 0 });
       // the title in up to three lines, the last word in blue (like the site's titles)
       const lines = []; let line = "";
       for (const w of s.name.toUpperCase().split(" ")) { const t = line ? `${line} ${w}` : w; if (width(t, F.display, 96) > 660 && line) { lines.push(line); line = w; } else line = t; }

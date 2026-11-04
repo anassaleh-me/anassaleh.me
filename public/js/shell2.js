@@ -152,6 +152,31 @@ const revealIO = new IntersectionObserver((es) => es.forEach((e) => {
 }), { threshold: 0.12, rootMargin: "0px 0px 4% 0px" });
 export function reveal(root = document) { $$("[data-reveal]:not(.in)", root).forEach((el) => revealIO.observe(el)); }
 
+// "Download portfolio": the PDF is made on the spot from the projects the site shows now (js/portfolio-pdf.js),
+// so it always matches the site. Nothing of it loads until the button is pressed.
+let making = false;
+document.addEventListener("click", async (e) => {
+  const btn = e.target.closest?.("[data-portfolio]");
+  if (!btn || making) return;
+  making = true;
+  const text = btn.textContent;
+  btn.setAttribute("aria-busy", "true");
+  btn.textContent = "Preparing 0%";
+  try {
+    const [{ buildPortfolio }, site, all] = await Promise.all([import("/js/portfolio-pdf.js"), getJSON("/content/site.json"), getJSON("/content/projects.json")]);
+    const blob = await buildPortfolio({ site, projects: byDate(all.filter((p) => !p.draft)), onProgress: (f) => (btn.textContent = `Preparing ${Math.round(f * 100)}%`) });
+    const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(blob), download: "Anas_Al_Shikh_Saleh_Portfolio.pdf" });
+    document.body.append(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+    btn.textContent = text;
+  } catch (err) {
+    console.warn("portfolio PDF failed", err);
+    btn.textContent = "Try again";
+  }
+  btn.removeAttribute("aria-busy");
+  making = false;
+});
+
 export function footerHTML(site) {
   const c = site.contact || {};
   const socials = [["Instagram", c.instagram], ["Behance", c.behance], ["LinkedIn", c.linkedin], ["WhatsApp", c.whatsapp]].filter(([, u]) => u);
@@ -161,7 +186,7 @@ export function footerHTML(site) {
         <div><span class="foot__logo">${LOGO}</span><p>Visual artist and art director in Dubai. Art direction, design, 3D, motion, film and drawing.</p></div>
         <div><h3>Pages</h3><ul><li><a href="/">Home</a></li>${navLinks(site).map((l) => `<li><a href="${l.href}">${l.label}</a></li>`).join("")}${site.pages?.contact !== false ? '<li><a href="/contact">Contact</a></li>' : ""}</ul></div>
         <div><h3>Follow</h3><ul>${socials.map(([n, u]) => `<li><a href="${esc(u)}" target="_blank" rel="noopener">${n}</a></li>`).join("")}</ul></div>
-        <div><h3>Say hi</h3><ul><li><a href="mailto:${esc(c.email)}">${esc(c.email)}</a></li><li><a href="${esc(site.about?.cv || "/Anas_Al_Shikh_Saleh_CV.pdf")}" target="_blank" rel="noopener">Download CV</a></li></ul></div>
+        <div><h3>Say hi</h3><ul><li><a href="mailto:${esc(c.email)}">${esc(c.email)}</a></li><li><a href="${esc(site.about?.cv || "/Anas_Al_Shikh_Saleh_CV.pdf")}" target="_blank" rel="noopener">Download CV</a></li><li><button type="button" class="foot__pdf" data-portfolio>Download portfolio</button></li></ul></div>
       </div>
       <p class="foot__big up" aria-hidden="true">Anas <span class="acc">Saleh</span></p>
       <div class="foot__bottom"><span>&copy; ${new Date().getFullYear()} ${esc(site.fullName)}</span><span><a href="/privacy">Privacy</a> &middot; anassaleh.me</span></div>

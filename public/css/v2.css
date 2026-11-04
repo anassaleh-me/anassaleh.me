@@ -272,6 +272,10 @@ footer[data-footer]:empty { display: block; min-height: 520px; background-color:
 .foot ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 .foot ul a { color: var(--cream-soft); transition: color 0.3s; }
 .foot ul a:hover { color: var(--cream); }
+/* "Download portfolio" looks like the links around it; it shows its progress while the PDF is made */
+.foot__pdf { padding: 0; font: inherit; color: var(--cream-soft); text-align: left; transition: color 0.3s; }
+.foot__pdf:hover { color: var(--cream); }
+.foot__pdf[aria-busy] { color: var(--accent); cursor: progress; }
 .foot p { color: var(--cream-soft); max-width: 30ch; }
 .foot > .wrap { container-type: inline-size; }
 /* sized to the footer column (cqi), so the name spans it and stays centred on any screen */

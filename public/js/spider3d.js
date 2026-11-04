@@ -9,6 +9,7 @@ const V = "0.170.0", CDN = `https://cdn.jsdelivr.net/npm/three@${V}`;
 const COLS = 21, ROWS = 5, FPS = 24;
 // after the grid, frames 106 to 130 hold one breath: the body sinks and rises while the feet stay planted
 const BREATH = [106, 130];
+const ease = (t) => 1 - Math.pow(1 - t, 3);
 const lerp = (a, b, t) => a + (b - a) * t;
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
@@ -139,12 +140,16 @@ export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
     new ResizeObserver(size).observe(stage);
     size();
 
-    place(1);
-    let frame = 0, life = 0, slow = 0, lite = false;
+    // opening: it fades in close on the face and pulls back to the full spider. Skipped when the still is already
+    // showing (slow load), so the model takes over from it at the same view instead of jumping
+    const intro = !shown;
+    place(intro ? 0 : 1);
+    let t0 = 0, frame = 0, life = 0, slow = 0, lite = false;
     function draw(dt, t) {
       // a slow device draws fewer pixels and fewer shadow updates instead of slowing the page
       slow = dt > 0.024 ? slow + 1 : Math.max(0, slow - 1);
       if (slow > 40 && !lite) { lite = true; renderer.setPixelRatio(1); size(); }
+      if (intro) { t0 = t0 || t; place(ease(clamp((t - t0) / 2600, 0, 1))); }
       const r0 = Math.min(Math.floor(at.r), ROWS - 2), fr = at.r - r0;
       // Blender frame 1 sits at time 1/24
       rows.forEach((set, k) => set.forEach((a) => { a.time = ((r0 + k) * COLS + at.c + 1) / FPS; a.setEffectiveWeight(k ? fr : 1 - fr); }));

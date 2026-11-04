@@ -305,7 +305,6 @@ async function handleContact(request, env, ctx) {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(entry.email)) missing.push("email");
   if (entry.phone.replace(/\D/g, "").length < 7) missing.push("phone");
   if (!entry.services.length) missing.push("services");
-  if (entry.brief.length < 20) missing.push("brief");
   if (!entry.consent) missing.push("consent");
   if (missing.length) return json({ ok: false, error: "missing", fields: missing }, 422);
 
@@ -368,7 +367,8 @@ async function addToNotion(env, e) {
       properties: props,
       children: [
         { object: "block", type: "heading_3", heading_3: { rich_text: text("Brief") } },
-        ...e.brief.split(/\n{2,}/).filter(Boolean).slice(0, 40).map((p) => ({ object: "block", type: "paragraph", paragraph: { rich_text: text(p) } })),
+        // the brief is optional: an empty one says so
+        ...(e.brief || "No brief given.").split(/\n{2,}/).filter(Boolean).slice(0, 40).map((p) => ({ object: "block", type: "paragraph", paragraph: { rich_text: text(p) } })),
       ],
     }),
   });
@@ -394,7 +394,7 @@ async function sendMail(env, e) {
     e.links ? `Links: ${e.links}` : null,
     "",
     "Brief:",
-    e.brief,
+    e.brief || "No brief given.",
     "",
     `Received: ${e.receivedAt}${e.country ? ` (${e.country})` : ""}`,
     `Reply to this email to answer ${e.name} directly.`,

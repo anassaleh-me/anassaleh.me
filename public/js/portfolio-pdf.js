@@ -2,14 +2,25 @@
 // projects switched off for the PDF, site.json for the about text, categories, drawings and contact). It follows
 // Anas's hand-made portfolio: cream paper, charcoal, big ghost letters, a marquee band on each category page, a
 // project page (text left, one large picture right) and, when he picks pictures in the CMS (pdfImages), a full
-// gallery page after it, plus the site's blue. Nothing is picked or cropped at random: the project page shows the
-// cover whole, and the gallery keeps his order and fills the page with as little trimming as the shapes allow.
+// gallery page after it, plus the site's blue. Nothing is picked or cropped at random.
+// Every page sits on one grid (GRID below): the same margins, the first line of text and the picture start on the
+// same line, the button ends where the picture ends, and the page furniture (category top right, page number and
+// site at the bottom) sits on the same lines on every page. Text is placed by its baseline and cap height, so
+// "aligned" means the letters line up, not their boxes.
 // An index links to every page, every page links back to it, and the buttons open the project on the website.
 // Pictures share a byte budget, so the file always stays under 8 MB. pdf-lib loads only when someone asks.
 const LIB = "https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/+esm";
 const FONTKIT = "https://cdn.jsdelivr.net/npm/@pdf-lib/fontkit@1.1.1/+esm";
 const SITE = "https://anassaleh.me";
-const W = 1280, H = 720, M = 72; // page size in points (16:9) and side margin, as in the hand-made one
+const W = 1280, H = 720; // page size in points (16:9)
+const GRID = {
+  L: 72, R: 1208, // left and right margins: text, pictures and furniture start and end here
+  TOP: 100, BOT: 608, // first cap line and picture top / picture bottom and button bottom
+  TEXT_W: 432, PIC_X: 560, // text column (72 to 504), picture column (560 to 1208), a 56 point gutter between
+  HEAD: 52, FOOT: 668, // baselines of the top-right label and of the page number line
+};
+GRID.PIC_W = GRID.R - GRID.PIC_X; GRID.PIC_H = GRID.BOT - GRID.TOP;
+const CAP = { display: 0.688, body: 0.7 }; // cap heights of Archivo Black and Barlow Semi Condensed (from the fonts)
 const LIMIT = 7.6e6; // the whole file stays under this (Anas: never over 8 MB)
 const IMG_BUDGET = LIMIT - 0.6e6; // fonts, grain, text and links fit in the rest
 const PX = 1.6; // pixels per point for the pictures, before the budget squeezes them
@@ -42,10 +53,33 @@ function mosaic(aspects, bw, bh, gap) {
       along += gap * (parts.length - 1);
       const room = cols ? bw : bh;
       const trim = Math.max(room / along, along / room);
-      if (!best || trim < best.trim - 0.001) best = { trim, cols, groups, along, room };
+      // tiles of very different sizes (one huge picture beside tiny ones) count against a split
+      const areas = groups.flatMap((g) => g.a.map((x) => (cols ? g.size * g.size / x : g.size * g.size * x)));
+      const score = trim + 0.12 * Math.log(Math.max(...areas) / Math.min(...areas));
+      if (!best || score < best.score - 0.001) best = { trim, score, cols, groups, along, room };
     }
   }
   return best;
+}
+// tiles for a mosaic in a box: `fill` makes them meet the box edges exactly (each picture trimmed a little on the
+// side its tile can't hold); otherwise nothing is trimmed and the group is centred in the box
+function tilesFor(lay, box, gap, fill) {
+  const s = fill ? lay.room / lay.along : Math.min(1, lay.room / lay.along);
+  const cross = lay.cols ? box.h : box.w, out = [];
+  let pos = fill ? 0 : (lay.room - lay.along * s) / 2, i = 0;
+  for (const gr of lay.groups) {
+    const thick = gr.size * s, k = fill ? 1 : s;
+    const across = cross - gap * (gr.a.length - 1);
+    const total = gr.a.reduce((t, x) => t + (lay.cols ? 1 / x : x), 0);
+    let at = (cross - (across * k + gap * (gr.a.length - 1))) / 2;
+    for (const a of gr.a) {
+      const len = across * ((lay.cols ? 1 / a : a) / total) * k;
+      out.push(lay.cols ? { i: i++, x: box.x + pos, top: box.top + at, w: thick, h: len } : { i: i++, x: box.x + at, top: box.top + pos, w: len, h: thick });
+      at += len + gap;
+    }
+    pos += thick + gap;
+  }
+  return out;
 }
 
 export async function buildPortfolio({ site, projects, onProgress = () => {} }) {
@@ -53,7 +87,8 @@ export async function buildPortfolio({ site, projects, onProgress = () => {} }) 
   const { default: fontkit } = await import(FONTKIT);
   const { PDFDocument, PDFName, PDFString, pushGraphicsState, popGraphicsState, moveTo, lineTo, appendBezierCurve, closePath, clip, endPath } = k;
   const C = { cream: hex("#f1ece2", k), ink: hex("#1d1d1b", k), ink2: hex("#2b2b2b", k), soft: hex("#5b5a55", k), ghost: hex("#e7e1d5", k),
-    blue: hex("#6f8faf", k), blueT: hex("#4c6c8c", k), line: hex("#d3ccbf", k) };
+    panel: hex("#e6e0d4", k), blue: hex("#6f8faf", k), blueT: hex("#4c6c8c", k), line: hex("#d3ccbf", k) };
+  const { L, R, TOP, BOT, TEXT_W, PIC_X, PIC_W, PIC_H, HEAD, FOOT } = GRID;
 
   const doc = await PDFDocument.create();
   doc.registerFontkit(fontkit);
@@ -63,10 +98,16 @@ export async function buildPortfolio({ site, projects, onProgress = () => {} }) 
     display: await font("archivo-black-400-latin"), body: await font("barlow-semi-condensed-400-latin"),
     mid: await font("barlow-semi-condensed-600-latin"), bold: await font("barlow-semi-condensed-700-latin"),
   };
+  const cap = (f, size) => (f === F.display ? CAP.display : CAP.body) * size;
   const chars = new Map(Object.values(F).map((f) => [f, new Set(f.getCharacterSet())]));
   // straight quotes, no dashes (the site's writing rules), and nothing the font can't draw
   const clean = (s, f) => String(s ?? "").replace(/[‘’ʼ]/g, "'").replace(/[“”]/g, '"').replace(/\s*[–—]\s*/g, ", ")
     .replace(/\s+/g, " ").trim().split("").filter((c) => chars.get(f).has(c.codePointAt(0))).join("");
+  // the blank space a font leaves before a word's first letter: big titles are moved left by it, so the letter itself
+  // (not its box) sits on the margin
+  const bearing = (s, f, size) => {
+    try { const g = f.embedder.font.glyphForCodePoint(s.codePointAt(0)); return ((g.bbox?.minX || 0) / f.embedder.font.unitsPerEm) * size; } catch { return 0; }
+  };
 
   /* ---------- the plan: which pages, in which order ---------- */
   const all = (site.workCategories || []).filter((c) => c.key && c.key !== "all");
@@ -91,21 +132,22 @@ export async function buildPortfolio({ site, projects, onProgress = () => {} }) 
   /* ---------- pictures: fetched at a sensible size, then re-encoded inside the budget ---------- */
   const poster = (src) => (/\.mp4$/i.test(src) ? src.replace(/\.mp4$/i, "-poster.webp") : src);
   const sized = (src, w) => (/^\/images\/[^?#]+\.(webp|jpe?g|png)$/i.test(src) ? `/img/${w}${src}` : src);
+  const PIC = { x: PIC_X, top: TOP, w: PIC_W, h: PIC_H }; // the picture frame of a project page
+  const MARGINS = { x: L, top: TOP, w: R - L, h: PIC_H }; // a gallery that can't fill the page sits here
   // every picture (or gallery) with the area it fills, so the budget can be shared by area
   const jobs = [];
-  const MAIN = { x: 588, top: 168, w: 620, h: 476 };
   const portrait = { src: site.about?.pdfPortrait || site.about?.portrait || "/images/portrait-v2.webp", w: 446, h: 446, png: true, fetchW: 1080 };
   jobs.push(portrait);
   for (const s of sections) {
     s.items = s.projects.map((p) => {
-      const main = { src: p.coverClean || p.cover || `/images/covers/${p.slug}.webp`, w: MAIN.w, h: MAIN.h, fetchW: 1440 };
+      const main = { src: p.coverClean || p.cover || `/images/covers/${p.slug}.webp`, w: PIC.w, h: PIC.h, frame: true, fetchW: 1440 };
       jobs.push(main);
       const pics = (p.pdfImages || []).map(poster).filter((s) => s && !/\.(gif|svg)$/i.test(s)).slice(0, 6);
-      const gallery = pics.length ? { gallery: pics, w: W, h: H } : null;
+      const gallery = pics.length ? { gallery: pics, w: W, h: H, box: { x: 0, top: 0, w: W, h: H }, gap: 6, limit: 1.16, fallback: MARGINS } : null;
       if (gallery) jobs.push(gallery);
       return { p, main, gallery };
     });
-    if (s.drawings) { s.drawJob = { gallery: drawings.images.slice(0, 5), w: 700, h: 476, framed: true, fetchW: 720 }; jobs.push(s.drawJob); }
+    if (s.drawings) { s.drawJob = { gallery: drawings.images.slice(0, 5), w: PIC.w, h: PIC.h, box: PIC, gap: 12, limit: 1.2, fallback: PIC, fetchW: 720 }; jobs.push(s.drawJob); }
   }
 
   let spent = 0, left = jobs.reduce((a, j) => a + j.w * j.h, 0), done = 0;
@@ -135,42 +177,26 @@ export async function buildPortfolio({ site, projects, onProgress = () => {} }) 
     spent += bytes.length;
     return png ? doc.embedPng(bytes) : doc.embedJpg(bytes);
   }
+  // the part of a picture that covers a w x h box, trimmed evenly on the long side
+  const coverCrop = (bmp, w, h) => { const sc = Math.max(w / bmp.width, h / bmp.height), sw = w / sc, sh = h / sc; return { sx: (bmp.width - sw) / 2, sy: (bmp.height - sh) / 2, sw, sh }; };
   const takeShare = (j) => { const s = (IMG_BUDGET - spent) * ((j.w * j.h) / left); left -= j.w * j.h; return s; };
 
-  // a gallery: tiles placed by mosaic(), each picture trimmed evenly only on the side the tile can't hold
   async function runGallery(j, share) {
     const bmps = (await Promise.all(j.gallery.map((s) => bitmap(s, j.fetchW || 1440)))).filter(Boolean);
     if (!bmps.length) return;
-    const aspects = bmps.map((b) => b.width / b.height);
-    let gap = j.framed ? 12 : 6, bw = j.w, bh = j.h, lay = mosaic(aspects, bw, bh, gap);
-    // full page: the tiles fill it exactly (a little trimming at most); drawings, or shapes that would need
-    // real trimming: nothing trimmed, the group centred on paper with even margins
-    const fill = !j.framed && lay.trim <= 1.16;
-    j.ox = j.oy = 0;
-    if (!fill && !j.framed) { j.ox = 64; j.oy = 84; bw = W - 128; bh = H - 168; gap = 12; lay = mosaic(aspects, bw, bh, gap); }
-    const s = fill ? lay.room / lay.along : Math.min(1, lay.room / lay.along);
-    const crossBox = lay.cols ? bh : bw;
-    const tiles = [];
-    let pos = fill ? 0 : (lay.room - lay.along * s) / 2, b = 0;
-    for (const gr of lay.groups) {
-      const thick = gr.size * s, k = fill ? 1 : s;
-      const across = crossBox - gap * (gr.a.length - 1);
-      const total = gr.a.reduce((t, x) => t + (lay.cols ? 1 / x : x), 0);
-      let at = (crossBox - (across * k + gap * (gr.a.length - 1))) / 2;
-      for (const a of gr.a) {
-        const len = across * ((lay.cols ? 1 / a : a) / total) * k;
-        tiles.push(lay.cols ? { x: pos, top: at, w: thick, h: len, bmp: bmps[b++] } : { x: at, top: pos, w: len, h: thick, bmp: bmps[b++] });
-        at += len + gap;
-      }
-      pos += thick + gap;
-    }
+    const order = bmps.map((_, i) => i);
+    const aspects = order.map((i) => bmps[i].width / bmps[i].height);
+    let lay = mosaic(aspects, j.box.w, j.box.h, j.gap), box = j.box, gap = j.gap;
+    j.fill = lay.trim <= j.limit;
+    if (!j.fill) { box = j.fallback; gap = 12; lay = mosaic(aspects, box.w, box.h, gap); }
+    const tiles = tilesFor(lay, box, gap, j.fill);
     const area = tiles.reduce((t, x) => t + x.w * x.h, 0);
     for (const t of tiles) {
-      const iw = t.bmp.width, ih = t.bmp.height, sc = Math.max(t.w / iw, t.h / ih), sw = t.w / sc, sh = t.h / sc;
-      t.img = await encode(t.bmp, { sx: (iw - sw) / 2, sy: (ih - sh) / 2, sw, sh, dw: t.w, dh: t.h, share: (share * t.w * t.h) / area });
-      t.bmp.close?.(); delete t.bmp;
+      const bmp = bmps[order[t.i]];
+      t.img = await encode(bmp, { ...coverCrop(bmp, t.w, t.h), dw: t.w, dh: t.h, share: (share * t.w * t.h) / area });
+      bmp.close?.();
     }
-    j.tiles = tiles; j.fill = fill;
+    j.tiles = tiles;
   }
   async function run(j) {
     const share = takeShare(j);
@@ -178,10 +204,17 @@ export async function buildPortfolio({ site, projects, onProgress = () => {} }) 
     else {
       const bmp = await bitmap(j.src, j.fetchW);
       if (bmp) {
-        // the whole picture inside its box (never trimmed)
-        const s = Math.min(j.w / bmp.width, j.h / bmp.height);
-        j.dw = bmp.width * s; j.dh = bmp.height * s;
-        j.img = await encode(bmp, { dw: j.dw, dh: j.dh, share, png: j.png, px: j.png ? 1.4 : PX });
+        const a = bmp.width / bmp.height, fa = j.w / j.h;
+        if (j.frame && Math.abs(a - fa) / fa <= 0.06) {
+          // the cover is (almost exactly) the frame's shape: it fills the frame, so its edges are the grid lines
+          j.fit = "fill"; j.dw = j.w; j.dh = j.h;
+          j.img = await encode(bmp, { ...coverCrop(bmp, j.w, j.h), dw: j.w, dh: j.h, share });
+        } else {
+          // any other shape: whole, centred on a panel that fills the frame (the panel keeps the grid)
+          const s = Math.min(j.w / bmp.width, j.h / bmp.height);
+          j.fit = "contain"; j.dw = bmp.width * s; j.dh = bmp.height * s;
+          j.img = await encode(bmp, { dw: j.dw, dh: j.dh, share, png: j.png, px: j.png ? 1.4 : PX });
+        }
         bmp.close?.();
       }
     }
@@ -191,7 +224,7 @@ export async function buildPortfolio({ site, projects, onProgress = () => {} }) 
   const queue = jobs.slice();
   await Promise.all(Array.from({ length: 3 }, async () => { while (queue.length) await run(queue.shift()); }));
 
-  /* ---------- drawing helpers (y measured from the top of the page) ---------- */
+  /* ---------- drawing helpers: y is measured from the top of the page, text is placed by its baseline ---------- */
   // paper grain: one small tile drawn across every page (stored once in the file)
   const grain = await (async () => {
     const c = document.createElement("canvas"); c.width = c.height = 256;
@@ -210,12 +243,16 @@ export async function buildPortfolio({ site, projects, onProgress = () => {} }) 
     pages.push(pg);
     return pg;
   }
-  const T = (pg, s, { x, top, size, f = F.body, color = C.ink }) => {
-    s = clean(s, f);
-    pg.drawText(s, { x, y: H - top - size * 0.8, size, font: f, color });
-    return f.widthOfTextAtSize(s, size);
-  };
   const width = (s, f, size) => f.widthOfTextAtSize(clean(s, f), size);
+  // one line of text on a baseline; align left (x is where the first letter starts), right (x is where the last ends) or centre
+  function text(pg, s, { x, base, size, f = F.body, color = C.ink, align = "left", optical = false }) {
+    s = clean(s, f);
+    const w = f.widthOfTextAtSize(s, size);
+    let at = align === "right" ? x - w : align === "center" ? x - w / 2 : x;
+    if (optical && align === "left") at -= bearing(s, f, size);
+    pg.drawText(s, { x: at, y: H - base, size, font: f, color });
+    return w;
+  }
   function wrap(s, f, size, maxW) {
     const out = []; let line = "";
     for (const w of clean(s, f).split(" ")) {
@@ -225,12 +262,13 @@ export async function buildPortfolio({ site, projects, onProgress = () => {} }) 
     if (line) out.push(line);
     return out;
   }
-  // a block of text; returns where it ends. maxLines cuts long text with an ellipsis
-  function para(pg, s, { x, top, size, f = F.body, color = C.ink, maxW, lh = 1.5, maxLines = 99 }) {
+  // a block of lines from a first baseline; returns the last baseline. maxLines cuts long text with an ellipsis
+  function para(pg, s, { x, base, size, f = F.body, color = C.ink, maxW, lead = size * 1.55, maxLines = 99, optical = false }) {
     let lines = wrap(s, f, size, maxW);
+    if (!lines.length) return base - lead;
     if (lines.length > maxLines) { lines = lines.slice(0, maxLines); lines[maxLines - 1] = lines[maxLines - 1].replace(/[\s,.;:]*\S*$/, "") + "..."; }
-    lines.forEach((l, i) => pg.drawText(l, { x, y: H - top - size * 0.8 - i * size * lh, size, font: f, color }));
-    return top + lines.length * size * lh;
+    lines.forEach((l, i) => text(pg, l, { x, base: base + i * lead, size, f, color, optical }));
+    return base + (lines.length - 1) * lead;
   }
   const roundPath = (x, top, w, h, r) => {
     const c = 0.5523 * r, b = H - top - h;
@@ -239,7 +277,7 @@ export async function buildPortfolio({ site, projects, onProgress = () => {} }) 
       appendBezierCurve(x + r - c, b + h, x, b + h - r + c, x, b + h - r), lineTo(x, b + r), appendBezierCurve(x, b + r - c, x + r - c, b, x + r, b), closePath()];
   };
   function picture(pg, img, x, top, w, h, r = 0) {
-    if (!img) { pg.drawRectangle({ x, y: H - top - h, width: w, height: h, color: C.ghost }); return; }
+    if (!img) { pg.drawRectangle({ x, y: H - top - h, width: w, height: h, color: C.panel }); return; }
     if (r) pg.pushOperators(pushGraphicsState(), ...roundPath(x, top, w, h, r), clip(), endPath());
     pg.drawImage(img, { x, y: H - top - h, width: w, height: h });
     if (r) pg.pushOperators(popGraphicsState());
@@ -248,76 +286,90 @@ export async function buildPortfolio({ site, projects, onProgress = () => {} }) 
   const pill = (pg, x, top, w, h, r, o) => pg.drawSvgPath(`M${r},0H${w - r}Q${w},0 ${w},${r}V${h - r}Q${w},${h} ${w - r},${h}H${r}Q0,${h} 0,${h - r}V${r}Q0,0 ${r},0Z`, { x, y: H - top, ...o });
   const links = []; // made at the end, once every page number is known
   const link = (pg, x, top, w, h, to) => links.push({ pg, rect: [x, H - top - h, x + w, H - top], to });
-  function button(pg, s, x, top, href, { dark = true } = {}) {
-    const size = 12.5, pad = 24, w = width(s.toUpperCase(), F.bold, size) + pad * 2 + 16, h = 46;
-    pill(pg, x, top, w, h, 10, dark ? { color: C.ink } : { borderColor: C.ink, borderWidth: 1.2 });
-    pg.drawCircle({ x: x + pad + 3, y: H - top - h / 2, size: 3.5, color: C.blue });
-    T(pg, s.toUpperCase(), { x: x + pad + 16, top: top + (h - size) / 2 + 1, size, f: F.bold, color: dark ? C.cream : C.ink });
-    link(pg, x, top, w, h, href);
+  // a button whose bottom edge sits on `bottom`; its label is centred on its cap height
+  const BTN_H = 46;
+  function button(pg, s, x, bottom, href, { dark = true } = {}) {
+    const size = 12.5, pad = 22, label = s.toUpperCase(), w = width(label, F.bold, size) + pad * 2 + 16, top = bottom - BTN_H;
+    pill(pg, x, top, w, BTN_H, 10, dark ? { color: C.ink } : { borderColor: C.ink, borderWidth: 1.2 });
+    pg.drawCircle({ x: x + pad + 3.5, y: H - top - BTN_H / 2, size: 3.5, color: C.blue });
+    text(pg, label, { x: x + pad + 16, base: top + BTN_H / 2 + cap(F.bold, size) / 2, size, f: F.bold, color: dark ? C.cream : C.ink });
+    link(pg, x, top, w, BTN_H, href);
     return w;
   }
-  // the ghost letters behind a page, like the hand-made portfolio (two letters, stacked, cut by the page edge)
-  function ghost(pg, word, { x = W - 500, top = -70, size = 300 } = {}) {
+  // the ghost letters behind a page, like the hand-made portfolio: two letters, stacked, running off the right edge.
+  // Only behind pictures or open paper, never behind running text (so not on About or the index)
+  function ghost(pg, word, { from = 0 } = {}) {
     const letters = clean(word.toUpperCase(), F.display).replace(/[^A-Z0-9&]/g, "").slice(0, 2) || "A";
-    for (let i = 0; i < 3; i++) T(pg, letters, { x, top: top + i * size * 0.8, size, f: F.display, color: C.ghost });
+    const size = 300, w = width(letters, F.display, size);
+    for (let i = 0; i < 3; i++) text(pg, letters, { x: W + 40 - w, base: from + cap(F.display, size) + 10 + i * size * 0.8, size, f: F.display, color: C.ghost });
   }
+  // the marquee band at the top of a category page and of the last page
   function band(pg, word) {
     pg.drawRectangle({ x: 0, y: H - 46, width: W, height: 46, color: C.ink2 });
     const s = clean(word.toUpperCase(), F.display).replace(/\s+/g, ""), size = 24, step = width(s, F.display, size) + 22;
-    for (let x = -step * 0.4, i = 0; x < W; x += step, i++) T(pg, s, { x, top: 11, size, f: F.display, color: i % 3 === 1 ? C.blue : C.cream });
+    for (let x = -step * 0.4, i = 0; x < W; x += step, i++) text(pg, s, { x, base: 23 + cap(F.display, size) / 2, size, f: F.display, color: i % 3 === 1 ? C.blue : C.cream });
   }
-  // page number bottom left (with a way back to the index), the site bottom right
+  // page number bottom left (with a way back to the index), the site bottom right, both on the FOOT baseline
   function foot(pg, n, { onPicture = false } = {}) {
-    if (onPicture) pill(pg, 26, H - 70, 150, 42, 10, { color: C.cream });
-    const w = T(pg, "Pg.", { x: 40, top: H - 56, size: 20, f: F.bold });
-    T(pg, String(n).padStart(2, "0"), { x: 40 + w + 1, top: H - 56, size: 20, f: F.body, color: C.blueT });
-    if (n > 3) { const iw = T(pg, "INDEX", { x: 112, top: H - 51, size: 11, f: F.bold, color: C.blueT }); link(pg, 104, H - 59, iw + 16, 26, "index"); }
+    if (onPicture) pill(pg, L - 14, FOOT - 30, 156, 44, 10, { color: C.cream });
+    const w = text(pg, "Pg.", { x: L, base: FOOT, size: 20, f: F.bold });
+    text(pg, String(n).padStart(2, "0"), { x: L + w + 1, base: FOOT, size: 20, f: F.body, color: C.blueT });
+    if (n > 3) { const iw = text(pg, "INDEX", { x: L + 52, base: FOOT, size: 11, f: F.bold, color: C.blueT }); link(pg, L + 44, FOOT - 18, iw + 16, 26, "index"); }
     if (onPicture) return;
-    const sw = width("anassaleh.me", F.mid, 13);
-    T(pg, "anassaleh.me", { x: W - 40 - sw, top: H - 53, size: 13, f: F.mid, color: C.soft });
-    link(pg, W - 48 - sw, H - 61, sw + 16, 28, SITE);
+    const sw = text(pg, "anassaleh.me", { x: R, base: FOOT, size: 13, f: F.mid, color: C.soft, align: "right" });
+    link(pg, R - sw - 8, FOOT - 18, sw + 16, 26, SITE);
   }
-  function corner(pg, a, b, { onPicture = false } = {}) { // "3D design/animation" at the top right
-    const wb = width(b ? `/${b}` : "", F.body, 14), wa = width(a, F.bold, 14);
-    if (onPicture) pill(pg, W - 54 - wa - wb, 20, wa + wb + 28, 36, 10, { color: C.cream });
-    T(pg, a, { x: W - 40 - wa - wb, top: 31, size: 14, f: F.bold });
-    if (b) T(pg, `/${b}`, { x: W - 40 - wb, top: 31, size: 14, f: F.body, color: C.soft });
+  // "Branding & graphic design/Brand identity" on the HEAD baseline, ending on the right margin
+  function corner(pg, a, b, { onPicture = false } = {}) {
+    const wb = b ? width(`/${b}`, F.body, 14) : 0, wa = width(a, F.bold, 14);
+    if (onPicture) pill(pg, R - wa - wb - 14, HEAD - 23, wa + wb + 28, 34, 10, { color: C.cream });
+    text(pg, a, { x: R - wb, base: HEAD, size: 14, f: F.bold, align: "right" });
+    if (b) text(pg, `/${b}`, { x: R, base: HEAD, size: 14, f: F.body, color: C.soft, align: "right" });
   }
+  // small blue label above a page title; its cap line is TOP
+  const eyebrow = (pg, s) => text(pg, s.toUpperCase(), { x: L, base: TOP + cap(F.bold, 14), size: 14, f: F.bold, color: C.blueT });
   const at = new Map(); // what -> page number
 
   /* ---------- 1. cover, laid out like the hand-made one ---------- */
   const name = site.fullName || "Anas Al Shikh Saleh";
   {
     const pg = newPage();
-    T(pg, "PORTFOLIO", { x: M, top: 284, size: 100, f: F.display });
-    T(pg, name, { x: M + 2, top: 392, size: 40, f: F.body });
-    T(pg, "Visual artist and art director", { x: M + 3, top: 446, size: 21, f: F.mid, color: C.blueT });
-    T(pg, `Selected work ${new Date().getFullYear()}`, { x: M + 2, top: 622, size: 20, f: F.bold });
-    const sw = T(pg, "anassaleh.me", { x: M + 2, top: 650, size: 16, f: F.mid, color: C.blueT });
-    link(pg, M - 4, 644, sw + 12, 26, SITE);
-    // the portrait as it is (its round frame is part of the picture, so the head can break out of it)
-    const j = portrait, cx = 1000, cy = 360;
-    if (j.img) picture(pg, j.img, cx - j.dw / 2, cy - j.dh / 2, j.dw, j.dh);
+    // the block sits on the page's middle line: PORTFOLIO's baseline a little above it, the name and role below
+    text(pg, "PORTFOLIO", { x: L, base: 352, size: 100, f: F.display, optical: true });
+    text(pg, name, { x: L, base: 410, size: 40, f: F.body, optical: true });
+    text(pg, "Visual artist and art director", { x: L, base: 450, size: 21, f: F.mid, color: C.blueT, optical: true });
+    text(pg, `Selected work ${new Date().getFullYear()}`, { x: L, base: FOOT - 30, size: 20, f: F.bold });
+    const sw = text(pg, "anassaleh.me", { x: L, base: FOOT, size: 16, f: F.mid, color: C.blueT });
+    link(pg, L - 6, FOOT - 18, sw + 12, 26, SITE);
+    // the portrait as it is (its round frame is part of the picture, so the head can break out of it). The ring's
+    // right edge sits on the right margin and its centre on the page's middle line
+    const j = portrait;
+    if (j.img) { const ringRight = 0.967, ringMid = 0.5; picture(pg, j.img, R - j.dw * ringRight, H / 2 - j.dh * ringMid, j.dw, j.dh); }
   }
 
   /* ---------- 2. about ---------- */
+  const titleBase = TOP + 30 + cap(F.display, 56); // page titles under an eyebrow
+  const bodyTop = 236; // first cap line of the content under a page title
   {
     const pg = newPage();
-    ghost(pg, "ABOUT");
-    T(pg, "ABOUT", { x: M, top: 80, size: 14, f: F.bold, color: C.blueT });
-    T(pg, "HELLO, I'M ANAS", { x: M, top: 108, size: 56, f: F.display });
-    let top = 206;
-    for (const b of (site.about?.bio || []).slice(0, 4)) top = para(pg, b, { x: M, top, size: 17, maxW: 600 }) + 16;
-    const x2 = 790;
-    T(pg, "ALONG THE WAY", { x: x2, top: 206, size: 14, f: F.bold, color: C.blueT });
-    let t2 = 238;
+    eyebrow(pg, "About");
+    text(pg, "HELLO, I'M ANAS", { x: L, base: titleBase, size: 56, f: F.display, optical: true });
+    let base = bodyTop + cap(F.body, 17);
+    for (const b of (site.about?.bio || []).slice(0, 4)) base = para(pg, b, { x: L, base, size: 17, maxW: 560, lead: 26 }) + 26 + 14;
+    // right column: starts on the picture column line, its first cap line level with the story's
+    const x2 = PIC_X + 120;
+    text(pg, "ALONG THE WAY", { x: x2, base: bodyTop + cap(F.bold, 14), size: 14, f: F.bold, color: C.blueT });
+    let b2 = bodyTop + 44;
     for (const e of (site.about?.experience || []).slice(0, 4)) {
-      T(pg, e.company, { x: x2, top: t2, size: 18, f: F.bold });
-      T(pg, `${e.role}, ${e.period}`, { x: x2, top: t2 + 24, size: 15, color: C.soft });
-      t2 += 62;
+      text(pg, e.company, { x: x2, base: b2, size: 18, f: F.bold });
+      text(pg, `${e.role}, ${e.period}`, { x: x2, base: b2 + 24, size: 15, color: C.soft });
+      b2 += 64;
     }
     const tools = (site.about?.tools || []).join(", ");
-    if (tools) { T(pg, "TOOLS", { x: x2, top: t2 + 12, size: 14, f: F.bold, color: C.blueT }); para(pg, tools, { x: x2, top: t2 + 42, size: 15, maxW: 400, color: C.soft }); }
+    if (tools) {
+      text(pg, "TOOLS", { x: x2, base: b2 + 16, size: 14, f: F.bold, color: C.blueT });
+      para(pg, tools, { x: x2, base: b2 + 48, size: 15, maxW: R - x2, color: C.soft, lead: 23 });
+    }
     foot(pg, 2);
   }
 
@@ -329,67 +381,79 @@ export async function buildPortfolio({ site, projects, onProgress = () => {} }) 
     {
       const pg = newPage();
       at.set(`s:${s.key}`, pages.length);
-      ghost(pg, s.name, { top: 46 }); // starts under the band
+      ghost(pg, s.name, { from: 46 }); // starts under the band
       band(pg, s.name);
-      // the title in up to three lines, the last word in blue (like the site's titles)
-      const lines = []; let line = "";
-      for (const w of s.name.toUpperCase().split(" ")) { const t = line ? `${line} ${w}` : w; if (width(t, F.display, 96) > 660 && line) { lines.push(line); line = w; } else line = t; }
+      // the title in up to three lines, the last word in blue (like the site's titles), centred on the page's middle
+      const size = 96, lead = 94, lines = []; let line = "";
+      for (const w of s.name.toUpperCase().split(" ")) { const t = line ? `${line} ${w}` : w; if (width(t, F.display, size) > 660 && line) { lines.push(line); line = w; } else line = t; }
       lines.push(line);
-      let top = 380 - (lines.length * 96 * 0.98) / 2;
-      lines.forEach((l, i) => { T(pg, l, { x: M, top, size: 96, f: F.display, color: i === lines.length - 1 && lines.length > 1 ? C.blueT : C.ink }); top += 96 * 0.98; });
-      if (s.line) para(pg, s.line, { x: M + 4, top: top + 26, size: 21, maxW: 560, color: C.soft });
+      const block = (lines.length - 1) * lead + cap(F.display, size);
+      let base = H / 2 - block / 2 + cap(F.display, size) - 20;
+      lines.forEach((l, i) => { text(pg, l, { x: L, base, size, f: F.display, optical: true, color: i === lines.length - 1 && lines.length > 1 ? C.blueT : C.ink }); base += lead; });
+      if (s.line) para(pg, s.line, { x: L, base: base - lead + 52, size: 21, maxW: 560, color: C.soft, optical: true });
       foot(pg, pages.length);
     }
-    for (const { p, main, gallery } of s.items) {
-      // project page: title and text left, the cover whole on the right
-      const pg = newPage(), n = pages.length;
-      at.set(`p:${p.slug}`, n);
-      ghost(pg, s.name);
-      corner(pg, s.name, p.subtitle || "");
-      const href = `${SITE}/work/${p.slug}`, lw = 430;
-      let top = 82;
-      for (const l of wrap(p.title.toUpperCase(), F.display, 36, lw).slice(0, 3)) { T(pg, l, { x: M, top, size: 36, f: F.display }); top += 39; }
-      if (p.subtitle) { top += 2; T(pg, p.subtitle.toUpperCase(), { x: M, top, size: 22, f: F.mid, color: C.blueT }); top += 30; }
-      top += 24;
-      const btnTop = MAIN.top + MAIN.h - 46; // its bottom lines up with the bottom of the picture
-      const factsTop = btnTop - 44;
-      const roleLines = p.role ? Math.min(2, wrap(p.role, F.mid, 14, lw).length) : 0;
-      const roleTop = factsTop - 10 - roleLines * 19.6;
-      top = para(pg, p.description || "", { x: M, top, size: 16, maxW: lw, maxLines: Math.max(3, Math.floor((roleTop - 20 - top) / 24)) });
-      if (p.role) para(pg, p.role, { x: M, top: roleTop, size: 14, f: F.mid, color: C.soft, maxW: lw, lh: 1.4, maxLines: 2 });
-      const facts = [p.client, p.year].filter(Boolean).join("  ·  ");
-      if (facts) T(pg, facts, { x: M, top: factsTop, size: 14, f: F.bold });
-      const bw = button(pg, "View the full project", M, btnTop, href);
-      const film = vimeo(p.video) ? `https://vimeo.com/${vimeo(p.video)}` : youtube(p.video) ? `https://youtu.be/${youtube(p.video)}` : "";
-      if (film) button(pg, "Watch the film", M + bw + 12, btnTop, film, { dark: false });
-      const dw = main.img ? main.dw : MAIN.w, dh = main.img ? main.dh : MAIN.h;
-      const px = MAIN.x + (MAIN.w - dw) / 2, py = MAIN.top + (MAIN.h - dh) / 2;
-      picture(pg, main.img, px, py, dw, dh, 22);
-      link(pg, px, py, dw, dh, href);
-      foot(pg, n);
-      // the gallery page Anas picked in the CMS: the pictures fill the page edge to edge
-      if (gallery?.tiles) {
-        const gp = newPage({ paper: !gallery.fill });
-        if (gallery.fill) gp.drawRectangle({ x: 0, y: 0, width: W, height: H, color: C.cream });
-        for (const t of gallery.tiles) { picture(gp, t.img, gallery.ox + t.x, gallery.oy + t.top, t.w, t.h, gallery.fill ? 0 : 14); link(gp, gallery.ox + t.x, gallery.oy + t.top, t.w, t.h, href); }
-        corner(gp, s.name, p.title, { onPicture: gallery.fill });
-        foot(gp, pages.length, { onPicture: gallery.fill });
-      }
+    for (const { p, main, gallery } of s.items) projectPage(s, p, main, gallery);
+    if (s.drawings) drawingsPage(s);
+  }
+
+  // project page: title and text in the text column, the cover in the picture frame. The title's cap line is the
+  // frame's top edge; the button's bottom is the frame's bottom edge; the facts sit just above the button
+  function projectPage(s, p, main, gallery) {
+    const pg = newPage(), n = pages.length;
+    at.set(`p:${p.slug}`, n);
+    ghost(pg, s.name);
+    corner(pg, s.name, p.subtitle || "");
+    const href = `${SITE}/work/${p.slug}`;
+    let base = TOP + cap(F.display, 36);
+    const title = wrap(p.title.toUpperCase(), F.display, 36, TEXT_W).slice(0, 3);
+    title.forEach((l, i) => text(pg, l, { x: L, base: base + i * 40, size: 36, f: F.display, optical: true }));
+    base += (title.length - 1) * 40;
+    if (p.subtitle) { base += 32; text(pg, p.subtitle.toUpperCase(), { x: L, base, size: 20, f: F.mid, color: C.blueT }); }
+    // from the bottom up: button, then client and year, then the role
+    const factsBase = BOT - BTN_H - 24;
+    const role = p.role ? wrap(p.role, F.mid, 14, TEXT_W).slice(0, 2) : [];
+    const roleBase = factsBase - 24 - (role.length - 1) * 20;
+    const textEnd = (role.length ? roleBase - cap(F.mid, 14) : factsBase - cap(F.bold, 14)) - 30; // lowest the story may reach
+    const first = base + 44, maxLines = Math.max(2, Math.floor((textEnd - first) / 25) + 1);
+    para(pg, p.description || "", { x: L, base: first, size: 16, maxW: TEXT_W, lead: 25, maxLines });
+    role.forEach((l, i) => text(pg, l, { x: L, base: roleBase + i * 20, size: 14, f: F.mid, color: C.soft }));
+    const facts = [p.client, p.year].filter(Boolean).join("  ·  ");
+    if (facts) text(pg, facts, { x: L, base: factsBase, size: 14, f: F.bold });
+    const bw = button(pg, "View the full project", L, BOT, href);
+    const film = vimeo(p.video) ? `https://vimeo.com/${vimeo(p.video)}` : youtube(p.video) ? `https://youtu.be/${youtube(p.video)}` : "";
+    if (film) button(pg, "Watch the film", L + bw + 12, BOT, film, { dark: false });
+    // the frame: the cover fills it, or sits whole on a panel that fills it
+    if (main.fit === "fill" || !main.img) picture(pg, main.img, PIC.x, PIC.top, PIC.w, PIC.h, 20);
+    else {
+      pill(pg, PIC.x, PIC.top, PIC.w, PIC.h, 20, { color: C.panel });
+      picture(pg, main.img, PIC.x + (PIC.w - main.dw) / 2, PIC.top + (PIC.h - main.dh) / 2, main.dw, main.dh, 12);
     }
-    if (s.drawings) {
-      const pg = newPage(), j = s.drawJob;
-      at.set("drawings", pages.length);
-      ghost(pg, "DRAW");
-      corner(pg, s.name, "pencil and charcoal");
-      T(pg, (drawings.title || "I also draw").toUpperCase(), { x: M, top: 82, size: 36, f: F.display });
-      para(pg, drawings.text || "", { x: M, top: 150, size: 16, maxW: 400, maxLines: 7 });
-      const href = `${SITE}/#drawings`;
-      button(pg, "See them on the site", M, MAIN.top + MAIN.h - 46, href);
-      const gx = 520, gt = MAIN.top;
-      for (const t of j.tiles || []) picture(pg, t.img, gx + t.x, gt + t.top, t.w, t.h, 14);
-      link(pg, gx, gt, j.w, j.h, href);
-      foot(pg, pages.length);
+    link(pg, PIC.x, PIC.top, PIC.w, PIC.h, href);
+    foot(pg, n);
+    // the gallery page Anas picked in the CMS: edge to edge, or on the page margins when the shapes can't fill it
+    if (gallery?.tiles) {
+      const gp = newPage({ paper: !gallery.fill });
+      if (gallery.fill) gp.drawRectangle({ x: 0, y: 0, width: W, height: H, color: C.cream });
+      for (const t of gallery.tiles) { picture(gp, t.img, t.x, t.top, t.w, t.h, gallery.fill ? 0 : 14); link(gp, t.x, t.top, t.w, t.h, href); }
+      corner(gp, s.name, p.title, { onPicture: gallery.fill });
+      foot(gp, pages.length, { onPicture: gallery.fill });
     }
+  }
+  // the drawings: same grid as a project page, the drawings filling the picture frame
+  function drawingsPage(s) {
+    const pg = newPage(), j = s.drawJob;
+    at.set("drawings", pages.length);
+    ghost(pg, "DRAW");
+    corner(pg, s.name, "pencil and charcoal");
+    const base = TOP + cap(F.display, 36);
+    text(pg, (drawings.title || "I also draw").toUpperCase(), { x: L, base, size: 36, f: F.display, optical: true });
+    para(pg, drawings.text || "", { x: L, base: base + 44, size: 16, maxW: TEXT_W, lead: 25, maxLines: 8 });
+    const href = `${SITE}/#drawings`;
+    button(pg, "See them on the site", L, BOT, href);
+    for (const t of j.tiles || []) picture(pg, t.img, t.x, t.top, t.w, t.h, 14);
+    link(pg, PIC.x, PIC.top, PIC.w, PIC.h, href);
+    foot(pg, pages.length);
   }
 
   /* ---------- 5. thank you ---------- */
@@ -397,18 +461,17 @@ export async function buildPortfolio({ site, projects, onProgress = () => {} }) 
     const pg = newPage();
     band(pg, name);
     const c = site.contact || {};
-    T(pg, "THANK YOU", { x: (W - width("THANK YOU", F.display, 110)) / 2, top: 246, size: 110, f: F.display });
-    const sub = "Let's make something together.";
-    T(pg, sub, { x: (W - width(sub, F.mid, 24)) / 2, top: 384, size: 24, f: F.mid, color: C.blueT });
+    text(pg, "THANK YOU", { x: W / 2, base: 320, size: 110, f: F.display, align: "center" });
+    text(pg, "Let's make something together.", { x: W / 2, base: 386, size: 24, f: F.mid, color: C.blueT, align: "center" });
     // the email Anas set for the PDF (the one on his CV), or the site's
     const email = (c.pdfEmail || c.email || "").trim();
     const items = [[email, email && `mailto:${email}`], ["anassaleh.me", SITE], ["Instagram", c.instagram], ["Behance", c.behance], ["LinkedIn", c.linkedin], ["WhatsApp", c.whatsapp]].filter(([a, b]) => a && b);
-    const size = 15, pad = 20, gap = 10, ws = items.map(([a]) => width(a, F.bold, size) + pad * 2), total = ws.reduce((a, b) => a + b, 0) + gap * (items.length - 1);
+    const size = 15, pad = 20, gap = 10, ph = 44, top = 440, ws = items.map(([a]) => width(a, F.bold, size) + pad * 2), total = ws.reduce((a, b) => a + b, 0) + gap * (items.length - 1);
     let x = (W - total) / 2;
     items.forEach(([a, href], i) => {
-      pill(pg, x, 466, ws[i], 44, 10, i ? { borderColor: C.ink, borderWidth: 1.1 } : { color: C.ink });
-      T(pg, a, { x: x + pad, top: 466 + 14, size, f: F.bold, color: i ? C.ink : C.cream });
-      link(pg, x, 466, ws[i], 44, href);
+      pill(pg, x, top, ws[i], ph, 10, i ? { borderColor: C.ink, borderWidth: 1.1 } : { color: C.ink });
+      text(pg, a, { x: x + ws[i] / 2, base: top + ph / 2 + cap(F.bold, size) / 2, size, f: F.bold, color: i ? C.ink : C.cream, align: "center" });
+      link(pg, x, top, ws[i], ph, href);
       x += ws[i] + gap;
     });
     foot(pg, pages.length);
@@ -417,30 +480,30 @@ export async function buildPortfolio({ site, projects, onProgress = () => {} }) 
   /* ---------- the index, now that every page has its number ---------- */
   {
     const pg = indexPage;
-    ghost(pg, "INDEX");
-    T(pg, "CONTENTS", { x: M, top: 80, size: 14, f: F.bold, color: C.blueT });
-    T(pg, "INDEX", { x: M, top: 108, size: 56, f: F.display });
-    // the list flows down three columns; a category never starts at the very bottom of one
-    const cols = [M, M + 390, M + 780], cw = 340, top0 = 206, bottom = 640;
-    let col = 0, top = top0;
+    eyebrow(pg, "Contents");
+    text(pg, "INDEX", { x: L, base: titleBase, size: 56, f: F.display, optical: true });
+    // three columns across the margins; the list flows down them, and a category never starts at the foot of one
+    const gutter = 48, cw = (R - L - gutter * 2) / 3, cols = [0, 1, 2].map((i) => L + i * (cw + gutter));
+    const first = bodyTop + cap(F.mid, 14), last = BOT;
     const items = [["About", "about", 2, false]];
     for (const s of sections) {
       items.push([s.name, `s:${s.key}`, at.get(`s:${s.key}`), true]);
       for (const p of s.projects) items.push([p.title, `p:${p.slug}`, at.get(`p:${p.slug}`), false]);
       if (s.drawings) items.push([drawings.title || "I also draw", "drawings", at.get("drawings"), false]);
     }
-    const step = Math.min(27, ((bottom - top0) * 3) / (items.length + sections.length * 0.6 + 3));
+    const step = Math.min(27, ((last - first) * 3) / (items.length + sections.length * 0.6 + 3));
+    let col = 0, base = first;
     for (const [s, key, n, head] of items) {
-      if (top + (head ? step * 2.4 : step) > bottom && col < 2) { col++; top = top0; }
-      if (head && top > top0) top += step * 0.5;
+      if (base + (head ? step * 1.4 : 0) > last && col < 2) { col++; base = first; }
+      if (head && base > first) base += step * 0.5;
       const f = head ? F.display : F.mid, x = cols[col], num = String(n).padStart(2, "0"), nw = width(num, F.bold, 13);
-      let txt = clean(head ? s.toUpperCase() : s, f);
-      while (width(txt, f, 14) > cw - nw - 24 && txt.length > 4) txt = txt.slice(0, -2).trimEnd() + "...";
-      T(pg, txt, { x, top, size: 14, f });
-      T(pg, num, { x: x + cw - nw, top: top + 1, size: 13, f: F.bold, color: C.blueT });
-      if (!head) pg.drawLine({ start: { x, y: H - top - 20 }, end: { x: x + cw, y: H - top - 20 }, thickness: 0.6, color: C.line });
-      link(pg, x - 4, top - 5, cw + 8, step, key);
-      top += step;
+      let t = clean(head ? s.toUpperCase() : s, f);
+      while (width(t, f, 14) > cw - nw - 24 && t.length > 4) t = t.slice(0, -2).trimEnd() + "...";
+      text(pg, t, { x, base, size: 14, f });
+      text(pg, num, { x: x + cw, base, size: 13, f: F.bold, color: C.blueT, align: "right" });
+      if (!head) pg.drawLine({ start: { x, y: H - base - 8 }, end: { x: x + cw, y: H - base - 8 }, thickness: 0.6, color: C.line });
+      link(pg, x - 4, base - 16, cw + 8, step, key);
+      base += step;
     }
     foot(pg, 3);
   }

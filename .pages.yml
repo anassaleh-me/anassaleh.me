@@ -228,6 +228,8 @@ content:
       - { name: coverClean, label: "Clean cover, optional (the same picture with no text on it, same size as the cover). The site shows it instead of the cover; link previews keep the cover", type: image, options: { media: images } }
       - { name: description, label: Description, type: text }
       - { name: video, label: "Film link (Vimeo, or YouTube). Shown with a play button", type: string }
+      - { name: inPdf, label: "Show in the portfolio PDF (Download portfolio)", type: boolean, default: true }
+      - { name: pdfImages, label: "Portfolio PDF gallery, optional: up to 6 pictures from this project, in order. They fill a full page after the project page (4 wide pictures fill it best). Empty = no gallery page", type: image, options: { media: images, multiple: { max: 6 } } }
       - name: blocks
         label: "Layout: rows from top to bottom"
         description: "Works like Behance modules. Each row can have a short text and up to 8 images side by side (same height, never cropped). Drag rows to reorder. Short animations: upload an .mp4 loop instead of a GIF."
@@ -247,6 +249,7 @@ content:
     fields:
       - { name: show, label: Show this page, type: boolean, default: true }
       - { name: portrait, label: Portrait, type: image, options: { media: images } }
+      - { name: pdfPortrait, label: "Portrait on the portfolio PDF cover (round, background removed, PNG or WebP with transparency)", type: image, options: { media: images } }
       - { name: bio, label: Story (paragraphs), type: text, list: true }
       - name: experience
         label: Experience
@@ -389,6 +392,7 @@ content:
         type: object
         fields:
           - { name: email, label: Email, type: string }
+          - { name: pdfEmail, label: "Email on the portfolio PDF, optional (write the one on your CV so they match). Empty = the email above", type: string }
           - { name: linkedin, label: LinkedIn URL, type: string }
           - { name: behance, label: Behance URL, type: string }
           - { name: instagram, label: Instagram URL, type: string }

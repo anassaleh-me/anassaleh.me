@@ -41,5 +41,6 @@
     "Notion",
     "Slack",
     "Claude"
-  ]
+  ],
+  "pdfPortrait": "/images/portfolio-portrait.webp"
 }

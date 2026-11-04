@@ -56,7 +56,6 @@ const validate = () => {
   fail(form.elements.name, v("name") ? "" : "Please add your name.");
   fail(form.elements.email, /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v("email")) ? "" : "Please add a valid email.");
   fail(form.elements.phone, v("phone").replace(/\D/g, "").length >= 7 ? "" : "Please add a phone number with the country code.");
-  fail(form.elements.brief, v("brief").length >= 20 ? "" : "A few more words, please. What are we making?");
   fail(form.elements.consent, form.elements.consent.checked ? "" : "Please tick this box so I can reply.");
   const picked = $$('input[name="services"]:checked', form).length;
   const sErr = $("[data-services-error]");

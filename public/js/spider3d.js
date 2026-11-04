@@ -2,13 +2,13 @@
 // The file holds the same 21 x 5 grid of poses as the rendered frames; between grid points the bones are blended,
 // so the head follows the cursor smoothly while the feet stay planted. Its colours are the Cycles lighting baked into
 // one texture, drawn unlit, so it looks like the render and stays light to draw. It opens close on the face and
-// pulls back, and breathes (deeper while the pointer moves). three.js loads from jsDelivr only
-// when the section comes near; until the model is ready the stage shows the rendered centre frame.
+// breathes (deeper while the pointer moves). three.js loads from jsDelivr only when the section comes near; until the
+// model is drawn the stage stays empty, and it fades in. The rendered still (a different shot) shows only where the
+// model won't come quickly: data saver, a slow connection taking over 4 seconds, or a browser that can't draw it.
 const V = "0.170.0", CDN = `https://cdn.jsdelivr.net/npm/three@${V}`;
 const COLS = 21, ROWS = 5, FPS = 24;
 // after the grid, frames 106 to 130 hold one breath: the body sinks and rises while the feet stay planted
 const BREATH = [106, 130];
-const ease = (t) => 1 - Math.pow(1 - t, 3);
 const lerp = (a, b, t) => a + (b - a) * t;
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
@@ -17,6 +17,8 @@ export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
   const still = new Image();
   still.className = "spider__still"; still.alt = ""; still.decoding = "async";
   stage.prepend(still);
+  // the hint waits for the model (see .has-3d in v2.css)
+  stage.classList.add("has-3d");
   // data saver, slow connections and low-memory devices keep the still: the page stays fast for them
   const net = navigator.connection || {};
   const light = net.saveData || /(^|-)2g/.test(net.effectiveType || "") || (navigator.deviceMemory || 8) < 4;
@@ -50,7 +52,7 @@ export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
     renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
     renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.shadowMap.autoUpdate = false;
     const canvas = renderer.domElement;
-    canvas.className = "spider__canvas";
+    canvas.className = "spider__canvas spider__canvas--3d";
     canvas.setAttribute("role", "img");
     canvas.setAttribute("aria-label", "Mechanical spider, a 3D model by Anas, turning its head toward the pointer");
 
@@ -137,14 +139,12 @@ export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
     new ResizeObserver(size).observe(stage);
     size();
 
-    let t0 = 0, frame = 0, life = 0, slow = 0, lite = false;
+    place(1);
+    let frame = 0, life = 0, slow = 0, lite = false;
     function draw(dt, t) {
       // a slow device draws fewer pixels and fewer shadow updates instead of slowing the page
       slow = dt > 0.024 ? slow + 1 : Math.max(0, slow - 1);
       if (slow > 40 && !lite) { lite = true; renderer.setPixelRatio(1); size(); }
-      // opening: starts close on the face and pulls back to the full spider
-      t0 = t0 || t;
-      place(ease(clamp((t - t0) / 2600, 0, 1)));
       const r0 = Math.min(Math.floor(at.r), ROWS - 2), fr = at.r - r0;
       // Blender frame 1 sits at time 1/24
       rows.forEach((set, k) => set.forEach((a) => { a.time = ((r0 + k) * COLS + at.c + 1) / FPS; a.setEffectiveWeight(k ? fr : 1 - fr); }));
@@ -158,7 +158,9 @@ export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
     }
     // shaders compile in the background (where the browser allows it) instead of freezing the first frame
     await renderer.compileAsync(scene, cam);
-    stage.classList.add("is-3d");
+    // the first frame is drawn before the canvas fades in over the still, so nothing jumps
+    draw(0, performance.now());
+    requestAnimationFrame(() => stage.classList.add("is-3d"));
     return { draw };
   }
 
@@ -178,15 +180,49 @@ export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
     api?.draw(dt, t);
   }
 
+  // where the model can't load, the "move your cursor" hint would promise something that never happens:
+  // a quiet button takes its place (data saver users load the model only if they ask for it)
+  const hint = stage.querySelector("[data-spider-hint]");
+  let btn = null;
+  function offer() {
+    if (btn) return;
+    if (hint) hint.hidden = true;
+    btn = document.createElement("button");
+    btn.type = "button"; btn.className = "spider__load"; btn.textContent = "View in 3D";
+    btn.addEventListener("click", () => { btn.disabled = true; btn.textContent = "Loading"; start(true); });
+    stage.append(btn);
+  }
+  let shown = false;
+  function showStill() {
+    if (shown) return;
+    shown = true;
+    still.src = poster;
+    still.decode().then(() => stage.classList.add("is-ready"), () => {});
+  }
+  function start(asked) {
+    const late = setTimeout(showStill, 4000);
+    load().then((a) => {
+      clearTimeout(late);
+      api = a;
+      btn?.remove(); btn = null;
+      if (hint) hint.hidden = false;
+    }, (err) => {
+      clearTimeout(late);
+      console.warn("spider 3D unavailable, keeping the still", err);
+      // nothing left to offer: the still stays, without the hint or the button
+      showStill();
+      btn?.remove(); btn = null;
+      if (hint) hint.hidden = true;
+    });
+  }
+
   let started = false;
   new IntersectionObserver(([e]) => {
     if (!e.isIntersecting || started) return;
     started = true;
-    still.src = poster;
-    still.decode().then(() => stage.classList.add("is-ready"), () => {});
-    if (light) return;
+    if (light) { showStill(); return offer(); }
     // three.js and the model start when the browser is idle, never in the middle of a scroll frame
-    const go = () => load().then((a) => (api = a), (err) => console.warn("spider 3D unavailable, keeping the still", err));
+    const go = () => start(false);
     "requestIdleCallback" in window ? requestIdleCallback(go, { timeout: 1500 }) : setTimeout(go, 200);
   }, { rootMargin: "100% 0px" }).observe(stage);
   new IntersectionObserver(([e]) => {

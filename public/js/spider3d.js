@@ -1,10 +1,11 @@
 // Mechanical Spider as a real 3D model (.glb exported from Blender with its head and body turns baked in).
 // The file holds the same 21 x 5 grid of poses as the rendered frames; between grid points the bones are blended,
 // so the head follows the cursor smoothly while the feet stay planted. Its colours are the Cycles lighting baked into
-// one texture, drawn unlit, so it looks like the render and stays light to draw. It opens close on the face and
-// breathes (deeper while the pointer moves). three.js loads from jsDelivr only when the section comes near; until the
-// model is drawn the stage stays empty, and it fades in. The rendered still (a different shot) shows only where the
-// model won't come quickly: data saver, a slow connection taking over 4 seconds, or a browser that can't draw it.
+// one texture, drawn unlit, so it looks like the render and stays light to draw. three.js and the model load from
+// jsDelivr quietly after the page has loaded, so they're ready before anyone scrolls down; the first time the spider
+// is on screen it fades in close on the face and pulls back, then breathes (deeper while the pointer moves) and looks
+// around by itself when nobody steers. The rendered still (a different shot) shows only where the model isn't there
+// in time: data saver, a very slow connection, or a browser that can't draw it.
 const V = "0.170.0", CDN = `https://cdn.jsdelivr.net/npm/three@${V}`;
 const COLS = 21, ROWS = 5, FPS = 24;
 // after the grid, frames 106 to 130 hold one breath: the body sinks and rises while the feet stay planted
@@ -49,7 +50,7 @@ export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
       import(`${CDN}/examples/jsm/loaders/GLTFLoader.js/+esm`),
       import(`${CDN}/examples/jsm/libs/meshopt_decoder.module.js/+esm`),
     ]);
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "low-power" });
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
     renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.shadowMap.autoUpdate = false;
     const canvas = renderer.domElement;
@@ -145,11 +146,11 @@ export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
     const intro = !shown;
     place(intro ? 0 : 1);
     let t0 = 0, frame = 0, life = 0, slow = 0, lite = false;
-    function draw(dt, t) {
+    function draw(dt, t, prime = false) {
       // a slow device draws fewer pixels and fewer shadow updates instead of slowing the page
-      slow = dt > 0.024 ? slow + 1 : Math.max(0, slow - 1);
-      if (slow > 40 && !lite) { lite = true; renderer.setPixelRatio(1); size(); }
-      if (intro) { t0 = t0 || t; place(ease(clamp((t - t0) / 2600, 0, 1))); }
+      slow = dt > 0.034 ? slow + 1 : Math.max(0, slow - 1);
+      if (slow > 90 && !lite) { lite = true; renderer.setPixelRatio(1); size(); }
+      if (intro && !prime) { t0 = t0 || t; place(ease(clamp((t - t0) / 2600, 0, 1))); }
       const r0 = Math.min(Math.floor(at.r), ROWS - 2), fr = at.r - r0;
       // Blender frame 1 sits at time 1/24
       rows.forEach((set, k) => set.forEach((a) => { a.time = ((r0 + k) * COLS + at.c + 1) / FPS; a.setEffectiveWeight(k ? fr : 1 - fr); }));
@@ -158,13 +159,13 @@ export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
       breath.forEach((a) => { a.setEffectiveWeight(0.5 + life * 0.9); a.setEffectiveTimeScale(0.28 + life * 0.5); });
       mixer.update(dt);
       // the floor shadow follows the body every other frame (every fourth on a slow device); the eye doesn't see the difference
-      if (frame++ % (lite ? 4 : 2) === 0) renderer.shadowMap.needsUpdate = true;
+      if (frame++ % 2 === 0) renderer.shadowMap.needsUpdate = true;
       renderer.render(scene, cam);
     }
     // shaders compile in the background (where the browser allows it) instead of freezing the first frame
     await renderer.compileAsync(scene, cam);
     // the first frame is drawn before the canvas fades in over the still, so nothing jumps
-    draw(0, performance.now());
+    draw(0, performance.now(), true);
     requestAnimationFrame(() => stage.classList.add("is-3d"));
     return { draw };
   }
@@ -173,8 +174,9 @@ export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
   function tick(t) {
     raf = visible ? requestAnimationFrame(tick) : 0;
     const dt = Math.min((t - (last || t)) / 1000, 0.1); last = t;
-    // nobody steering for a while: it looks around slowly by itself (not when the system asks for less motion)
-    if (!reduce && t - lastMove > 2600) {
+    // nobody steering for a while: it looks around slowly by itself. Kept with reduced motion too (Anas's own
+    // machine has Windows animations off and he wants it): it is a slow turn inside its frame, never a page movement
+    if (t - lastMove > 2600) {
       const k = t / 1000;
       at.tc = 10 + Math.sin(k * 0.45) * 7 + Math.sin(k * 1.1) * 1.5;
       at.tr = 2 + Math.sin(k * 0.33 + 1) * 1.2;
@@ -194,7 +196,7 @@ export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
     if (hint) hint.hidden = true;
     btn = document.createElement("button");
     btn.type = "button"; btn.className = "spider__load"; btn.textContent = "View in 3D";
-    btn.addEventListener("click", () => { btn.disabled = true; btn.textContent = "Loading"; start(true); });
+    btn.addEventListener("click", () => { btn.disabled = true; btn.textContent = "Loading"; start(); });
     stage.append(btn);
   }
   let shown = false;
@@ -204,15 +206,14 @@ export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
     still.src = poster;
     still.decode().then(() => stage.classList.add("is-ready"), () => {});
   }
-  function start(asked) {
-    const late = setTimeout(showStill, 4000);
+  let late = 0;
+  function start() {
     load().then((a) => {
       clearTimeout(late);
       api = a;
       btn?.remove(); btn = null;
       if (hint) hint.hidden = false;
     }, (err) => {
-      clearTimeout(late);
       console.warn("spider 3D unavailable, keeping the still", err);
       // nothing left to offer: the still stays, without the hint or the button
       showStill();
@@ -221,17 +222,19 @@ export function mountSpider3D(stage, { model, poster, reduce = false } = {}) {
     });
   }
 
-  let started = false;
-  new IntersectionObserver(([e]) => {
-    if (!e.isIntersecting || started) return;
-    started = true;
-    if (light) { showStill(); return offer(); }
-    // three.js and the model start when the browser is idle, never in the middle of a scroll frame
-    const go = () => start(false);
-    "requestIdleCallback" in window ? requestIdleCallback(go, { timeout: 1500 }) : setTimeout(go, 200);
-  }, { rootMargin: "100% 0px" }).observe(stage);
+  // the model loads quietly once the page has finished loading and the browser is idle, so it is ready by the time
+  // anyone scrolls down to it (the top of the page never waits for it). Data saver and the like: the still and a button
+  if (light) {
+    new IntersectionObserver(([e], io) => { if (e.isIntersecting) { io.disconnect(); showStill(); offer(); } }, { rootMargin: "100% 0px" }).observe(stage);
+  } else {
+    const go = () => ("requestIdleCallback" in window ? requestIdleCallback(() => start(), { timeout: 3000 }) : setTimeout(start, 1500));
+    document.readyState === "complete" ? go() : addEventListener("load", go, { once: true });
+  }
   new IntersectionObserver(([e]) => {
     visible = e.isIntersecting;
     if (visible && !raf) raf = requestAnimationFrame(tick);
+    // on screen and still not ready (a slow connection): the still fills in after a moment, and the model takes over
+    // from it at the same view when it arrives
+    if (visible && !api && !light && !late) late = setTimeout(() => { if (!api) showStill(); }, 700);
   }, { threshold: 0.25 }).observe(stage);
 }

@@ -914,17 +914,17 @@
     "role": "3D modeling, animation, render",
     "format": "Blender",
     "tools": "Blender",
-    "featured": false,
+    "featured": true,
     "draft": false,
     "cover": "/images/covers/ugreen-animation.webp",
     "description": "A short product animation that gives a tech accessory a friendly character, built entirely in 3D.",
     "video": "<iframe title=\"vimeo-player\" src=\"https://player.vimeo.com/video/1240433260?h=85ca329fb7\" width=\"640\" height=\"360\" frameborder=\"0\" referrerpolicy=\"strict-origin-when-cross-origin\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\"   allowfullscreen></iframe>",
     "inPdf": true,
     "pdfImages": [
-      "/images/projects/ugreen-animation/10.webp",
-      "/images/projects/ugreen-animation/19-poster.webp",
-      "/images/projects/ugreen-animation/14.webp",
-      "/images/projects/ugreen-animation/11.webp"
+      "/images/01.webp",
+      "/images/12.webp",
+      "/images/11 (1).webp",
+      "/images/14 (1).webp"
     ],
     "blocks": [
       {

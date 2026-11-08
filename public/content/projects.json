@@ -1,8 +1,8 @@
 [
   {
     "title": "Exoskeleton",
-    "subtitle": "Product film",
-    "slug": "exoskeleton-film",
+    "subtitle": "Product Promo",
+    "slug": "exoskeleton-promo",
     "categories": [
       "VIDEO PRODUCTION",
       "Art direction"
@@ -18,6 +18,12 @@
     "cover": "/images/covers/exoskeleton-film.webp",
     "description": "A product film for MangoBot's wearable exoskeleton, from unboxing to a run on the grass. I took it from the first idea to the final file: concept, creative direction, filming, editing, colour grading, motion type and sound design. Shot in 4K on a Sony a6700 with a DJI Ronin, then cut and graded in Premiere Pro.",
     "video": "https://player.vimeo.com/video/1239052181",
+    "inPdf": true,
+    "pdfImages": [
+      "/images/Screenshot 2026-11-08 203803.png",
+      "/images/projects/exoskeleton-film/03-poster.webp",
+      "/images/Screenshot 2026-11-08 203951.png"
+    ],
     "blocks": [
       {
         "images": [
@@ -46,11 +52,6 @@
           "/images/projects/exoskeleton-film/07.webp"
         ]
       }
-    ],
-    "pdfImages": [
-      "/images/projects/exoskeleton-film/02-poster.webp",
-      "/images/projects/exoskeleton-film/03-poster.webp",
-      "/images/projects/exoskeleton-film/04-poster.webp"
     ]
   },
   {
@@ -72,6 +73,7 @@
     "cover": "/images/covers/mangobot-production.webp",
     "description": "A brand film for MangoBot, from storyboard to final delivery. I planned the visual sequence, directed the look on set so every shot fit the edit, then cut the film, built the motion graphics and VFX, graded it and synced the sound.",
     "video": "<div style=\"padding:56.25% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1240666838?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;autoplay=1&amp;muted=1\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"TODA\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+    "inPdf": true,
     "blocks": [
       {
         "images": [
@@ -117,6 +119,13 @@
     "draft": false,
     "cover": "/images/covers/g2-humanoid-robot.webp",
     "description": "G2 is MangoBot's humanoid robot, and this is its official 3D model, built end to end in Blender. I handled the whole pipeline: hard-surface modeling, materials and texturing, lighting and the final renders. The goal was a clean, premium look that holds up in close-ups, product films and the website.",
+    "inPdf": true,
+    "pdfImages": [
+      "/images/projects/g2-humanoid-robot/03.webp",
+      "/images/projects/g2-humanoid-robot/04.webp",
+      "/images/projects/g2-humanoid-robot/05.webp",
+      "/images/projects/g2-humanoid-robot/06.webp"
+    ],
     "blocks": [
       {
         "images": [
@@ -159,12 +168,6 @@
           "/images/projects/g2-humanoid-robot/09.webp"
         ]
       }
-    ],
-    "pdfImages": [
-      "/images/projects/g2-humanoid-robot/03.webp",
-      "/images/projects/g2-humanoid-robot/04.webp",
-      "/images/projects/g2-humanoid-robot/05.webp",
-      "/images/projects/g2-humanoid-robot/06.webp"
     ]
   },
   {
@@ -186,6 +189,13 @@
     "cover": "/images/covers/mechanical-spider.webp",
     "description": "An unknown mechanical spider wakes up inside a sterile white room. Captured after a mysterious arrival on Earth, it explores the space and itself while people watch from behind reinforced glass. The scene is about isolation, confusion and the feeling of being observed. I made everything myself: character design, modeling and texturing, rigging, animation, lighting, sound design and the final edit.",
     "video": "<iframe title=\"vimeo-player\" src=\"https://player.vimeo.com/video/1240407249?h=98ce1a170c\" width=\"640\" height=\"360\" frameborder=\"0\" referrerpolicy=\"strict-origin-when-cross-origin\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\"   allowfullscreen></iframe>",
+    "inPdf": true,
+    "pdfImages": [
+      "/images/projects/mechanical-spider/10.webp",
+      "/images/projects/mechanical-spider/11.webp",
+      "/images/projects/mechanical-spider/12.webp",
+      "/images/projects/mechanical-spider/14.webp"
+    ],
     "blocks": [
       {
         "images": [
@@ -258,12 +268,6 @@
           "/images/projects/mechanical-spider/23.webp"
         ]
       }
-    ],
-    "pdfImages": [
-      "/images/projects/mechanical-spider/10.webp",
-      "/images/projects/mechanical-spider/11.webp",
-      "/images/projects/mechanical-spider/12.webp",
-      "/images/projects/mechanical-spider/14.webp"
     ]
   },
   {
@@ -281,8 +285,16 @@
     "tools": "Illustrator, InDesign, Photoshop",
     "featured": true,
     "draft": false,
-    "cover": "/images/covers/mangobot-brand-identity.webp",
+    "cover": "/images/03.webp",
     "description": "MangoBot builds humanoid robots for hospitality, events and lifestyle spaces in the Middle East. When I started, the only brand asset was the logo. I built everything around it: the colour system, typography, graphic elements, layouts and the rules that keep them consistent across digital, print, events and products.",
+    "inPdf": true,
+    "pdfImages": [
+      "/images/14.webp",
+      "/images/16.webp",
+      "/images/23.webp",
+      "/images/projects/mangobot-brand-identity/28.webp",
+      "/images/projects/mangobot-brand-identity/30.webp"
+    ],
     "blocks": [
       {
         "images": [
@@ -439,12 +451,6 @@
           "/images/projects/mangobot-brand-identity/31.webp"
         ]
       }
-    ],
-    "pdfImages": [
-      "/images/projects/mangobot-brand-identity/25.webp",
-      "/images/projects/mangobot-brand-identity/27.webp",
-      "/images/projects/mangobot-brand-identity/28.webp",
-      "/images/projects/mangobot-brand-identity/30.webp"
     ]
   },
   {
@@ -464,6 +470,13 @@
     "draft": false,
     "cover": "/images/covers/promate-ecommerce.webp",
     "description": "Product visuals for Promate's mobile and computer accessories. The job was to turn technical features into clear, engaging stories for online shoppers. Where real photography was missing or limited, I modeled the products in 3D and rendered them for listings, campaigns and launches.",
+    "inPdf": true,
+    "pdfImages": [
+      "/images/projects/promate-ecommerce/03.webp",
+      "/images/projects/promate-ecommerce/06.webp",
+      "/images/projects/promate-ecommerce/07.webp",
+      "/images/projects/promate-ecommerce/10.webp"
+    ],
     "blocks": [
       {
         "images": [
@@ -525,12 +538,6 @@
           "/images/projects/promate-ecommerce/12.webp"
         ]
       }
-    ],
-    "pdfImages": [
-      "/images/projects/promate-ecommerce/03.webp",
-      "/images/projects/promate-ecommerce/06.webp",
-      "/images/projects/promate-ecommerce/07.webp",
-      "/images/projects/promate-ecommerce/10.webp"
     ]
   },
   {
@@ -550,9 +557,10 @@
     "format": "Collection",
     "tools": "Blender, Photoshop, Illustrator, After Effects",
     "featured": false,
-    "draft": false,
+    "draft": true,
     "cover": "/images/covers/selected-work-2025.webp",
     "description": "A collection of pieces from 2024 and 2025: product renders and conceptual scenes in Blender, motion work, illustration and marketing visuals for brands. Every piece started from the brand's core message and ended with a consistent look.",
+    "inPdf": false,
     "blocks": [
       {
         "images": [
@@ -745,6 +753,7 @@
     "draft": false,
     "cover": "/images/covers/mangobot-social.webp",
     "description": "Social content for MangoBot's robot rental service across the GCC, including a step by step carousel on renting a robot, robot introductions and a series of feed posts. Clear explanations, the brand system, and the robots front and centre.",
+    "inPdf": true,
     "blocks": [
       {
         "images": [
@@ -790,6 +799,7 @@
     "draft": false,
     "cover": "/images/covers/promate-packaging.webp",
     "description": "Retail packaging for a Promate product, built for clarity and shelf presence. The layout leads with the product's key features in a bold, minimal, retail-ready look.",
+    "inPdf": true,
     "blocks": [
       {
         "images": [
@@ -827,6 +837,7 @@
     "cover": "/images/covers/intro-video.webp",
     "description": "A short self-introduction that shows the range of what I do: illustration, graphic design, motion graphics, 3D and video editing, cut together in one piece.",
     "video": "<iframe title=\"vimeo-player\" src=\"https://player.vimeo.com/video/1240411864?h=77e8272265\" width=\"640\" height=\"360\" frameborder=\"0\" referrerpolicy=\"strict-origin-when-cross-origin\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\"   allowfullscreen></iframe>",
+    "inPdf": true,
     "blocks": [
       {
         "images": [
@@ -855,6 +866,7 @@
     "draft": false,
     "cover": "/images/covers/mangobot-website.webp",
     "description": "The company's first website, built around the new visual identity. Responsive layouts for desktop and mobile, in English and Arabic.",
+    "inPdf": true,
     "blocks": [
       {
         "images": [
@@ -907,6 +919,13 @@
     "cover": "/images/covers/ugreen-animation.webp",
     "description": "A short product animation that gives a tech accessory a friendly character, built entirely in 3D.",
     "video": "<iframe title=\"vimeo-player\" src=\"https://player.vimeo.com/video/1240433260?h=85ca329fb7\" width=\"640\" height=\"360\" frameborder=\"0\" referrerpolicy=\"strict-origin-when-cross-origin\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\"   allowfullscreen></iframe>",
+    "inPdf": true,
+    "pdfImages": [
+      "/images/projects/ugreen-animation/10.webp",
+      "/images/projects/ugreen-animation/19-poster.webp",
+      "/images/projects/ugreen-animation/14.webp",
+      "/images/projects/ugreen-animation/11.webp"
+    ],
     "blocks": [
       {
         "images": [
@@ -983,12 +1002,6 @@
           "/images/projects/ugreen-animation/23.webp"
         ]
       }
-    ],
-    "pdfImages": [
-      "/images/projects/ugreen-animation/10.webp",
-      "/images/projects/ugreen-animation/19-poster.webp",
-      "/images/projects/ugreen-animation/14.webp",
-      "/images/projects/ugreen-animation/11.webp"
     ]
   },
   {
@@ -1008,6 +1021,13 @@
     "draft": false,
     "cover": "/images/covers/phi-monogram.webp",
     "description": "A monogram built around the Greek letter Phi, drawn for a luxury brand and tested across print and digital applications.",
+    "inPdf": true,
+    "pdfImages": [
+      "/images/projects/phi-monogram/01.webp",
+      "/images/projects/phi-monogram/07.webp",
+      "/images/projects/phi-monogram/08.webp",
+      "/images/projects/phi-monogram/02.webp"
+    ],
     "blocks": [
       {
         "images": [
@@ -1054,12 +1074,6 @@
           "/images/projects/phi-monogram/09.webp"
         ]
       }
-    ],
-    "pdfImages": [
-      "/images/projects/phi-monogram/01.webp",
-      "/images/projects/phi-monogram/07.webp",
-      "/images/projects/phi-monogram/08.webp",
-      "/images/projects/phi-monogram/02.webp"
     ]
   },
   {
@@ -1079,6 +1093,7 @@
     "draft": false,
     "cover": "/images/covers/dicm-theme.webp",
     "description": "A refreshed visual theme for a content industry event, adapted across screens, print and social.",
+    "inPdf": true,
     "blocks": [
       {
         "images": [
@@ -1149,6 +1164,7 @@
     "draft": false,
     "cover": "/images/covers/social-carousel.webp",
     "description": "A carousel system for social media that keeps a single story moving across several frames.",
+    "inPdf": true,
     "blocks": [
       {
         "images": [
@@ -1188,6 +1204,7 @@
     "draft": false,
     "cover": "/images/covers/spacetoon-in-syria.webp",
     "description": "A personal series that brings the cartoon characters a whole generation grew up with on Spacetoon into well-known places in Syria.",
+    "inPdf": true,
     "blocks": [
       {
         "text": "Hamtaro",
@@ -1313,6 +1330,7 @@
     "draft": false,
     "cover": "/images/covers/photo-manipulation.webp",
     "description": "Worlds and characters built from photographs in Photoshop.",
+    "inPdf": true,
     "blocks": [
       {
         "text": "We are in the universe, and the universe is in us. My entry for the ASUS ProArt Awards, on the theme Explore Beyond the Limits.",
@@ -1377,6 +1395,7 @@
     "draft": false,
     "cover": "/images/covers/vector-portraits.webp",
     "description": "Portraits and characters drawn as vector art in Illustrator, from film stills to cartoons.",
+    "inPdf": true,
     "blocks": [
       {
         "text": "Squid Game. The portrait and how it was drawn.",
@@ -1437,6 +1456,7 @@
     "draft": false,
     "cover": "/images/covers/social-media-design.webp",
     "description": "Posts, ads and carousels for shops, schools, hotels and brands.",
+    "inPdf": true,
     "blocks": [
       {
         "text": "Pullman Hotels",
@@ -1520,6 +1540,7 @@
     "draft": false,
     "cover": "/images/covers/animation-studies.webp",
     "description": "Three short motion pieces, each shown with a look at how it was made in After Effects.",
+    "inPdf": true,
     "blocks": [
       {
         "text": "Building. The animation and its After Effects process.",
@@ -1562,6 +1583,7 @@
     "draft": false,
     "cover": "/images/covers/promate-ecommerce-designs.webp",
     "description": "Product visuals for Promate's online store listings.",
+    "inPdf": true,
     "blocks": [
       {
         "images": [
@@ -1657,6 +1679,7 @@
     "draft": false,
     "cover": "/images/covers/promate-vertux-social.webp",
     "description": "Social media posts for the Promate and Vertux brands.",
+    "inPdf": true,
     "blocks": [
       {
         "images": [
@@ -1709,6 +1732,13 @@
     "draft": false,
     "cover": "/images/covers/dubai-sports-council-logo.webp",
     "description": "A concept logo for Dubai Sports Council, shown across its applications.",
+    "inPdf": true,
+    "pdfImages": [
+      "/images/projects/dubai-sports-council-logo/03.webp",
+      "/images/projects/dubai-sports-council-logo/07.webp",
+      "/images/projects/dubai-sports-council-logo/09.webp",
+      "/images/projects/dubai-sports-council-logo/10.webp"
+    ],
     "blocks": [
       {
         "images": [
@@ -1765,12 +1795,6 @@
           "/images/projects/dubai-sports-council-logo/11.webp"
         ]
       }
-    ],
-    "pdfImages": [
-      "/images/projects/dubai-sports-council-logo/03.webp",
-      "/images/projects/dubai-sports-council-logo/07.webp",
-      "/images/projects/dubai-sports-council-logo/09.webp",
-      "/images/projects/dubai-sports-council-logo/10.webp"
     ]
   },
   {
@@ -1790,6 +1814,7 @@
     "draft": false,
     "cover": "/images/covers/billboard-saudi-arabia.webp",
     "description": "A billboard design, shown in its real location in Saudi Arabia.",
+    "inPdf": true,
     "blocks": [
       {
         "images": [
@@ -1832,6 +1857,12 @@
     "cover": "/images/covers/product-3d-rendering.webp",
     "description": "A product modeled, textured, lit and animated in Blender.",
     "video": "<div style=\"padding:177.78% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1240434239?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;autoplay=1&amp;muted=1\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"The Product\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+    "inPdf": true,
+    "pdfImages": [
+      "/images/projects/product-3d-rendering/01-poster.webp",
+      "/images/projects/product-3d-rendering/02-poster.webp",
+      "/images/projects/product-3d-rendering/03-poster.webp"
+    ],
     "blocks": [
       {
         "images": [
@@ -1860,11 +1891,6 @@
           "/images/projects/product-3d-rendering/07.webp"
         ]
       }
-    ],
-    "pdfImages": [
-      "/images/projects/product-3d-rendering/01-poster.webp",
-      "/images/projects/product-3d-rendering/02-poster.webp",
-      "/images/projects/product-3d-rendering/03-poster.webp"
     ]
   },
   {
@@ -1885,6 +1911,7 @@
     "cover": "/images/covers/lzs-love-architecture.webp",
     "description": "A 3D model of the LZ's Love building in Vietnam, made in Blender.",
     "video": "<div style=\"padding:75% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1240445024?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;autoplay=1&amp;muted=1\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"final LZ's\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+    "inPdf": true,
     "blocks": [
       {
         "text": "The focus is clean geometry, accurate structure and the rhythm of the building's bold facade.",
@@ -1947,6 +1974,7 @@
     "cover": "/images/covers/classical-guitar-3d.webp",
     "description": "A classical guitar modeled and rendered in Blender.",
     "video": "<div style=\"padding:177.78% 0 0 0;position:relative;\"><iframe src=\"https://player.vimeo.com/video/1240434389?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;autoplay=1&amp;muted=1\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" style=\"position:absolute;top:0;left:0;width:100%;height:100%;\" title=\"guitar render\"></iframe></div><script src=\"https://player.vimeo.com/api/player.js\"></script>",
+    "inPdf": true,
     "blocks": [
       {
         "text": "Realistic proportions and clean topology, from the headstock to the bridge.",
@@ -1983,6 +2011,7 @@
     "draft": false,
     "cover": "/images/covers/al-sultan-restaurant-box.webp",
     "description": "A take-away box design for Al Sultan Restaurant.",
+    "inPdf": true,
     "blocks": [
       {
         "images": [
@@ -2023,6 +2052,7 @@
     "draft": false,
     "cover": "/images/covers/aurelia-logo.webp",
     "description": "A logo for a student services center. The brief asked for something simple, and the name Aurelia means golden.",
+    "inPdf": true,
     "blocks": [
       {
         "images": [

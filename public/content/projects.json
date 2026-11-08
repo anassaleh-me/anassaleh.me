@@ -285,7 +285,7 @@
     "tools": "Illustrator, InDesign, Photoshop",
     "featured": true,
     "draft": false,
-    "cover": "/images/Untitled-1.jpg",
+    "cover": "/images/Untitled-1.png",
     "description": "MangoBot builds humanoid robots for hospitality, events and lifestyle spaces in the Middle East. When I started, the only brand asset was the logo. I built everything around it: the colour system, typography, graphic elements, layouts and the rules that keep them consistent across digital, print, events and products.",
     "inPdf": true,
     "pdfImages": [
@@ -754,6 +754,10 @@
     "cover": "/images/covers/mangobot-social.webp",
     "description": "Social content for MangoBot's robot rental service across the GCC, including a step by step carousel on renting a robot, robot introductions and a series of feed posts. Clear explanations, the brand system, and the robots front and centre.",
     "inPdf": true,
+    "pdfImages": [
+      "/images/03 (1).webp",
+      "/images/04.webp"
+    ],
     "blocks": [
       {
         "images": [

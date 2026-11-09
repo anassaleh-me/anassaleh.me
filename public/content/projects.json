@@ -1322,7 +1322,7 @@
     "subtitle": "Worlds built in Photoshop",
     "slug": "photo-manipulation",
     "categories": [
-      "Photo manipulation"
+      "Branding & graphic design"
     ],
     "client": "Personal projects",
     "year": "2022",
@@ -1330,7 +1330,7 @@
     "role": "Concept, photo manipulation",
     "format": "Digital art",
     "tools": "Adobe Photoshop",
-    "featured": false,
+    "featured": true,
     "draft": false,
     "cover": "/images/covers/photo-manipulation.webp",
     "description": "Worlds and characters built from photographs in Photoshop.",
@@ -1387,7 +1387,7 @@
     "subtitle": "Illustration",
     "slug": "vector-portraits",
     "categories": [
-      "Illustration"
+      "Branding & graphic designe"
     ],
     "client": "Personal projects",
     "year": "2022 to 2025",
@@ -1457,10 +1457,10 @@
     "format": "Social media",
     "tools": "Adobe Photoshop, Adobe Illustrator",
     "featured": false,
-    "draft": false,
+    "draft": true,
     "cover": "/images/covers/social-media-design.webp",
     "description": "Posts, ads and carousels for shops, schools, hotels and brands.",
-    "inPdf": true,
+    "inPdf": false,
     "blocks": [
       {
         "text": "Pullman Hotels",
@@ -1584,10 +1584,10 @@
     "format": "E-commerce visuals",
     "tools": "Adobe Photoshop, Adobe Illustrator",
     "featured": false,
-    "draft": false,
+    "draft": true,
     "cover": "/images/covers/promate-ecommerce-designs.webp",
     "description": "Product visuals for Promate's online store listings.",
-    "inPdf": true,
+    "inPdf": false,
     "blocks": [
       {
         "images": [
@@ -1680,10 +1680,10 @@
     "format": "Social media",
     "tools": "Adobe Photoshop, Adobe Illustrator",
     "featured": false,
-    "draft": false,
+    "draft": true,
     "cover": "/images/covers/promate-vertux-social.webp",
     "description": "Social media posts for the Promate and Vertux brands.",
-    "inPdf": true,
+    "inPdf": false,
     "blocks": [
       {
         "images": [

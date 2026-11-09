@@ -1680,10 +1680,10 @@
     "format": "Social media",
     "tools": "Adobe Photoshop, Adobe Illustrator",
     "featured": false,
-    "draft": true,
+    "draft": false,
     "cover": "/images/covers/promate-vertux-social.webp",
     "description": "Social media posts for the Promate and Vertux brands.",
-    "inPdf": false,
+    "inPdf": true,
     "blocks": [
       {
         "images": [

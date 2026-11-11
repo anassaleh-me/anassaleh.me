@@ -236,7 +236,7 @@ export default {
         .on("title", { element: (el) => el.setInnerContent(title) })
         .on('meta[name="description"]', set(desc))
         .on('meta[property="og:image"]', set(image))
-        .on("head", { element: (el) => el.append(`<link rel="preload" as="image" href="${attr(p.coverClean || c)}" fetchpriority="high"><meta property="og:title" content="${attr(title)}"><meta property="og:description" content="${attr(desc)}"><meta property="og:type" content="article"><meta property="og:url" content="${SITE}/work/${p.slug}"><meta name="twitter:card" content="summary_large_image"><link rel="canonical" href="${SITE}/work/${p.slug}">`, { html: true }) })
+        .on("head", { element: (el) => el.append(`${preloadImage(p.coverClean || c)}<meta property="og:title" content="${attr(title)}"><meta property="og:description" content="${attr(desc)}"><meta property="og:type" content="article"><meta property="og:url" content="${SITE}/work/${p.slug}"><meta name="twitter:card" content="summary_large_image"><link rel="canonical" href="${SITE}/work/${p.slug}">`, { html: true }) })
         .transform(out);
     }
 
@@ -262,6 +262,13 @@ export default {
 };
 
 const clean = (v, max = 500) => String(v ?? "").replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, "").trim().slice(0, max);
+
+// Preload for a page's main picture. It lists the same sizes the page asks for (shell2.js srcset), so the browser
+// fetches one file, the size that fits the screen, instead of the original and then a resized copy.
+const preloadImage = (src) =>
+  /^\/images\/[^?#]+\.(webp|jpe?g|png)$/i.test(src || "")
+    ? `<link rel="preload" as="image" href="${attr(src)}" imagesrcset="${[360, 720, 1080, 1440].map((w) => `/img/${w}${attr(src)} ${w}w`).join(", ")}, ${attr(src)} 2400w" imagesizes="100vw" fetchpriority="high">`
+    : `<link rel="preload" as="image" href="${attr(src)}" fetchpriority="high">`;
 
 async function handleContact(request, env, ctx) {
   // only the site's own pages may send the form (browsers always say where a request comes from)

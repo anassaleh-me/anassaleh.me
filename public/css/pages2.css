@@ -135,6 +135,10 @@
 }
 
 /* previous and next project, side by side, the same way */
+/* a short ask before the next projects */
+.pj-ask { display: flex; align-items: center; justify-content: space-between; gap: 24px 40px; flex-wrap: wrap; padding-block: clamp(44px, 6vw, 84px); border-top: 1px solid rgba(29, 29, 27, 0.14); }
+.pj-ask h2 { font-size: clamp(26px, 3.4vw, 52px); line-height: 0.95; margin: 0; }
+.pj-ask__actions { display: flex; gap: 10px; flex-wrap: wrap; }
 .pj-nav { display: grid; grid-template-columns: 1fr 1fr; }
 .pj-nav__item { position: relative; display: block; padding: clamp(80px, 10vw, 150px) var(--g); overflow: hidden; isolation: isolate; }
 .pj-nav__item.next { text-align: right; border-left: 1px solid rgba(241, 236, 226, 0.1); }
@@ -613,3 +617,6 @@
 .pv h2 { font-size: clamp(20px, 1.8vw, 28px); margin: 0 0 10px; }
 .pv p { margin: 0; color: var(--ink-soft); max-width: 66ch; }
 .pv a { color: var(--acc-t); border-bottom: 1px solid currentColor; }
+
+/* phone: contact cards are as tall as their content, no empty gap above the buttons */
+@media (max-width: 760px) { .ct-card { min-height: 0; } }

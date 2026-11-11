@@ -167,7 +167,14 @@ const discs = (h.disciplines || []).map((d) => ({ ...d, images: discImages(d.fil
 const lastWord = (t) => { const s = String(t || "").trim(), k = s.lastIndexOf(" "); return `${esc(s.slice(0, k + 1))}<span class="disc__end">${esc(s.slice(k + 1))}</span>`; };
 disc.innerHTML = discs.map((d, i) => `<li data-reveal><a href="${discHref(d.filter)}" data-i="${i}" data-cursor="${isDrawing(d.filter) ? "Drawings" : "See work"}">${lastWord(d.title)}</a></li>`).join("");
 // the hover pictures are only for a mouse, so touch screens skip loading them
-if (canHover) discs.forEach((d) => d.images.forEach((src) => { const i = new Image(); i.src = src; }));
+// and they wait until the list is close to the screen, so they never compete with the opening
+if (canHover) {
+  const warm = () => discs.forEach((d) => d.images.forEach((src) => { const i = new Image(); i.src = src; }));
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); warm(); } }, { rootMargin: "800px 0px" });
+    io.observe(disc);
+  } else warm();
+}
 // touch screens can't hover: a tap opens that work
 else if ($("[data-disc-hint]")) $("[data-disc-hint]").textContent = "Tap a word to see the work behind it.";
 float.insertAdjacentHTML("beforeend", '<span class="float-count" data-float-count></span>');

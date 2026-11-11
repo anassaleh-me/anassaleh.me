@@ -1,5 +1,62 @@
 [
   {
+    "title": "From Set to Screen",
+    "subtitle": "Interview series and behind the scenes",
+    "slug": "from-set-to-screen",
+    "categories": [
+      "Video production",
+      "Art direction"
+    ],
+    "client": "MangoBot",
+    "year": "2026",
+    "date": "2026-11",
+    "role": "Direction, cinematography, lighting, edit",
+    "format": "Interview series and podcast",
+    "tools": "Sony a6700",
+    "featured": false,
+    "draft": false,
+    "cover": "/images/covers/from-set-to-screen.webp",
+    "description": "A collection of interviews and a podcast for MangoBot, cut into one reel that opens behind the scenes and lands on the final picture. I handled the full production myself: direction, cinematography, lighting and editing. Shot on a Sony a6700, with every set built and lit on location.",
+    "video": "https://player.vimeo.com/video/1241192198",
+    "blocks": [
+      {
+        "images": [
+          "/images/projects/from-set-to-screen/01.webp"
+        ]
+      },
+      {
+        "images": [
+          "/images/projects/from-set-to-screen/02.webp"
+        ]
+      },
+      {
+        "images": [
+          "/images/projects/from-set-to-screen/03.webp"
+        ]
+      },
+      {
+        "images": [
+          "/images/projects/from-set-to-screen/04.webp"
+        ]
+      },
+      {
+        "images": [
+          "/images/projects/from-set-to-screen/05.webp"
+        ]
+      },
+      {
+        "images": [
+          "/images/projects/from-set-to-screen/06.webp"
+        ]
+      },
+      {
+        "images": [
+          "/images/projects/from-set-to-screen/07.webp"
+        ]
+      }
+    ]
+  },
+  {
     "title": "Exoskeleton",
     "subtitle": "Product Promo",
     "slug": "exoskeleton-promo",

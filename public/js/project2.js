@@ -69,6 +69,11 @@ function render(p, prev, next) {
 
   ${gallery ? `<section class="pj-gallery wrap" aria-label="Project images">${gallery}</section>` : ""}
 
+  <section class="pj-ask wrap" aria-labelledby="pj-ask-title">
+    <h2 class="up" id="pj-ask-title" data-reveal>Need something <span class="acc">like this?</span></h2>
+    <div class="pj-ask__actions" data-reveal><a class="btn btn--ink" href="/contact">Start a project <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="btn btn--ink-line" href="/services">Services and packages</a></div>
+  </section>
+
   <nav class="pj-nav dark" data-dark aria-label="More projects">${side(prev, "prev")}${side(next, "next")}</nav>`;
 
   // the film loads only when asked for: the cover with a play button until then, then the player takes its place

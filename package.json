@@ -1,0 +1,8 @@
+{
+  "name": "anassaleh.me",
+  "private": true,
+  "description": "Only pins the deploy tool: every release uses this exact wrangler version instead of whatever is newest that day.",
+  "devDependencies": {
+    "wrangler": "4.160.1"
+  }
+}
